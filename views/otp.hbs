@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTP Verification</title>
+  <link href="/dist/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 h-screen flex flex-col items-center justify-center">
+  <h1 class="text-2xl font-semibold mb-6">OTP Verification</h1>
+  <form action="/verify-otp" method="post" class="bg-white shadow-lg p-8 rounded-lg w-96">
+    <label for="otp1" class="text-gray-600 mb-2 block">Enter OTP:</label>
+    <div class="mb-4 flex space-x-4">
+      <input type="text" id="otp1" name="otp1" maxlength="1" required class="w-12 h-9 text-center border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+      <input type="text" id="otp2" name="otp2" maxlength="1" required class="w-12 h-9 text-center border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+      <input type="text" id="otp3" name="otp3" maxlength="1" required class="w-12 h-9 text-center border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+      <input type="text" id="otp4" name="otp4" maxlength="1" required class="w-12 h-9 text-center border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+    </div>
+    <button type="submit" class="px-4 py-2 bg-indigo-500 border border-transparent rounded-md text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Submit OTP</button>
+  </form>
+</body>
+</html>

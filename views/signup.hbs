@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans&family=Dosis:wght@500&family=Sacramento&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="/dist/output.css" rel="stylesheet">
+</head>
+<body>
+    <div class="flex flex-col md:flex-row h-screen"> 
+        <div class="w-full md:w-1/2 h-screen bg-white flex flex-col items-center justify-center">
+            <img 
+                src="https://i.pinimg.com/originals/51/e1/1b/51e11ba864ebb2b9c26dd4d67dd869c8.jpg"
+                class="h-auto max-w-full w-1/2" alt="signup image">
+            <p class="font-fontbolxr text-xl text-center">Join us to discover the magic that awaits you!</p>
+        </div>
+        <div class="w-full md:w-1/2 h-screen bg-custom-green flex items-center justify-center text-white">
+            <div class="max-w-sm mx-auto p-4">
+                <div class="flex items-center justify-center">
+                    <p class="mb-5 font-display text-5xl">Join Us</p>
+                </div>
+                <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 shadow-slate-500 ">
+                    <div class="flex items-center justify-center">
+                        <h2 class="text-2xl text-black font-bold font-oxygen mb-4">Signup</h2>
+                    </div>
+                    <form class="signup-form" action="signup" method="post">
+                        <input class="mb-4 px-4 py-2 w-full border rounded text-black" type="text" placeholder="Username" name="name" required>
+                        <input class="mb-4 px-4 py-2 w-full border rounded text-black" type="email" placeholder="Email" name="email" required>
+                        <input class="mb-4 px-4 py-2 w-full border rounded text-black" type="password" placeholder="Password" name="password" required>
+                        <input class="mb-4 px-4 py-2 w-full border rounded text-black" type="password" placeholder="Confirm Password" name="confirm_password" required>
+                        <button class="mb-4 px-4 py-2 bg-green-500 hover:bg-blue-700 text-white font-bold rounded w-full" type="submit">Signup</button>
+                    </form>
+                    <p class="text-center text-black mt-4">Already have an account? <a class="text-blue-500 hover:underline" href="login">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

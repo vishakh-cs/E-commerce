@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your eCommerce Store</title>
+    <!-- Include Tailwind CSS -->
+    <link href="/dist/output.css" rel="stylesheet">
+    <!-- Include Swiper CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+</head>
+<body class="overflow-x-hidden">
+    <!-- Header -->
+    <header class="bg-nav-bar-red text-white py-4 xl:py-5">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="font-display text-xl">Classic Soul</h1>
+            <!-- Navigation menu with Men, Women, Wishlist, Cart, and Profile links -->
+            <nav class="hidden md:block">
+                <ul class="flex px-4 font-semibold font-heading space-x-12">
+                    <li><a class="hover:text-gray-200" href="#">Men</a></li>
+                    <li><a class="hover:text-gray-200" href="#">Women</a></li>
+                </ul>
+            </nav>
+            <div class="hidden xl:flex items-center space-x-5">
+                <a class="hover:text-gray-200 flex items-center" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    <span class="ml-2">Wishlist</span>
+                </a>
+                <a class="flex items-center hover:text-gray-200" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span class="ml-2">Cart</span>
+                    <span class="flex absolute -mt-5 ml-4">
+                        <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500"></span>
+                    </span>
+                </a>
+                <!-- Sign In / Register -->
+                <a class="flex items-center hover:text-gray-200" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="ml-2">Profile</span>
+                </a>
+            </div>
+            <!-- Responsive navbar -->
+            <a class="xl:hidden flex mr-6 items-center" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1000 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span class="flex absolute -mt-5 ml-4">
+                    <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500"></span>
+                </span>
+            </a>
+            <a class="navbar-burger self-center mr-12 xl:hidden" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- Banner Carousel -->
+    <section class="bg-gray-200 py-8 xl:py-12">
+        <div class="container mx-auto">
+            <!-- Carousel code goes here -->
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide xl:h-80"> <!-- Adjust the height value (e.g., h-80) as needed -->
+                        <img src="/images/Homepage--Banner_1_J0PcbLN.webp" alt="Banner 1" class="w-full">
+                    </div>
+                    <div class="swiper-slide xl:h-80"> <!-- Adjust the height value (e.g., h-80) as needed -->
+                        <img src="/images/banner 3 mens' .webp" alt="Banner 2" class="w-full">
+                    </div>
+                    <div class="swiper-slide xl:h-80"> <!-- Adjust the height value (e.g., h-80) as needed -->
+                        <img src="images/banneromg55.jpg" alt="Banner 3" class="w-full">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product List -->
+<!-- product-list.handlebars -->
+<div class="bg-gray-100 py-8">
+  <div class="container mx-auto">
+    <h1 class="text-3xl font-semibold mb-4 text-center">Product List</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {{#each products}}
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+          <img src="{{imageUrl}}" alt="{{name}}" class="w-full h-48 object-cover" />
+          <div class="p-4">
+            <h3 class="text-xl font-semibold mb-2">{{name}}</h3>
+            <p class="text-gray-600 text-sm">Price: ${{price}}</p>
+            <div class="mt-4">
+              <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2023 Your eCommerce Store</p>
+            <!-- Social media links, contact information, etc. can be added here -->
+        </div>
+    </footer>
+
+    <!-- Include Swiper JS for the carousel -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <!-- Initialize the carousel with autoplay -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var swiper = new Swiper('.swiper-container', {
+                slidesPerView: 1,
+                spaceBetween: 10,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                loop: true, // Enable looping
+                autoplay: {
+                    delay: 2000, // Set the delay between slides (in milliseconds)
+                    disableOnInteraction: false, // Allow manual navigation to stop autoplay
+                },
+            });
+        });
+    </script>
+</body>
+</html>

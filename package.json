@@ -1,0 +1,27 @@
+{
+  "name": "classic-soul",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npx tailwindcss -i ./public/css/input.css -o ./public/dist/output.css --watch\" \"nodemon app.js\""
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "concurrently": "^8.2.1",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "hbs": "^4.2.0",
+    "http-errors": "~1.6.3",
+    "mongoose": "^7.5.2",
+    "morgan": "~1.9.1",
+    "node-cron": "^3.0.2",
+    "nodemailer": "^6.9.5",
+    "randomstring": "^1.3.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.3.3"
+  }
+}
