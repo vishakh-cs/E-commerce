@@ -5,43 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans&family=Dosis:wght@500&family=Sacramento&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans&family=Dosis:wght@500&family=Sacramento&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="/dist/output.css" rel="stylesheet">
 </head>
 <body>
     <div class="flex flex-col md:flex-row h-screen"> 
         <div class="w-full md:w-1/2 h-screen bg-custom-blue flex items-center justify-center text-white">
-            <div class="max-w-sm mx-auto p-4"><div class="flex items-center justify-center">
-                <p class="mb-5 font-display text-5xl">Welcome Back</p>
-            </div>
-                <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 shadow-slate-500 ">
+            <div class="max-w-sm mx-auto p-4">
+                <div class="flex items-center justify-center">
+                    <p class="mb-5 font-display text-5xl">Welcome Back</p>
+                </div>
+                <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 shadow-slate-500">
                     <div class="flex items-center justify-center">
-                    <h2 class="text-2xl text-black font-bold font-oxygen mb-4">Login</h2>
-                </div>
-                    <form>
-                        <form class="login-form" action="login" method="post">
-                            <input class="mb-4 px-4 py-2 w-full border rounded" type="text" placeholder="Username" name="name" required>
-                            <input class="mb-4 px-4 py-2 w-full border rounded" type="password" placeholder="Password" name="password" required>
-                            <div class="flex items-center justify-between mb-4">
-                                <label class="text-gray-600">
-                                    <input type="checkbox" class="form-checkbox mr-2">
-                                    Remember Me
-                                </label>
-                                <a href="#" class="text-blue-500 hover:underline">Forgot Password?</a>
-                            </div>
-                            <button class="mb-4 px-4 py-2 bg-green-500 hover:bg-blue-700 text-white font-bold rounded w-full" type="submit">Login</button>
-                        </form>
-                        <p class="text-center text-black mt-4">Don't have an account? <a class="text-blue-500 hover:underline" href="/signup">Signup</a></p>
+                        <h2 class="text-2xl text-black font-bold font-oxygen mb-4">Login</h2>
                     </div>
+                    <form class="login-form" action="/loginpost" method="post">
+                        <input class="mb-4 px-4 py-2 w-full border rounded text-black" type="text" placeholder="Username" name="name" required>
+                        <input class="mb-4 px-4 py-2 w-full border rounded text-black" type="password" placeholder="Password" name="password" required>
+                        <div class="flex items-center justify-between mb-4">
+                            <label class="text-gray-600">
+                                <input type="checkbox" class="form-checkbox mr-2">
+                                Remember Me
+                            </label>
+                            <a href="/forgotpassword" class="text-blue-500 hover:underline">Forgot Password?</a>
+                        </div>
+                        <button class="mb-4 px-4 py-2 bg-green-500 hover:bg-blue-700 text-white font-bold rounded w-full" type="submit">Login</button>
+                    </form>
+                    <p class="text-center text-black mt-4">Don't have an account? <a class="text-blue-500 hover:underline" href="/signup">Signup</a></p>
                 </div>
             </div>
+        </div>
         <div class="w-full md:w-1/2 h-screen bg-white flex flex-col items-center justify-center">
             <img 
                 src="https://i.pinimg.com/736x/d5/3e/25/d53e259865f0cdbb6dc5efcb2b36b467.jpg"
                 class="h-auto max-w-full w-1/2" alt="login image">
-            <p class="font-fontbolxr text-xl text-center">Login in to see What Magic is Waiting for you !</p>
+            <p class="font-fontbolxr text-xl text-center">Login in to see What Magic is Waiting for you!</p>
         </div>
     </div>
 </body>

@@ -8,64 +8,66 @@ const signup = (req, res) => {
     res.render('signup');
 }
 
-// sigup post
 // signup post
 const signupPost = async (req, res) => {
-  try {
+    try {
       const OTP = randomstring.generate({ length: 4, charset: 'numeric' });
-
+  
+      // Hash the user's entered password before saving it to the database
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+  
       const transporter = nodemailer.createTransport({
-          service: 'Gmail',
-          auth: {
-              user: 'wizmailer07@gmail.com',
-              pass: process.env.APP_PASSWORD,
-          },
-          tls: {
-              rejectUnauthorized: false, // Ignore SSL certificate verification
-          },
+        service: 'Gmail',
+        auth: {
+          user: 'wizmailer07@gmail.com',
+          pass: process.env.APP_PASSWORD,
+        },
+        tls: {
+          rejectUnauthorized: false, // Ignore SSL certificate verification
+        },
       });
-
+  
       const mailOptions = {
-          from: 'wizmailer07@gmail.com',
-          to: req.body.email,
-          subject: 'test for node mailer',
-          text: `Your OTP (One-Time Password) is: ${OTP}`,
+        from: 'wizmailer07@gmail.com',
+        to: req.body.email,
+        subject: 'test for node mailer',
+        text: `Your OTP (One-Time Password) is: ${OTP}`,
       };
-
+  
       transporter.sendMail(mailOptions, async (error, info) => {
-          if (error) {
-              console.error('Error sending email:', error);
-              return res.status(500).send('Error sending email');
-          } else {
-              console.log('Email sent:', info.response);
-          }
+        if (error) {
+          console.error('Error sending email:', error);
+          return res.status(500).send('Error sending email');
+        } else {
+          console.log('Email sent:', info.response);
+        }
       });
-
-      // Create a new user object and save it to the database
+  
+      // Create a new user object with the hashed password and save it to the database
       const newUser = new usermodel({
-          username: req.body.name,
-          email: req.body.email,
-          password: req.body.password,
-          otp: OTP,
+        username: req.body.name,
+        email: req.body.email,
+        password: hashedPassword, // Store the hashed password
+        otp: OTP,
       });
-
+  
       // Save the user data to the database
       await newUser.save();
-
+  
       // Set user data in the session
       req.session.user = {
         username: req.body.name,
         email: req.body.email,
         otp: OTP,
       };
-
+  
       // Redirect to the OTP verification page
       res.redirect('/signupotp');
-  } catch (error) {
+    } catch (error) {
       console.error("Error registering user:", error);
       res.status(500).send("Error registering user");
-  }
-};
+    }
+  };  
 
 // render otp page
 const otp = (req, res) => {
@@ -88,26 +90,23 @@ const otppost = async (req, res) => {
     const userData = req.session.user;
 
     if (!userData) {
-      // Handle the case where user data is not found in the session
+     
       return res.status(401).send('User data not found in the session.');
     }
 
-    // Compare the entered OTP with the stored OTP from the session
     if (userData.otp === combinedOTP) {
-      // OTP is correct; you can mark it as verified in the user's session
       userData.otpVerified = true;
-      // Redirect or respond as needed for a successful OTP verification
-      return res.redirect('/login'); // Redirect to the login page or any other destination
+      return res.redirect('/login'); 
     } else {
-      // Incorrect OTP; handle this case appropriately
+      // Incorrect OTP
       return res.status(401).send('Incorrect OTP.');
     }
   } catch (error) {
-    // Handle errors if any occur during the OTP verification process
     console.error('Error verifying OTP:', error);
     return res.status(500).send('Error verifying OTP.');
   }
 };
+
 
 // login get
 const login = (req, res) => {
@@ -117,6 +116,25 @@ const login = (req, res) => {
 const forgotpassword = (req, res) => {
     res.render('forgotpassword');
 }
+
+const loginpost = async (req, res) => {
+  const name = req.body.name;
+  const password = req.body.password;
+
+  try {
+    const user = await usermodel.findOne({ username: name });
+
+    if (user && await bcrypt.compare(password, user.password)) {
+      req.session.user = req.body.name;
+      res.redirect('/home');
+    } else {
+      res.send("Invalid username or password");
+    }
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).send("Error during login");
+  }
+};
 
 // home
 const home = (req, res) => {
@@ -156,4 +174,5 @@ module.exports = {
     forgotpassword,
     signupPost,
     otppost,
+    loginpost,
 };

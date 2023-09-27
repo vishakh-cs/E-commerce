@@ -8,12 +8,12 @@
 </head>
 <body class="bg-adminbg bg-cover bg-no-repeat backdrop-blur-md">
     <div class="min-h-screen flex items-center justify-center">
-        <div class="bg-white p-8 shadow-xl rounded-lg max-w-md w-full border border-soli">
+        <div class="bg-white p-8 shadow-xl rounded-lg max-w-md w-full border border-solid">
             <h1 class="text-3xl font-bold text-center text-gray-800">Admin Login</h1>
-            <form class="mt-6">
+            <form class="mt-6" action="/admin/login" method="POST">
                 <div class="mb-4">
-                    <label for="username" class="block text-gray-600 text-sm ">Username</label>
-                    <input type="text" id="username" name="username" class="form-input w-full mt-1 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border " required>
+                    <label for="username" class="block text-gray-600 text-sm">Username</label>
+                    <input type="text" id="username" name="username" class="form-input w-full mt-1 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border" required>
                 </div>
                 <div class="mb-4">
                     <label for="password" class="block text-gray-600 text-sm">Password</label>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Sidebar -->
+    <nav class="bg-gray-800 text-white h-screen w-64 fixed top-0 left-0 overflow-y-auto">
+        <div class="p-4">
+            <h1 class="text-2xl font-semibold">Admin Dashboard</h1>
+        </div>
+        <ul>
+            <!-- Dashboard Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="#" class="block">
+                    <span class="text-gray-300">Dashboard</span>
+                </a>
+            </li>
+            <!-- User Management Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="#" class="block">
+                    <span class="text-gray-300">User Management</span>
+                </a>
+            </li>
+            <!-- Product Management Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="#" class="block">
+                    <span class="text-gray-300">Product Management</span>
+                </a>
+            </li>
+            <!-- Add more navigation links as needed -->
+        </ul>
+    </nav>
+
+    <!-- Content Area -->
+    <div class="ml-64">
+        <!-- Content Header -->
+        <header class="bg-white shadow py-4 px-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-semibold">Dashboard</h2>
+                <!-- Add user info or other header content here -->
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="p-6">
+            <!-- Your dashboard content goes here -->
+            <p>Welcome to the Admin Dashboard. You can manage users and products here.</p>
+        </main>
+    </div>
+</body>
+</html>
