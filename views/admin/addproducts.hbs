@@ -42,7 +42,7 @@
     </nav>
 
     <!-- Content Area -->
-    <div class="ml-64">
+    <div class="ml-64 p-6"> <!-- Added padding to align with the sidebar -->
         <!-- Content Header -->
         <header class="bg-white shadow py-4 px-6">
             <div class="flex justify-between items-center">
@@ -52,33 +52,45 @@
         </header>
 
         <!-- Main Content -->
-        <main class="p-6">
-        
-            <!-- Add Product Form -->
-           <form action="/add-product" method="post" class="max-w-md" enctype="multipart/form-data">
-    <div class="mb-4">
-        <label for="name" class="block text-gray-700 font-semibold">Product Name</label>
-        <input type="text" id="name" name="name" class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required>
-    </div>
-    <div class="mb-4">
-        <label for="price" class="block text-gray-700 font-semibold">Price</label>
-        <input type="number" id="price" name="price" class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required>
-    </div>
-    <div class="mb-4">
-        <label for="image" class="block text-gray-700 font-semibold">Image</label>
-        <input type="file" id="image" name="image" accept="image/*" class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required>
-    </div>
-    <div class="mb-4">
-        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded transition duration-300 ease-in-out">Add Product</button>
-    </div>
-</form>
+        <main class="mt-6"> <!-- Added margin-top to separate from header -->
+            <form action="/admin/add-product" method="post" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-700 font-semibold">Product Name</label>
+                    <input type="text" id="name" name="name" class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="description" class="block text-gray-700 font-semibold">Description</label>
+                    <textarea id="description" name="description" class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="category" class="block text-gray-700 font-semibold">Category</label>
+                    <input type="text" id="category" name="category" class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="price" class="block text-gray-700 font-semibold">Price</label>
+                    <input type="number" id="price" name="price" class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="quantity" class="block text-gray-700 font-semibold">Quantity</label>
+                    <input type="number" id="quantity" name="quantity" class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="rating" class="block text-gray-700 font-semibold">Rating</label>
+                    <input type="number" id="rating" name="rating" class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="offers" class="block text-gray-700 font-semibold">Offers</label>
+                    <input type="text" id="offers" name="offers" class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="mb-4">
+                    <label for="images" class="block text-gray-700 font-semibold">Images (Multiple)</label>
+                    <input type="file" id="images" name="images" accept="image/*" multiple class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded transition duration-300 ease-in-out">Add Product</button>
+                </div>
             </form>
         </main>
     </div>
-</body>
-</html>
-
-
-      
 </body>
 </html>
