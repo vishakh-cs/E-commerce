@@ -31,23 +31,21 @@ const adminloginpost = (req, res) => {
 res.render('admin/admindashboard')
  }
 
+ const productmanagement = async (req, res) => {
+  try {
+    // Fetch all products from the database
+    const products = await productmodel.find();
 
-const productmanagement = (req,res)=>{
-    const products = [
-        {
-          id: 1,
-          name: 'Product 1',
-          price: 100,
-          imageUrl: '/images/img 1.jpg', 
-        },
-        // Add more product objects as needed
-      ];
+    // Log the products and their image URLs for debugging
+    console.log('Products:', products);
+
+    // Render the 'admin/productmanagement' view with the products data
     res.render('admin/productmanagement', { products });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).send('Error fetching products');
+  }
 };
-
-
-//
-
 
 
 const addproductspost = async (req, res) => {

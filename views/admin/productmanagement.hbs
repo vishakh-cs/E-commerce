@@ -23,26 +23,29 @@
                 </thead>
                 <tbody>
                     <!-- Loop through your product data and populate the table rows -->
-                    {{#each products}}
-                    <tr>
-                        <td class="px-6 py-4 whitespace-no-wrap">
-                            <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
-                                <img src="{{this.imageUrl}}" alt="{{this.name}}" class="w-full h-full object-cover">
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-no-wrap">{{this.name}}</td>
-                        <td class="px-6 py-4 whitespace-no-wrap text-lg font-semibold">${{this.price}}</td>
-                        <td class="px-6 py-4 whitespace-no-wrap space-x-2">
-                            <button class="text-indigo-600 hover:text-indigo-900">Edit</button>
-                            <button class="text-red-600 hover:text-red-900">Delete</button>
-                        </td>
-                    </tr>
-                    {{/each}}
+                {{#each products}}
+<tr>
+    <td class="px-6 py-4 whitespace-no-wrap">
+        <!-- Loop through the images array and display each image -->
+        {{#each this.images}}
+        <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+            <!-- Update the src attribute to use the current image filename -->
+          <img src="/uploads/{{this}}" alt="{{../name}}" class="w-full h-full object-cover">
+
+        </div>
+        {{/each}}
+    </td>
+    <td class="px-6 py-4 whitespace-no-wrap">{{this.name}}</td>
+    <td class="px-6 py-4 whitespace-no-wrap text-lg font-semibold">${{this.price}}</td>
+    <td class="px-6 py-4 whitespace-no-wrap space-x-2">
+        <button class="text-indigo-600 hover:text-indigo-900">Edit</button>
+        <button class="text-red-600 hover:text-red-900">Delete</button>
+    </td>
+</tr>
+{{/each}}
                 </tbody>
             </table>
         </div>
-
-        <!-- Add product management features, forms, and actions here -->
     </div>
 </body>
 </html>
