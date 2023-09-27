@@ -90,13 +90,33 @@ const otppost = async (req, res) => {
     const userData = req.session.user;
 
     if (!userData) {
-     
       return res.status(401).send('User data not found in the session.');
     }
 
     if (userData.otp === combinedOTP) {
       userData.otpVerified = true;
-      return res.redirect('/login'); 
+
+      // Redirect the user to the login page
+      res.redirect('/login');
+
+      // Schedule the OTP deletion after 3 minutes
+      setTimeout(async () => {
+        try {
+          // Assuming you have a MongoDB model called User
+          const userUpdate = await User.updateOne(
+            { _id: userData._id },
+            { $unset: { otp: 1, otpExpirationTime: 1 } }
+          );
+
+          if (userUpdate.nModified > 0) {
+            console.log('OTP deleted after 3 minutes.');
+          } else {
+            console.log('No matching user found for OTP deletion.');
+          }
+        } catch (error) {
+          console.error('Error deleting OTP:', error);
+        }
+      }, 3 * 60 * 1000); // 3 minutes in milliseconds
     } else {
       // Incorrect OTP
       return res.status(401).send('Incorrect OTP.');
@@ -107,11 +127,15 @@ const otppost = async (req, res) => {
   }
 };
 
-
 // login get
-const login = (req, res) => {
-    res.render('login');
+const login = (req,res)=>{
+  if(req.session.user){
+      res.redirect('/home')
+  } else{
+      res.render('login')
+  }
 }
+
 
 const forgotpassword = (req, res) => {
     res.render('forgotpassword');

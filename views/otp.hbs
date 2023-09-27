@@ -18,5 +18,32 @@
     </div>
     <button type="submit" class="px-4 py-2 bg-indigo-500 border border-transparent rounded-md text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Submit OTP</button>
   </form>
+
+  <div id="countdown" class="text-center mt-4 text-gray-600"></div>
+
+  <script>
+    // Countdown timer function
+    function startCountdown(duration, display) {
+      let timer = duration, minutes, seconds;
+      setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+          // Timer has expired, you can add code to handle this event
+        }
+      }, 1000);
+    }
+
+    // Set the countdown duration in seconds
+    const countdownDuration = 180; 
+    const display = document.querySelector('#countdown');
+    startCountdown(countdownDuration, display);
+  </script>
 </body>
 </html>

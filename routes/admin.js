@@ -11,4 +11,6 @@ router.get('/admindashboard',admincontroller.admindashboard)
 
 router.get('/productmanagement',admincontroller.productmanagement)
 
+router.get('/addproducts',admincontroller.addproducts)
+
 module.exports = router;

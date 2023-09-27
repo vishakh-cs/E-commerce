@@ -5,6 +5,7 @@ const session = require('express-session');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const nodemailer = require("nodemailer")
+const mongoose = require('mongoose')
 require('dotenv').config();
 
 
@@ -14,6 +15,18 @@ var AdminRouter = require('./routes/admin');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+mongoose.connect("mongodb://localhost:27017/Ecommerce-Users",{
+    useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+
+.then(()=>{
+    console.log("connected to database ");
+})
+.catch((error)=>{
+    console.error("Something went wrong",error);
+})
 
 app.use(session({
   secret: 'your-secret-key', // Change this to a secret key for session encryption

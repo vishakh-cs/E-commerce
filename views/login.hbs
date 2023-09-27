@@ -44,5 +44,23 @@
             <p class="font-fontbolxr text-xl text-center">Login in to see What Magic is Waiting for you!</p>
         </div>
     </div>
+    <script>
+        function validateForm() {
+            const username = document.getElementsByName("name")[0].value;
+            const password = document.getElementsByName("password")[0].value;
+
+            if (!username || username == "") {
+                alert("Please enter your username.");
+                return false;
+            }
+
+            if (!password || password === "") {
+                alert("Please enter your password.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </body>
 </html>

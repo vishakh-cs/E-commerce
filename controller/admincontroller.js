@@ -45,10 +45,15 @@ const productmanagement = (req,res)=>{
 };
 
 
+const addproducts = (req,res)=>{
+  res.render('admin/addproducts')
+}
+
 module.exports ={
     adminlogin,
     admindashboard,
     productmanagement,
     adminloginpost,
+    addproducts,
     
 }
