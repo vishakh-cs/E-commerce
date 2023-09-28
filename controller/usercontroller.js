@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const usermodel = require("../models/usermodel");
+const Products = require("../models/productmodel")
 const randomstring = require('randomstring');
 const bcrypt = require('bcrypt');
 
@@ -157,15 +158,17 @@ const loginpost = async (req, res) => {
 };
 
 // home
-const home = (req, res) => {
-    const products = [
-        { name: 'Product 1', price: 20, imageUrl: '/images/img 10.jpg' },
-        { name: 'Product 2', price: 25, imageUrl: '/images/img 1.jpg' },
-        { name: 'Product 3', price: 30, imageUrl: '/images/HWPcgAhejy9XEm8iZzFYfZSU.webp' },
-        { name: 'Product 4', price: 30, imageUrl: '/images/img 10.jpg' },
-    ];
+const home = async(req, res) => {
+  try {
+    // Fetch all products from the database
+    const products = await Products.find();
 
-    res.render('home', { products });
+    // Render the product list page with the fetched products
+    res.render('home', { products }); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  }
 };
 
 const productview = (req, res) => {
