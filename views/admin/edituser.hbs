@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-semibold my-4">Edit User</h2>
+        <form action="/edituser/{{user._id}}" method="post">
+            <div class="mb-4">
+                <input type="text" name="username" placeholder="Username" value="{{user.username}}"
+                    class="form-input w-48 rounded py-2 px-3">
+            </div>
+            <div class="mb-4">
+                <input type="email" name="email" placeholder="Email" value="{{user.email}}"
+                    class="form-input w-48 rounded py-2 px-3">
+            </div>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Save Changes</button>
+        </form>
+    </div>
+</body>
+</html>

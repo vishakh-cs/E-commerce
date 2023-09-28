@@ -129,11 +129,7 @@ const otppost = async (req, res) => {
 
 // login get
 const login = (req,res)=>{
-  if(req.session.user){
-      res.redirect('/home')
-  } else{
       res.render('login')
-  }
 }
 
 

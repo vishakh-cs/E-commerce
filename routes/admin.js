@@ -28,6 +28,22 @@ router.get('/productmanagement',admincontroller.productmanagement)
 
 router.get('/addproducts',admincontroller.addproducts)
 
+router.get('/edit/:productId',admincontroller.editproducts)
+
+router.post('/edit/:productId',admincontroller.editproductspost)
+
+router.get('/user',admincontroller.usermangement)
+
+router.get("/edituser/:id", admincontroller.edituser);
+
+router.post('/edituser/:id',admincontroller.edituserpost)
+
+router.post('/admin/deleteuser/:id', admincontroller.deleteUser);
+
+router.post('/admin/blockuser/:id', admincontroller.blockUser);
+
+router.post('/admin/unblockuser/:id', admincontroller.unblockUser);
+
 router.post('/admin/add-product',upload.array('images'),admincontroller.addproductspost)
 
 module.exports = router;

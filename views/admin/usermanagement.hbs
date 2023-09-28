@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4">
+        <!-- Include the admin header component here -->
+        {{adminheader}}
+    
+        <div class="mt-8">
+            <h2 class="text-2xl font-semibold mb-4">User Management</h2>
+            <form action="/admin/user-search" method="post" class="flex space-x-2 mb-4">
+                <input class="form-input w-48 rounded py-2 px-3" type="text" placeholder="Search User name" id="search" name="search">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" type="submit">Search</button>
+            </form>
+
+            {{#if nodata}}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <strong>{{nodata}}</strong>
+            </div>
+            {{/if}}
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto border-collapse border border-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2 bg-gray-200">Username</th>
+                            <th class="px-4 py-2 bg-gray-200">Email</th>
+                            <th class="px-4 py-2 bg-gray-200">Status</th>
+                            <th class="px-4 py-2 bg-gray-200">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each users}}
+                        <tr>
+                            <td class="border px-4 py-2">{{this.username}}</td>
+                            <td class="border px-4 py-2">{{this.email}}</td>
+                            <td class="border px-4 py-2">
+                                {{#if this.isblocked}}
+                                <span class="text-red-500">Blocked</span>
+                                {{else}}
+                                <span class="text-green-500">Not Blocked</span>
+                                {{/if}}
+                            </td>
+                            <td class="border px-4 py-2">
+                                <!-- Actions (Edit, Delete, Block, and Unblock User) -->
+                                <a class="text-blue-500 hover:underline mr-2" href="/edituser/{{this._id}}">Edit</a>
+                                <form action="/admin/deleteuser/{{this._id}}" method="post" class="inline-block">
+                                    <button class="text-red-500 hover:underline" type="submit">Delete</button>
+                                </form>
+                                {{#if this.isblocked}}
+                                <form action="/admin/unblockuser/{{this._id}}" method="post" class="inline-block">
+                                    <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded" type="submit">Unblock</button>
+                                </form>
+                                {{else}}
+                                <form action="/admin/blockuser/{{this._id}}" method="post" class="inline-block">
+                                    <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded" type="submit">Block</button>
+                                </form>
+                                {{/if}}
+                            </td>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

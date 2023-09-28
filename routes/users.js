@@ -8,7 +8,7 @@ router.post('/loginpost',usercontroller.loginpost)
 
 router.get('/signup',usercontroller.signup)
 
-router.get('/',usercontroller.home)
+router.get('/home',usercontroller.home)
 
 router.get('/productview',usercontroller.productview)
 
