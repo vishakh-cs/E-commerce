@@ -171,22 +171,22 @@ const home = async(req, res) => {
   }
 };
 
-const productview = (req, res) => {
-    const productData = {
-        name: 'Sample Product',
-        description: 'This is a sample product description.',
-        price: 19.99,
-        imageUrl: '/images/img 1.jpg',
-        details: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed et odio velit. ...',
-        smallImages: [
-            { url: '/images/img 1.jpg', alt: 'Small Image 1' },
-            { url: '/images/img 1.jpg', alt: 'Small Image 2' },
-            { url: '/images/img 1.jpg', alt: 'Small Image 3' },
-        ],
-    };
+const productview = async(req, res) => {
+  try {
+    // Fetch the product data based on the productId from your database
+    const product = await Products.findById(req.params.productId);
 
-    res.render('productview', { product: productData });
-};
+    // Get the first image URL
+    const firstImageUrl = product.images[0]; // Assuming images is an array of image URLs
+
+    // Render the product view page and pass the product and firstImageUrl to the template
+    res.render('productview', { product, firstImageUrl });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
 
 module.exports = {
     signup,

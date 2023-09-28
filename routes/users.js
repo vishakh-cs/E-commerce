@@ -10,7 +10,7 @@ router.get('/signup',usercontroller.signup)
 
 router.get('/',usercontroller.home)
 
-router.get('/productview',usercontroller.productview)
+router.get('/products/:productId',usercontroller.productview)
 
 router.get('/signupotp',usercontroller.otp)
 
