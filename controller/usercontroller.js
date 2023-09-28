@@ -146,7 +146,7 @@ const loginpost = async (req, res) => {
 
     if (user && await bcrypt.compare(password, user.password)) {
       req.session.user = req.body.name;
-      res.redirect('/home');
+      res.redirect('/');
     } else {
       res.send("Invalid username or password");
     }

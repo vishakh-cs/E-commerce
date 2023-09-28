@@ -90,26 +90,34 @@ const addproducts = (req,res)=>{
 // Route to display the edit form for a specific product
 const editproducts = async (req, res) => {
   try {
-      const product = await productmodel.findById(req.params.productId);
+      const productId = req.params.id;
+
+      const product = await productmodel.findById(productId);
+
       if (!product) {
           return res.status(404).send('Product not found');
       }
-      res.render('admin/editproducts', { product }); // Render the edit form with the product data
-  } catch (err) {
-      console.error(err);
-      res.status(500).send('Internal Server Error');
+
+      res.render('admin/editproducts', { product }); // Render the edit product page with the product data
+  } catch (error) {
+      console.error('Error editing product:', error);
+      res.status(500).send('Error editing product');
   }
-}
+};
+
+// Route to handle the form submission and update the product
 // Route to handle the form submission and update the product
 const editproductspost = async (req, res) => {
   try {
-    const productId = req.params.productId;
+    const productId = req.params.id;
 
-    // Extract the updated data from the request body
+    // Extract updated data from the request body
     const { name, description, category, price, quantity, rating, offers } = req.body;
 
     // Check if a new image file was uploaded
-    const updatedFields = {
+    if (req.file) {
+      // If a file was uploaded, update the product in the database with the new image
+      await productmodel.findByIdAndUpdate(productId, {
         name,
         description,
         category,
@@ -117,24 +125,36 @@ const editproductspost = async (req, res) => {
         quantity,
         rating,
         offers,
-    };
-
-    // Check if a new image file was uploaded
-    if (req.file) {
-        const newImage = req.file.filename;
-        updatedFields.images = [newImage]; // Update the images field with the new image filename
+        $push: { images: req.file.filename }, // Use $push to add the new image filename to the existing images array
+        // Update other fields as needed
+      });
+    } else {
+      await productmodel.findByIdAndUpdate(productId, {
+        name,
+        description,
+        category,
+        price,
+        quantity,
+        rating,
+        offers,
+      });
     }
 
-    // Find the product by ID and update its fields
-    await productmodel.findByIdAndUpdate(productId, updatedFields);
-
-    // Redirect to the product list page or a success page
-    res.redirect('/productmanagement'); // Replace with the appropriate URL
-} catch (error) {
+    res.redirect('/productmanagement'); 
+  } catch (error) {
     console.error('Error updating product:', error);
+
+    // Handle Mongoose validation errors
+    if (error.name === 'ValidationError') {
+      // You can send an error message or redirect to a page with error details here
+      return res.status(400).send('Validation error: ' + error.message);
+    }
+
     res.status(500).send('Error updating product');
-}
+  }
 };
+
+
 
 //user controll
 const usermangement = async (req,res)=>{
@@ -205,17 +225,34 @@ const usermangement = async (req,res)=>{
     try {
       const userId = req.params.id;
   
-      // Update the user's status to unblocked in the database
       await usermodel.findByIdAndUpdate(userId, { isblocked: false });
-  
-      // Redirect back to the User Management page after successful unblocking
-      res.redirect('/user'); // Update the URL as needed
-    } catch (error) {
+      res.redirect('/user');
+    } catch (error) { // Add a catch block for error handling
       console.error('Error unblocking user:', error);
       res.status(500).send('Error unblocking user');
     }
-  };
-  
+};
+
+
+// search user
+const searchUsers = async (req, res) => {
+  try {
+    // Get the search query from the form
+    const searchQuery = req.body.search;
+
+    // Use a regular expression to perform a case-insensitive search
+    const regex = new RegExp(searchQuery, 'i');
+
+    // Find users whose username matches the search query
+    const users = await usermodel.find({ username: regex });
+
+    // Render the user management page with the search results
+    res.render('admin/usermanagement', { users });
+  } catch (error) {
+    console.error('Error searching users:', error);
+    res.status(500).send('Error searching users');
+  }
+};
   
 
 module.exports ={
@@ -233,5 +270,6 @@ module.exports ={
     deleteUser,
     blockUser,
     unblockUser,
+    searchUsers,
     
 }

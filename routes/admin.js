@@ -28,9 +28,9 @@ router.get('/productmanagement',admincontroller.productmanagement)
 
 router.get('/addproducts',admincontroller.addproducts)
 
-router.get('/edit/:productId',admincontroller.editproducts)
+router.get('/edit/:id',admincontroller.editproducts)
 
-router.post('/edit/:productId',admincontroller.editproductspost)
+router.post('/edit/:id',admincontroller.editproductspost)
 
 router.get('/user',admincontroller.usermangement)
 
@@ -43,6 +43,8 @@ router.post('/admin/deleteuser/:id', admincontroller.deleteUser);
 router.post('/admin/blockuser/:id', admincontroller.blockUser);
 
 router.post('/admin/unblockuser/:id', admincontroller.unblockUser);
+
+router.post('/admin/user-search', admincontroller.searchUsers);
 
 router.post('/admin/add-product',upload.array('images'),admincontroller.addproductspost)
 

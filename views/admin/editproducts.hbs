@@ -24,21 +24,22 @@
                 <input type="text" id="quantity" name="quantity" value="{{product.quantity}}" class="w-full px-3 py-2 border rounded-lg">
             </div>
             <!-- Add input fields for other product details (description, category, rating, offers) here -->
+            
+            <div class="mb-4">
+                <label class="block text-gray-600 font-semibold mb-2">Existing Images:</label>
+                {{#each product.images}}
+                <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                    <img src="/uploads/{{this}}" alt="{{product.name}}" class="w-full h-full object-cover">
+                </div>
+                {{/each}}
+            </div>
 
-           <div class="mb-4">
-    <label class="block text-gray-600 font-semibold mb-2">Existing Images:</label>
-    {{#each product.images}}
-    <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
-        <img src="/uploads/{{this}}" alt="{{product.name}}" class="w-full h-full object-cover">
-    </div>
-    {{/each}}
-</div>
-
-<!-- Add an image upload input field -->
-<div class="mb-4">
-    <label for="image" class="block text-gray-600 font-semibold mb-2">New Image:</label>
-    <input type="file" id="image" name="image" accept="image/*" class="w-full">
-</div>
+            <!-- Add an image upload input field -->
+            <div class="mb-4">
+                <label for="image" class="block text-gray-600 font-semibold mb-2">New Image:</label>
+                <input type="file" id="image" name="image" accept="image/*" class="w-full">
+            </div>
+            
             <button type="submit" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg">Update Product</button>
         </form>
     </div>

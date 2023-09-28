@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   category: {
-    type: String, // You can use ObjectId and reference a Category model if needed
+    type: String, 
     required: true,
   },
   price: {
@@ -25,10 +25,10 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true,
     min: 0,
-    max: 5, // Assuming a rating scale of 0 to 5
+    max: 5, 
   },
   offers: {
-    type: String, // You can customize this field based on your needs (e.g., discounts)
+    type: String,
   },
   images: [
     {
