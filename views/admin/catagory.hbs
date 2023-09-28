@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management</title>
+    <link href="/dist/output.css" rel="stylesheet">
+</head>
+<body>
+    <div class="p-6">
+        <h2 class="text-3xl font-semibold mb-6">Category Management</h2>
+        
+        <!-- Category List/Table -->
+        <div class="overflow-x-auto">
+            <div class="w-full overflow-x-scroll">
+                <table class="w-full divide-y divide-gray-200 border rounded-lg">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                                Category Name
+                            </th>
+                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                                Description
+                            </th>
+                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each categories}}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-no-wrap">{{this.name}}</td>
+                            <td class="px-6 py-4 whitespace-no-wrap">{{this.description}}</td>
+                            <td class="px-6 py-4 whitespace-no-wrap space-x-2">
+                                <a href="/editCategory/{{this._id}}" class="text-indigo-600 hover:text-indigo-900 font-semibold">Edit</a>
+                                <button class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <a href="/admindashboard">Dashboard</a>
+</body>
+</html>

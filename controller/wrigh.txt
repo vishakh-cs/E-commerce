@@ -1,0 +1,45 @@
+const editProductForm=async(req, res) => {
+  try {
+    const productId=req.params.productId;
+    const editProduct=await productCollection.findById(productId);
+    console.log(editProduct);
+    return res.render('admin/updateProduct', { editProduct });
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).send('error fetching:update user finding');
+  }
+};
+
+const adminUpdateProduct = async (req, res) => {
+  const productId = req.params.productId;
+  const {
+    productName,
+    productDescription,
+    productPrice,
+    productDiscount,
+    productQuantity,
+  } = req.body;
+  try {
+    const updatedProduct = await productCollection.findByIdAndUpdate(
+      productId,
+      {
+        product_name: productName,
+        product_description: productDescription,
+        product_price: productPrice,
+        product_discount: productDiscount,
+        product_qty: productQuantity,
+      },
+      { new: true },
+    );
+
+    if (!updatedProduct) {
+      return res.status(500).send('error fetching:updating ');
+    }
+    res.redirect('/adminProductManagement');
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res
+      .status(500)
+      .send('error fetching:update product failed to update in database');
+  }
+};

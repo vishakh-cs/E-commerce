@@ -84,7 +84,9 @@
                             <td class="px-6 py-4 whitespace-no-wrap text-blue-900">{{this.offers}}</td>
                             <td class="px-6 py-4 whitespace-no-wrap space-x-2">
 <a href="/edit/{{this._id}}" class="text-indigo-600 hover:text-indigo-900 font-semibold">Edit</a>
-                                <button class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
+                                <form method="post" action="/delete/{{this._id}}">
+        <button type="submit" class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
+    </form>
                             </td>
                         </tr>
                         {{/each}}

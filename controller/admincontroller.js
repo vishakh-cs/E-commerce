@@ -1,5 +1,6 @@
 const productmodel = require('../models/productmodel')
 const usermodel = require('../models/usermodel')
+const categoryModel = require("../models/categoryModel")
 
 
 // admin login get
@@ -108,53 +109,96 @@ const editproducts = async (req, res) => {
 // Route to handle the form submission and update the product
 // Route to handle the form submission and update the product
 const editproductspost = async (req, res) => {
+
+  const productId = req.params.id;
+  const { name, description, category, price, quantity, rating, offers } = req.body;
+  
+    console.log('Received productId:', productId);
+    console.log('Received name:', name);
+    console.log('Received description:', description);
+    console.log('Received category:', category);
+    console.log('Received price:', price);
+    console.log('Received quantity:', quantity);
+    console.log('Received rating:', rating);
+    console.log('Received offers:', offers);
+  
   try {
-    const productId = req.params.id;
-
-    // Extract updated data from the request body
-    const { name, description, category, price, quantity, rating, offers } = req.body;
-
+    
     // Check if a new image file was uploaded
     if (req.file) {
       // If a file was uploaded, update the product in the database with the new image
-      await productmodel.findByIdAndUpdate(productId, {
-        name,
-        description,
-        category,
-        price,
-        quantity,
-        rating,
-        offers,
+      const updatedProduct = await productmodel.findByIdAndUpdate(productId, {
+        name: name,
+        description: description,
+        category: category,
+        price: price,
+        quantity: quantity,
+        rating: rating,
+        offers: offers,
         $push: { images: req.file.filename }, // Use $push to add the new image filename to the existing images array
-        // Update other fields as needed
-      });
-    } else {
-      await productmodel.findByIdAndUpdate(productId, {
-        name,
-        description,
-        category,
-        price,
-        quantity,
-        rating,
-        offers,
-      });
-    }
+      },
+      { new: true }
+      );
 
+      if (!updatedProduct) {
+        return res.status(500).send('Error fetching update');
+      }
+    } else {
+      // If no new image file was uploaded, update the product without modifying the images array
+      const updatedProduct = await productmodel.findByIdAndUpdate(productId, {
+        name: name,
+        description: description,
+        category: category,
+        price: price,
+        quantity: quantity,
+        rating: rating,
+        offers: offers,
+      },
+      { new: true }
+      );
+
+      if (!updatedProduct) {
+        return res.status(500).send('Error fetching update');
+      }
+    }
     res.redirect('/productmanagement'); 
   } catch (error) {
     console.error('Error updating product:', error);
-
-    // Handle Mongoose validation errors
-    if (error.name === 'ValidationError') {
-      // You can send an error message or redirect to a page with error details here
-      return res.status(400).send('Validation error: ' + error.message);
-    }
-
     res.status(500).send('Error updating product');
   }
 };
 
 
+// delete product
+const deleteProduct = async (req, res) => {
+  const productId = req.params.id;
+  try {
+    // Find the product by ID and remove it from the database
+    const deletedProduct = await productmodel.findByIdAndRemove(productId);
+
+    if (!deletedProduct) {
+      return res.status(404).send('Product not found');
+    }
+
+    // Redirect to the admin dashboard or any other page after successful deletion
+    res.redirect('/productmanagement');
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).send('Error deleting product');
+  }
+};
+
+
+// category management
+const category = async (req,res)=>{
+  try {
+  const categories = await categoryModel.find();
+  res.render('admin/catagory', { categories });
+} catch (error) {
+  console.error('Error fetching categories:', error);
+  res.status(500).send('Error fetching categories');
+}
+}
 
 //user controll
 const usermangement = async (req,res)=>{
@@ -271,5 +315,7 @@ module.exports ={
     blockUser,
     unblockUser,
     searchUsers,
+    category,
+    deleteProduct,
     
 }
