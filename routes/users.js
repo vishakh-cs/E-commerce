@@ -18,6 +18,16 @@ router.post('/verify-otp',usercontroller.otppost)
 
 router.get('/forgotpassword',usercontroller.forgotpassword)
 
+router.post('/forgotPassword', usercontroller.forgotpasswordPost)
+
+router.get('/otpverification', usercontroller.otpVerification)
+
+router.post('/otpVerificationPost',usercontroller.otpVerificationPost)
+
+router.get('/resetpassword',usercontroller.resetpass)
+
+router.post('/resetpassword',usercontroller.resetPasswordPost)
+
 router.post('/signup',usercontroller.signupPost)
 
 module.exports = router;

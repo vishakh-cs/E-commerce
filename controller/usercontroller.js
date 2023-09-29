@@ -138,6 +138,139 @@ const forgotpassword = (req, res) => {
     res.render('forgotpassword');
 }
 
+const forgotpasswordPost = async (req, res) => {
+  try {
+    // Check if the provided email exists in the database
+    const email = req.body.email; // Access the email property directly
+    req.session.email=email;
+    const user = await usermodel.findOne({ email });
+
+    if (!user) {
+      return res.status(400).send('Email not found');
+    }
+
+    // Generate a new OTP
+    const OTP = randomstring.generate({ length: 4, charset: 'numeric' });
+
+    // Store the OTP in the user's document in the database
+    user.forgototp = OTP;
+    await user.save();
+
+    // Send the OTP via email
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'wizmailer07@gmail.com',
+        pass: process.env.APP_PASSWORD,
+      },
+      tls: {
+        rejectUnauthorized: false, // Ignore SSL certificate verification
+      },
+    });
+
+    const mailOptions = {
+      from: 'wizmailer07@gmail.com',
+      to: email, // Use the email variable directly
+      subject: 'Forgot Password OTP',
+      text: `Your OTP (One-Time Password) is: ${OTP}`,
+    };
+
+    transporter.sendMail(mailOptions, async (error, info) => {
+      if (error) {
+        console.error('Error sending OTP email:', error);
+        return res.status(500).send('Error sending OTP email');
+      } else {
+        console.log('OTP email sent:', info.response);
+        // Redirect to the OTP verification page
+        res.redirect('/otpverification');
+      }
+    });
+  } catch (error) {
+    console.error('Error in forgotpassword route:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+// otpverification
+const otpVerification = (req,res)=>{
+  res.render('otpverification')
+}
+
+const otpVerificationPost = async (req, res) => {
+   try {
+    res.redirect('/resetpassword');
+  } catch (error) {
+       console.error('Error in OTP verification:', error);
+       res.status(500).send('Internal Server Error');
+     }
+   };
+
+// const otpVerificationPost = async (req, res) => {
+//   try {
+
+//     const userData = req.session.user;
+// if (!userData || !userData.email) {
+//   return res.status(401).send('User data not found in the session.');
+// }
+// const email = userData.email;
+//     const otp = req.body;
+//     // Check if the OTP matches the one stored in the user's document in the database
+//     const user = await usermodel.findOne({ email });
+//     console.log('User:', user);
+
+//     if (!user) {
+//       // User not found, handle this case (e.g., return an error message)
+//       return res.status(404).send('User not found');
+//     }
+
+//     if (user.forgototp == otp) {
+//       // OTP is correct, you can perform further actions like password reset here
+//       // For example, redirect to a password reset form
+//       return res.redirect('/resetpassword');
+//     } else {
+//       // Incorrect OTP, you can handle this case as needed
+//       return res.status(400).send('Incorrect OTP');
+//     }
+//   } catch (error) {
+//     console.error('Error in OTP verification:', error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// };
+
+
+
+const resetpass = (req,res)=>{
+  res.render('resetpass')
+
+}
+// rset pass post
+const resetPasswordPost = async (req, res) => {
+  try {
+    const newPassword = req.body.password;
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const email = req.session.email;
+
+    const user = await usermodel.findOneAndUpdate({ email }, { password: hashedPassword });
+
+    if (!user) {
+      // Handle the case where the user is not found
+      return res.status(404).send('User not found');
+    }
+
+    // Password reset successful, you might want to redirect the user to a login page
+    return res.redirect('/login');
+  } catch (error) {
+    // Handle errors, log them, and send an appropriate response
+    console.error('Error resetting password:', error);
+    return res.status(500).send('Internal Server Error');
+  }
+};
+
+
+
+
 const loginpost = async (req, res) => {
   const name = req.body.name;
   const password = req.body.password;
@@ -187,7 +320,6 @@ const productview = async(req, res) => {
   }
 }
 
-
 module.exports = {
     signup,
     login,
@@ -198,4 +330,9 @@ module.exports = {
     signupPost,
     otppost,
     loginpost,
+    forgotpasswordPost,
+    otpVerification,
+    otpVerificationPost,
+    resetpass,
+    resetPasswordPost,
 };

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="font-sans bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-md w-96">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">OTP Verification</h2>
+            
+            <!-- OTP Verification Form -->
+            <form action="/otpVerificationPost" method="POST">
+                <div class="mb-4">
+                    <label for="otp" class="block text-gray-600 text-sm mb-2">Enter OTP:</label>
+                    <input type="text" id="otp" name="otp" placeholder="Enter OTP" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500" autofocus="" autocomplete="" required>
+                </div>
+                <button type="submit" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-md px-4 py-2 mt-4 focus:outline-none">Verify OTP</button>
+            </form>
+            
+            <!-- Resend OTP Button -->
+            <button id="resendOTP" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md px-4 py-2 mt-4 focus:outline-none">Resend OTP</button>
+        </div>
+    </div>
+</body>
+</html>

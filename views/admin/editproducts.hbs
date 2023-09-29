@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Product</title>
     <link href="/dist/output.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="p-6">
@@ -28,7 +29,7 @@
             <div class="mb-4">
                 <label class="block text-gray-600 font-semibold mb-2">Existing Images:</label>
                 {{#each product.images}}
-                <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                <div class="w-20 h-25 bg-gray-200 rounded-lg overflow-hidden">
                     <img src="/uploads/{{this}}" alt="{{product.name}}" class="w-full h-full object-cover">
                 </div>
                 {{/each}}
@@ -40,7 +41,7 @@
                 <input type="file" id="image" name="image" accept="image/*" class="w-full">
             </div>
             
-            <button type="submit" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg">Update Product</button>
+            <button type="submit" class="bg-indigo-600 text-black font-semibold py-2 px-4 rounded-lg">Update Product</button>
         </form>
     </div>
 </body>
