@@ -30,6 +30,8 @@ router.get('/addproducts',admincontroller.addproducts)
 
 router.get('/categories',admincontroller.category)
 
+router.post('/categories',admincontroller.categoryManagement)
+
 router.get('/edit/:id',admincontroller.editproducts)
 
 router.post('/edit/:id',admincontroller.editproductspost)

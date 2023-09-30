@@ -53,7 +53,7 @@ res.render('admin/admindashboard')
 
 const addproductspost = async (req, res) => {
   try {
-    // Extract data from the request body
+
     const { name, description, category, price, quantity, rating, offers } = req.body;
 
     // Extract the file paths of uploaded images from req.files
@@ -200,6 +200,27 @@ const category = async (req,res)=>{
 }
 }
 
+const categoryManagement = async (req, res) => {
+  try {
+    const { categoryName, categoryDescription } = req.body;
+
+    // Create a new category document
+    const newCategory = new categoryModel({
+      name: categoryName,
+      description: categoryDescription,
+    });
+
+    // Save the new category to the database
+    await newCategory.save();
+
+    // Redirect back to the Category Management page after creating the category
+    res.redirect('/categories'); 
+  } catch (error) {
+    console.error('Error creating category:', error);
+    res.status(500).send('Error creating category');
+  }
+}
+
 //user controll
 const usermangement = async (req,res)=>{
  
@@ -317,5 +338,6 @@ module.exports ={
     searchUsers,
     category,
     deleteProduct,
+    categoryManagement,
     
 }
