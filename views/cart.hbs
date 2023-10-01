@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - Classic Soul</title>
+    <!-- Include Tailwind CSS -->
+    <link href="/dist/output.css" rel="stylesheet">
+</head>
+<body class="overflow-x-hidden">
+    <!-- Header -->
+    <!-- Include your header here or use a shared header component -->
+
+    <!-- Cart Page Content -->
+    <div class="container mx-auto mt-8">
+        <h1 class="text-3xl font-semibold mb-4">Your Cart</h1>
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <table class="min-w-full">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="py-2 px-4 text-left">Product</th>
+                        <th class="py-2 px-4 text-left">Quantity</th>
+                        <th class="py-2 px-4 text-left">Price</th>
+                        <th class="py-2 px-4 text-left">Total</th>
+                        <th class="py-2 px-4"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop through cart items and display each item -->
+                    {{#each cart}}
+                    <tr>
+                        <td class="py-4 px-4">
+                            <div class="flex items-center">
+                                <img src="{{this.image}}" alt="{{this.name}}" class="w-12 h-12 object-contain mr-4">
+                                <div>
+                                    <h2 class="text-lg font-semibold">{{this.name}}</h2>
+                                    <p class="text-gray-600">{{this.description}}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <input type="number" value="{{this.quantity}}" min="1" class="w-16 px-2 py-1 border rounded">
+                        </td>
+                        <td class="py-4 px-4">${{this.price}}</td>
+                        <td class="py-4 px-4">${{multiply this.price this.quantity}}</td>
+                        <td class="py-4 px-4">
+                            <button class="text-red-500 hover:text-red-700">Remove</button>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-8">
+            <div class="flex justify-between">
+                <span class="text-xl font-semibold">Total:</span>
+                <!-- Calculate and display the total price here -->
+                <span class="text-xl font-semibold">${{totalPrice}}</span>
+            </div>
+            <button class="mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <!-- Include your footer here or use a shared footer component -->
+</body>
+</html>

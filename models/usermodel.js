@@ -18,11 +18,27 @@ const Schema = new mongoose.Schema({
             type:String,
             required:true
         },
+        forgototp : {
+            type:String,
+        },
         isblocked: {
             type: Boolean,
             required: true,
             default: false
-        }
+        },
+        cart: [
+            {
+                productId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Product'
+                },
+                quantity: {
+                    type: Number,
+                    required: true,
+                    default: 1 // Default quantity 1
+                }
+            }
+        ]
             
 })
 

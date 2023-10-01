@@ -30,4 +30,8 @@ router.post('/resetpassword',usercontroller.resetPasswordPost)
 
 router.post('/signup',usercontroller.signupPost)
 
+// <-------cart---------->
+
+router.get('/cart',usercontroller.cart)
+
 module.exports = router;

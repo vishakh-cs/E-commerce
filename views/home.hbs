@@ -70,13 +70,13 @@
             <!-- Carousel code goes here -->
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide xl:h-80"> <!-- Adjust the height value (e.g., h-80) as needed -->
+                    <div class="swiper-slide xl:h-80">
                         <img src="/images/Homepage--Banner_1_J0PcbLN.webp" alt="Banner 1" class="w-full">
                     </div>
-                    <div class="swiper-slide xl:h-80"> <!-- Adjust the height value (e.g., h-80) as needed -->
+                    <div class="swiper-slide xl:h-80"> 
                         <img src="/images/banner 3 mens' .webp" alt="Banner 2" class="w-full">
                     </div>
-                    <div class="swiper-slide xl:h-80"> <!-- Adjust the height value (e.g., h-80) as needed -->
+                    <div class="swiper-slide xl:h-80">
                         <img src="images/banneromg55.jpg" alt="Banner 3" class="w-full">
                     </div>
                 </div>
@@ -85,25 +85,32 @@
     </section>
 
 <!-- Product List -->
-<!-- Product List -->
-<div class="bg-gray-100 py-8">
-    <div class="container mx-auto">
-        <h1 class="text-3xl font-semibold mb-4 text-center">Product List</h1>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {{#each products}}
-            <a href="/products/{{_id}}" class="max-w-xl mx-auto bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out h-96 block"> <!-- Wrap the entire product card with the link -->
-                {{#each this.images}}
-                <img src="/uploads/{{this}}" alt="{{../name}}" class="w-full h-60 object-cover">
+  <!-- Product List -->
+    <div class="bg-gray-100 py-8">
+        <div class="container mx-auto">
+            <h1 class="text-3xl font-semibold mb-8 text-center">Product List</h1>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-8 ">
+                {{#each products}}
+                <a href="/products/{{_id}}" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out block">
+                    <div class="relative overflow-hidden">
+                        {{#each this.images}}
+                        <img src="/uploads/{{this}}" alt="{{../name}}" class="w-full h-72 object-contain">
+                        {{/each}}
+                        <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 hover:bg-opacity-50 transition duration-300 ease-in-out opacity-0 hover:opacity-100">
+                            <button class="text-white font-semibold px-4 py-2 bg-indigo-500 hover:bg-indigo-700 transition duration-300 ease-in-out focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">View Details</button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-4">{{name}}</h3>
+                        <p class="text-gray-600">{{description}}</p>
+                        <p class="text-gray-800 font-semibold mt-4">$ {{price}}</p>
+                        <button class="mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Add to Cart</button>
+                    </div>
+                </a>
                 {{/each}}
-                <div class="p-4">
-                    <h3 class="text-xl font-semibold mb-2">{{name}}</h3>
-                    <p class="text-gray-600 text-sm">Price: ${{price}}</p>
-                </div>
-            </a>
-            {{/each}}
+            </div>
         </div>
     </div>
-</div>
 
 {{!-- <!-- Men's Product List -->
 <div class="bg-gray-100 py-8">

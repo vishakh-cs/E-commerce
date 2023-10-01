@@ -61,6 +61,7 @@ const signupPost = async (req, res) => {
         email: req.body.email,
         otp: OTP,
       };
+      console.log("session",req.session);
   
       // Redirect to the OTP verification page
       res.redirect('/signupotp');
@@ -104,7 +105,7 @@ const otppost = async (req, res) => {
       setTimeout(async () => {
         try {
           // Assuming you have a MongoDB model called User
-          const userUpdate = await User.updateOne(
+          const userUpdate = await usermodel.updateOne(
             { _id: userData._id },
             { $unset: { otp: 1, otpExpirationTime: 1 } }
           );
@@ -142,19 +143,21 @@ const forgotpasswordPost = async (req, res) => {
   try {
     // Check if the provided email exists in the database
     const email = req.body.email; // Access the email property directly
-    req.session.email=email;
-    const user = await usermodel.findOne({ email });
+    req.session.email= email;
 
-    if (!user) {
-      return res.status(400).send('Email not found');
-    }
-
-    // Generate a new OTP
+    // Generate a new OTP 
     const OTP = randomstring.generate({ length: 4, charset: 'numeric' });
 
-    // Store the OTP in the user's document in the database
-    user.forgototp = OTP;
-    await user.save();
+    // Update the user's document in the database with the new OTP
+    const updatedUser = await usermodel.findOneAndUpdate(
+      { email },
+      { forgototp: OTP },
+      { new: true } 
+    );
+
+    if (!updatedUser) {
+      return res.status(400).send('Email not found');
+    }
 
     // Send the OTP via email
     const transporter = nodemailer.createTransport({
@@ -196,46 +199,46 @@ const otpVerification = (req,res)=>{
   res.render('otpverification')
 }
 
-const otpVerificationPost = async (req, res) => {
-   try {
-    res.redirect('/resetpassword');
-  } catch (error) {
-       console.error('Error in OTP verification:', error);
-       res.status(500).send('Internal Server Error');
-     }
-   };
-
 // const otpVerificationPost = async (req, res) => {
-//   try {
-
-//     const userData = req.session.user;
-// if (!userData || !userData.email) {
-//   return res.status(401).send('User data not found in the session.');
-// }
-// const email = userData.email;
-//     const otp = req.body;
-//     // Check if the OTP matches the one stored in the user's document in the database
-//     const user = await usermodel.findOne({ email });
-//     console.log('User:', user);
-
-//     if (!user) {
-//       // User not found, handle this case (e.g., return an error message)
-//       return res.status(404).send('User not found');
-//     }
-
-//     if (user.forgototp == otp) {
-//       // OTP is correct, you can perform further actions like password reset here
-//       // For example, redirect to a password reset form
-//       return res.redirect('/resetpassword');
-//     } else {
-//       // Incorrect OTP, you can handle this case as needed
-//       return res.status(400).send('Incorrect OTP');
-//     }
+//    try {
+//     res.redirect('/resetpassword');
 //   } catch (error) {
-//     console.error('Error in OTP verification:', error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// };
+//        console.error('Error in OTP verification:', error);
+//        res.status(500).send('Internal Server Error');
+//      }
+//    };
+
+const otpVerificationPost = async (req, res) => {
+  try {
+    const useremail = req.session.email;
+    console.log("user-email",useremail);
+if (!useremail) {
+  return res.status(401).send('User data not found in the session.');
+}
+const email = useremail;
+    const otp = req.body.otp;
+    console.log("otpentered",otp);
+    // Check if the OTP matches the one stored in the user's document in the database
+    const user = await usermodel.findOne({ email });
+    console.log('User:', user);
+
+    if (!user) {
+      // User not found, handle this case (e.g., return an error message)
+      return res.status(404).send('User not found');
+    }
+
+    if (user.forgototp === otp) {
+      
+      return res.redirect('/resetpassword');
+    } else {
+      // Incorrect OTP, you can handle this case as needed
+      return res.status(400).send('Incorrect OTP');
+    }
+  } catch (error) {
+    console.error('Error in OTP verification:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
 
 
 
@@ -320,6 +323,17 @@ const productview = async(req, res) => {
   }
 }
 
+
+//<-------------------------------------------------- cart controll-------------------------------------------------->
+
+const cart = (req,res)=>{
+  res.render("cart")
+}
+
+
+
+
+
 module.exports = {
     signup,
     login,
@@ -335,4 +349,6 @@ module.exports = {
     otpVerificationPost,
     resetpass,
     resetPasswordPost,
+    cart,
+
 };
