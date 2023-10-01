@@ -101,13 +101,18 @@ const otppost = async (req, res) => {
       // Redirect the user to the login page
       res.redirect('/login');
 
+      // Set otpExpirationTime
+      const otpExpirationTime = new Date();
+      otpExpirationTime.setMinutes(otpExpirationTime.getMinutes() + 3); // Set expiration time to 3 minutes from now
+
       // Schedule the OTP deletion after 3 minutes
       setTimeout(async () => {
         try {
-          // Assuming you have a MongoDB model called User
           const userUpdate = await usermodel.updateOne(
-            { _id: userData._id },
-            { $unset: { otp: 1, otpExpirationTime: 1 } }
+            { email: userData.email },
+            {
+              $unset: { otp: 1, otpExpirationTime: 1 }, // Unset both otp and otpExpirationTime
+            }
           );
 
           if (userUpdate.nModified > 0) {
@@ -121,13 +126,17 @@ const otppost = async (req, res) => {
       }, 3 * 60 * 1000); // 3 minutes in milliseconds
     } else {
       // Incorrect OTP
-      return res.status(401).send('Incorrect OTP.');
+      // Delete user data from the database
+      await usermodel.deleteOne({ email: userData.email });
+
+      return res.status(401).send('Incorrect OTP. signup onemore time.');
     }
   } catch (error) {
     console.error('Error verifying OTP:', error);
     return res.status(500).send('Error verifying OTP.');
   }
 };
+
 
 // login get
 const login = (req,res)=>{
@@ -240,8 +249,63 @@ const email = useremail;
   }
 };
 
+const resendOTP = async (req, res) => {
+  try {
+      const useremail = req.session.email;
+      if (!useremail) {
+          return res.status(401).send('User data not found in the session.');
+      }
+
+      // Generate a new OTP 
+      const resendOTP = randomstring.generate({ length: 4, charset: 'numeric' });
+
+      // Update the user's document in the database with the new OTP
+      const updatedUser = await usermodel.findOneAndUpdate(
+          { email: useremail },
+          { forgototp: resendOTP },
+          { new: true }
+      );
+
+      if (!updatedUser) {
+          return res.status(400).send('User not found');
+      }
+      // Send the OTP via email
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'wizmailer07@gmail.com',
+        pass: process.env.APP_PASSWORD,
+      },
+      tls: {
+        rejectUnauthorized: false, // Ignore SSL certificate verification
+      },
+    });
+
+    const mailOptions = {
+      from: 'wizmailer07@gmail.com',
+      to: useremail, 
+      subject: 'Forgot Password OTP',
+      text: `Your resended OTP (One-Time Password) is: ${resendOTP}`,
+    };
+
+    transporter.sendMail(mailOptions, async (error, info) => {
+      if (error) {
+        console.error('Error sending OTP email:', error);
+        return res.status(500).send('Error sending OTP email');
+      } else {
+        console.log('OTP email sent:', info.response);
+        // Redirect to the OTP verification page
+        res.redirect('/otpverification');
+      }
+    });
+  } catch (error) {
+    console.error('Error in forgotpassword route:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
 
 
+// render the reset password
 const resetpass = (req,res)=>{
   res.render('resetpass')
 
@@ -273,16 +337,19 @@ const resetPasswordPost = async (req, res) => {
 
 
 
-
 const loginpost = async (req, res) => {
-  const name = req.body.name;
+  const loginemail = req.body.email;
   const password = req.body.password;
+  console.log("login mail",loginemail);
 
   try {
-    const user = await usermodel.findOne({ username: name });
+    const user = await usermodel.findOne({ email: loginemail });
 
     if (user && await bcrypt.compare(password, user.password)) {
-      req.session.user = req.body.name;
+       // storing name and password on session
+      req.session.LoginEmail = loginemail;
+      req.session.loginpassword = password;
+
       res.redirect('/');
     } else {
       res.send("Invalid username or password");
@@ -309,7 +376,7 @@ const home = async(req, res) => {
 
 const productview = async(req, res) => {
   try {
-    // Fetch the product data based on the productId from your database
+   
     const product = await Products.findById(req.params.productId);
 
     // Get the first image URL
@@ -350,5 +417,6 @@ module.exports = {
     resetpass,
     resetPasswordPost,
     cart,
+    resendOTP,
 
 };

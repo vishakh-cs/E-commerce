@@ -30,6 +30,8 @@ router.post('/resetpassword',usercontroller.resetPasswordPost)
 
 router.post('/signup',usercontroller.signupPost)
 
+router.post('/resendOTP', usercontroller.resendOTP);
+
 // <-------cart---------->
 
 router.get('/cart',usercontroller.cart)
