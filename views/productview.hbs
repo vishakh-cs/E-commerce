@@ -5,21 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product View</title>
     <!-- Link to the Tailwind CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js"></script>
+    <link href="/dist/output.css" rel="stylesheet">
+  
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto p-4 bg-white shadow-lg rounded-lg flex flex-wrap lg:flex-nowrap justify-between">
         <div class="w-full lg:w-1/2 lg:pr-8">
             <div class="p-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+                <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
                     {{#each product.images}}
-                    <img
-                        src="/uploads/{{this}}"
-                        alt="{{../product.name}}"
-                        class="object-cover rounded-lg product-image"
-                        data-zoom="/uploads/large/{{this}}"
-                        style="margin-left: 50px; max-width: 40%; max-height: 400px;">
+                    <div class="img-zoom-container">
+                        <img
+                            src="/uploads/{{this}}"
+                            alt="{{../product.name}}"
+                            class="object-cover rounded-lg product-image zoom-image"
+                            data-zoom="/uploads/large/{{this}}"
+                            style="margin-left: 50px; max-width: 40%; max-height: 400px; background-image: url('/uploads/{{this}}'); background-position: center center;">
+                        
+                        <!-- Add the zoom lens and result elements -->
+                        <div class="img-zoom-lens"></div>
+                        <div class="img-zoom-result"></div>
+                    </div>
                     {{/each}}
                 </div>
             </div>
@@ -39,8 +45,8 @@
                 </div>
                 <p class="text-2xl text-orange-500 font-bold mb-4">Rs. {{product.price}}</p>
                 <p class="text-lg text-gray-700 mb-6">{{product.description}}</p>
-                <a href="#" class="block w-full bg-orange-500 text-white text-center py-2 rounded-lg mb-2 hover:bg-orange-600 transition duration-300 ease-in-out">
-                    Add to Cart
+               <a href="#" class="block w-full bg-orange-500 text-white text-center py-2 rounded-lg mb-2 hover:bg-orange-600 transition duration-300 ease-in-out add-to-cart-btn" data-productid="{{product._id}}">
+                Add to Cart
                 </a>
                 <a href="#" class="block w-full bg-blue-500 text-white text-center py-2 rounded-lg mb-2 hover:bg-blue-600 transition duration-300 ease-in-out">
                     Buy Now
@@ -92,12 +98,39 @@
             </div>
         </section>
     </div>
-    
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const zoomImages = document.querySelectorAll('.product-image');
-        mediumZoom(zoomImages);
+     <script>
+       document.addEventListener('DOMContentLoaded', () => {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+    addToCartButtons.forEach((button) => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const productId = button.getAttribute('data-productid');
+            
+            // Send an AJAX request to add the product to the cart
+            // You can use Fetch API or XMLHttpRequest here to make the AJAX request.
+            // Example using Fetch API:
+            fetch(`/cart/add/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // You can include any data you need in the request body
+                body: JSON.stringify({ productId }),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                // Handle the response data, e.g., update the UI to reflect the cart changes
+                console.log(data.message);
+                console.log(data.cart); // The updated cart data
+            })
+            .catch((error) => {
+                console.error('Error adding product to cart:', error);
+            });
+        });
     });
+});
     </script>
+</body>
+</html>
 </body>
 </html>

@@ -101,17 +101,13 @@ const otppost = async (req, res) => {
       // Redirect the user to the login page
       res.redirect('/login');
 
-      // Set otpExpirationTime
-      const otpExpirationTime = new Date();
-      otpExpirationTime.setMinutes(otpExpirationTime.getMinutes() + 3); // Set expiration time to 3 minutes from now
-
       // Schedule the OTP deletion after 3 minutes
       setTimeout(async () => {
         try {
           const userUpdate = await usermodel.updateOne(
             { email: userData.email },
             {
-              $unset: { otp: 1, otpExpirationTime: 1 }, // Unset both otp and otpExpirationTime
+              $unset: { otp: 1 },
             }
           );
 
@@ -347,9 +343,13 @@ const loginpost = async (req, res) => {
 
     if (user && await bcrypt.compare(password, user.password)) {
        // storing name and password on session
-      req.session.LoginEmail = loginemail;
-      req.session.loginpassword = password;
-
+       req.session.logedUser = {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        cart: [], 
+    };
+    console.log("i am loged ",req.session.logedUser);
       res.redirect('/');
     } else {
       res.send("Invalid username or password");
@@ -393,10 +393,85 @@ const productview = async(req, res) => {
 
 //<-------------------------------------------------- cart controll-------------------------------------------------->
 
-const cart = (req,res)=>{
-  res.render("cart")
+const cart = async (req, res) => {
+  try {
+    // Check if req.session.logedUser exists
+    if (!req.session.logedUser || !req.session.logedUser.cart) {
+      return res.status(404).send('Cart not found');
+    }
+
+    // Fetch products from the database based on the user's cart items
+    const userCart = req.session.logedUser.cart;
+    const cartProducts = await Promise.all(userCart.map(async (cartItem) => {
+      const product = await Products.findById(cartItem.productId);
+      return {
+        product,
+        quantity: cartItem.quantity
+      };
+    }));
+
+    // Calculate total price
+    const totalPrice = cartProducts.reduce((total, item) => total + item.product.price * item.quantity, 0);
+
+    // Render the cart page with cart products and total price
+    res.render('cart', { cartProducts, totalPrice });
+  } catch (error) {
+    console.error('Error rendering cart page:', error);
+    res.status(500).send('Internal Server Error');
+  }
 }
 
+
+// add to cart 
+const addToCart = async (req, res) => {
+  try {
+    const userId = req.session.logedUser._id;
+
+    if (!userId) {
+      return res.redirect('/');
+    }
+
+    const { productId } = req.params;
+    req.session.logedUser = req.session.logedUser || { cart: [] };
+
+    const product = await Products.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    const userCart = req.session.logedUser.cart;
+
+    // Check if the product is already in the cart
+    const existingProductIndex = userCart.findIndex(item => item.productId.toString() === productId);
+
+    if (existingProductIndex !== -1) {
+      // If product already exists, increase its quantity
+      userCart[existingProductIndex].quantity += 1;
+    } else {
+      // If product doesn't exist, add it to the cart with quantity 1
+      userCart.push({
+        productId: productId,
+        quantity: 1
+      });
+    }
+
+    // Update the user's cart in the session
+    req.session.logedUser.cart = userCart;
+
+    // Save the session to persist the changes
+    req.session.save(err => {
+      if (err) {
+        console.error('Error saving session:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+      return res.status(200).json({ message: 'Product added to cart', cart: userCart });
+    });
+    console.log("user cart ",userCart);
+  } catch (error) {
+    console.error('Error adding product to cart:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 
 
@@ -418,5 +493,6 @@ module.exports = {
     resetPasswordPost,
     cart,
     resendOTP,
+    addToCart,
 
 };
