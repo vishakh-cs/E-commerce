@@ -347,7 +347,7 @@ const loginpost = async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
-        cart: [], 
+        cart:user.cart, 
     };
     console.log("i am loged ",req.session.logedUser);
       res.redirect('/');
@@ -365,9 +365,10 @@ const home = async(req, res) => {
   try {
     // Fetch all products from the database
     const products = await Products.find();
-
+const userID = req.session.logedUser
+const user = await usermodel.findById(userID);
     // Render the product list page with the fetched products
-    res.render('home', { products }); 
+    res.render('home', { products,user }); 
   } catch (err) {
     console.error(err);
     res.status(500).send('Internal Server Error');
@@ -400,7 +401,10 @@ const cart = async (req, res) => {
       }
 
       // Fetch products from the database based on the user's cart items
+      const array = req.params.userid;
       const userCart = req.session.logedUser.cart;
+
+      console.log('cartitem',userCart);
       const cartProducts = await Promise.all(userCart.map(async (cartItem) => {
           const product = await Products.findById(cartItem.productId);
           return {
@@ -408,6 +412,7 @@ const cart = async (req, res) => {
               quantity: cartItem.quantity
           };
       }));
+      console.log('promise',cartProducts);
 
       // Calculate total price
       const totalPrice = cartProducts.reduce((total, item) => total + item.product.price * item.quantity, 0);
@@ -458,19 +463,39 @@ const addToCart = async (req, res) => {
     req.session.logedUser.cart = userCart;
 
     // Save the session to persist the changes
-    req.session.save(err => {
+    req.session.save(async (err) => {
       if (err) {
         console.error('Error saving session:', err);
         return res.status(500).json({ error: 'Internal Server Error' });
       }
-      return res.status(200).json({ message: 'Product added to cart', cart: userCart });
+
+      // Update the user's cart in the database
+      try {
+        const saveCart =  req.session.logedUser.cart
+        console.log("seved ",saveCart);
+        const user = await usermodel.findById(userId);
+
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+
+        user.cart = saveCart; // Update the user's cart with the new cart data
+        await user.save(); // Save the updated user document
+
+        return res.status(200).json({ message: 'Product added to cart', cart: userCart });
+      } catch (error) {
+        console.error('Error updating user cart in the database:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
     });
-    console.log("user cart ",userCart);
+
+    console.log("user cart ", userCart);
   } catch (error) {
     console.error('Error adding product to cart:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 
 

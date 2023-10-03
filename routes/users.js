@@ -34,7 +34,7 @@ router.post('/resendOTP', usercontroller.resendOTP);
 
 // <-------cart---------->
 
-router.get('/cart',usercontroller.cart)
+router.get('/cart/:userid',usercontroller.cart)
 
 router.post('/cart/add/:productId', usercontroller.addToCart);
 

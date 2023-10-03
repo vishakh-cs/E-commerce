@@ -41,8 +41,9 @@
                             <input type="number" value="{{this.quantity}}" min="1" class="w-16 px-2 py-1 border rounded">
                         </td>
                         <td class="py-4 px-4">${{this.product.price}}</td>
-                        <td class="py-4 px-4">${{this.total}}</td> <!-- Assuming you've calculated the total in your route handler -->
-                        <td class="py-4 px-4">
+                    <td class="py-4 px-4 total-amount">$<span class="total">{{this.quantity}} * {{this.product.price}}</span></td>
+
+                    <td class="py-4 px-4">
                             <button class="text-red-500 hover:text-red-700" data-productid="{{this.product._id}}">Remove</button>
                         </td>
                     </tr>
@@ -58,6 +59,22 @@
             <button id="checkoutButton" class="mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Checkout</button>
         </div>
     </div>
+       <script>
+        // Get all the elements with class "total-amount" (these are the elements displaying the total price for each item)
+        const itemTotalElements = document.querySelectorAll(".total-amount");
+
+        // Loop through the item total elements and calculate and display each item's total price
+        itemTotalElements.forEach((itemTotalElement) => {
+            const quantityElement = itemTotalElement.querySelector(".total");
+            const priceElement = itemTotalElement.previousElementSibling.querySelector("input");
+
+            // Calculate the total price for this item
+            const total = parseFloat(quantityElement.textContent) * parseFloat(priceElement.value);
+
+            // Set the calculated total price in the HTML
+            itemTotalElement.innerHTML = `$${total.toFixed(2)}`;
+        });
+    </script>
 </body>
 </html>
 
