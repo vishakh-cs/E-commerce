@@ -394,25 +394,31 @@ const productview = async(req, res) => {
 //<-------------------------------------------------- cart controll-------------------------------------------------->
 const cart = async (req, res) => {
   try {
-    // Retrieve the user's cart from the session
-    const userCart = req.session.logedUser.cart || [];
-
-    // Calculate the total price of items in the cart (you can implement this logic)
-    let totalPrice = 0;
-    for (const item of userCart) {
-      const product = await Products.findById(item.productId);
-      if (product) {
-        totalPrice += product.price * item.quantity;
+      // Check if req.session.logedUser exists
+      if (!req.session.logedUser || !req.session.logedUser.cart) {
+          return res.status(404).send('Cart not found');
       }
-    }
 
-    // Render the cart view with cart data and total price
-    res.render('cart', { cartProducts: userCart, totalPrice });
+      // Fetch products from the database based on the user's cart items
+      const userCart = req.session.logedUser.cart;
+      const cartProducts = await Promise.all(userCart.map(async (cartItem) => {
+          const product = await Products.findById(cartItem.productId);
+          return {
+              product,
+              quantity: cartItem.quantity
+          };
+      }));
+
+      // Calculate total price
+      const totalPrice = cartProducts.reduce((total, item) => total + item.product.price * item.quantity, 0);
+
+      // Render the cart page with cart products and total price
+      res.render('cart', { cartProducts, totalPrice });
   } catch (error) {
-    console.error('Error rendering cart:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Error rendering cart page:', error);
+      res.status(500).send('Internal Server Error');
   }
-};
+}
 
 
 // add to cart 
