@@ -29,7 +29,7 @@ mongoose.connect("mongodb://localhost:27017/Ecommerce-Users",{
 })
 
 app.use(session({
-  secret: 'your-secret-key', // Change this to a secret key for session encryption
+  secret: 'your-secret-key', 
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false } 

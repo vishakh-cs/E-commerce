@@ -393,6 +393,9 @@ const productview = async(req, res) => {
 
 
 //<-------------------------------------------------- cart controll-------------------------------------------------->
+
+
+// render cart 
 const cart = async (req, res) => {
   try {
       // Check if req.session.logedUser exists
@@ -425,7 +428,6 @@ const cart = async (req, res) => {
   }
 }
 
-
 // add to cart 
 const addToCart = async (req, res) => {
   try {
@@ -445,31 +447,28 @@ const addToCart = async (req, res) => {
     }
     const userCart = req.session.logedUser.cart;
 
-    // Check if the product is already in the cart
+    // to check product is already in the cart
     const existingProductIndex = userCart.findIndex(item => item.productId.toString() === productId);
 
     if (existingProductIndex !== -1) {
       // If product already exists, increase its quantity
       userCart[existingProductIndex].quantity += 1;
     } else {
-      // If product doesn't exist, add it to the cart with quantity 1
+      
       userCart.push({
         productId: productId,
         quantity: 1
       });
     }
 
-    // Update the user's cart in the session
     req.session.logedUser.cart = userCart;
 
-    // Save the session to persist the changes
     req.session.save(async (err) => {
       if (err) {
         console.error('Error saving session:', err);
         return res.status(500).json({ error: 'Internal Server Error' });
       }
 
-      // Update the user's cart in the database
       try {
         const saveCart =  req.session.logedUser.cart
         console.log("seved ",saveCart);
@@ -479,8 +478,8 @@ const addToCart = async (req, res) => {
           return res.status(404).json({ error: 'User not found' });
         }
 
-        user.cart = saveCart; // Update the user's cart with the new cart data
-        await user.save(); // Save the updated user document
+        user.cart = saveCart; 
+        await user.save();
 
         return res.status(200).json({ message: 'Product added to cart', cart: userCart });
       } catch (error) {
@@ -498,7 +497,41 @@ const addToCart = async (req, res) => {
 
 
 
+// remove from cart
+const remove = async (req, res) => {
+  try {
+    const userId = req.session.logedUser._id; 
+    const productId = req.params.productId;
 
+ 
+    const user = await usermodel.findByIdAndUpdate(
+        userId,
+        {
+            $pull: { 'cart': { productId } },
+        },
+        { new: true }
+    );
+        console.log(user);
+    if (!user) {
+        return res.json({ success: false, error: 'User not found' });
+    }
+
+    req.session.logedUser.cart = user.cart
+
+    await user.save();
+    // console.log("saved user",user);   
+    res.json({ success: true });
+} catch (error) {
+    console.error('Error removing item from cart:', error);
+    res.json({ success: false, error: 'Internal server error' });
+}
+}
+
+// user profle 
+
+const profile = (req,res)=>{
+  res.render("profile")
+}
 
 module.exports = {
     signup,
@@ -518,5 +551,7 @@ module.exports = {
     cart,
     resendOTP,
     addToCart,
+    remove,
+    profile,
 
 };

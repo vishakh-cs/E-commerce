@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product View</title>
+    <title>Your Cart</title>
     <!-- Link to the Tailwind CSS CDN -->
     <link href="/dist/output.css" rel="stylesheet">
 </head>
@@ -38,13 +38,12 @@
                             </div>
                         </td>
                         <td class="py-4 px-4">
-                            <input type="number" value="{{this.quantity}}" min="1" class="w-16 px-2 py-1 border rounded">
+                            <input type="number" value="{{this.quantity}}" min="1" class="w-16 px-2 py-1 border rounded" data-productid="{{this.product._id}}">
                         </td>
                         <td class="py-4 px-4">${{this.product.price}}</td>
-                    <td class="py-4 px-4 total-amount">$<span class="total">{{this.quantity}} * {{this.product.price}}</span></td>
-
-                    <td class="py-4 px-4">
-                            <button class="text-red-500 hover:text-red-700" data-productid="{{this.product._id}}">Remove</button>
+                        <td class="py-4 px-4 total-amount">$<span class="total">{{this.quantity}} * {{this.product.price}}</span></td>
+                        <td class="py-4 px-4">
+                            <button class="text-red-500 hover:text-red-700 remove-item" data-productid="{{this.product._id}}">Remove</button>
                         </td>
                     </tr>
                     {{/each}}
@@ -54,121 +53,64 @@
         <div class="mt-8">
             <div class="flex justify-between">
                 <span class="text-xl font-semibold">Total:</span>
-                <span class="text-xl font-semibold">${{totalPrice}}</span>
+                <span id="totalPrice" class="text-xl font-semibold">${{totalPrice}}</span>
             </div>
             <button id="checkoutButton" class="mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Checkout</button>
         </div>
     </div>
-       <script>
-        // Get all the elements with class "total-amount" (these are the elements displaying the total price for each item)
-        const itemTotalElements = document.querySelectorAll(".total-amount");
+    <script>
+        // Function to calculate and update the total price
+        function updateTotalPrice() {
+            const itemTotalElements = document.querySelectorAll(".total-amount");
+            let totalPrice = 0;
 
-        // Loop through the item total elements and calculate and display each item's total price
-        itemTotalElements.forEach((itemTotalElement) => {
-            const quantityElement = itemTotalElement.querySelector(".total");
-            const priceElement = itemTotalElement.previousElementSibling.querySelector("input");
+            itemTotalElements.forEach((itemTotalElement) => {
+                const quantityElement = itemTotalElement.querySelector(".total");
+                const priceElement = itemTotalElement.previousElementSibling.querySelector("input");
 
-            // Calculate the total price for this item
-            const total = parseFloat(quantityElement.textContent) * parseFloat(priceElement.value);
+                const total = parseFloat(quantityElement.textContent) * parseFloat(priceElement.value);
+                totalPrice += total;
+                itemTotalElement.innerHTML = `$${total.toFixed(2)}`;
+            });
 
-            // Set the calculated total price in the HTML
-            itemTotalElement.innerHTML = `$${total.toFixed(2)}`;
+            // Update the total price in the UI
+            document.getElementById("totalPrice").textContent = `$${totalPrice.toFixed(2)}`;
+        }
+
+        // Add click event listeners to all "Remove" buttons
+        const removeButtons = document.querySelectorAll('.remove-item');
+
+        removeButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const productId = button.getAttribute('data-productid');
+                removeFromCart(productId);
+            });
         });
+
+        // Function to remove an item from the cart
+        function removeFromCart(productId) {
+            // Send an AJAX request to your server to remove the item
+            fetch(`/cart/remove/${productId}`, {
+                method: 'POST',
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    // Remove the item from the cart UI
+                    const removedItem = document.querySelector(`[data-productid="${productId}"]`);
+                    removedItem.closest('tr').remove();
+
+                    // Update the total price
+                    updateTotalPrice();
+                } else {
+                    // Handle the error (e.g., display an error message)
+                    console.error('Error removing item from cart:', data.error);
+                }
+            })
+            .catch((error) => {
+                console.error('Error removing item from cart:', error);
+            });
+        }
     </script>
 </body>
 </html>
-
-
-{{!-- 
-</head>
-<body>
-    <div class="container mx-auto p-4 w-2/3 mt-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-white p-4 rounded-lg shadow-md">
-                <div class="text-center mb-5">
-                    <h4 class="text-2xl font-bold">Shopping Cart</h4>
-                    <div class="text-right text-gray-500">3 items</div>
-                </div>
-                <div class="border-t border-b">
-                    <div class="flex items-center space-x-4 py-3">
-                        <div class="w-16">
-                            <img class="w-full" src="https://i.imgur.com/1GrakTl.jpg" alt="Shirt">
-                        </div>
-                        <div class="flex-grow">
-                            <div class="text-gray-500">Shirt</div>
-                            <div>Cotton T-shirt</div>
-                        </div>
-                        <div>
-                            <a href="#" class="text-black">-</a>
-                            <a href="#" class="border px-2">1</a>
-                            <a href="#" class="text-black">+</a>
-                        </div>
-                        <div class="text-right">&euro; 44.00 <span class="text-sm close">&#10005;</span></div>
-                    </div>
-                </div>
-                <div class="border-t border-b">
-                    <div class="flex items-center space-x-4 py-3">
-                        <div class="w-16">
-                            <img class="w-full" src="https://i.imgur.com/ba3tvGm.jpg" alt="Shirt">
-                        </div>
-                        <div class="flex-grow">
-                            <div class="text-gray-500">Shirt</div>
-                            <div>Cotton T-shirt</div>
-                        </div>
-                        <div>
-                            <a href="#" class="text-black">-</a>
-                            <a href="#" class="border px-2">1</a>
-                            <a href="#" class="text-black">+</a>
-                        </div>
-                        <div class="text-right">&euro; 44.00 <span class="text-sm close">&#10005;</span></div>
-                    </div>
-                </div>
-                <div class="border-t border-b">
-                    <div class="flex items-center space-x-4 py-3">
-                        <div class="w-16">
-                            <img class="w-full" src="https://i.imgur.com/pHQ3xT3.jpg" alt="Shirt">
-                        </div>
-                        <div class="flex-grow">
-                            <div class="text-gray-500">Shirt</div>
-                            <div>Cotton T-shirt</div>
-                        </div>
-                        <div>
-                            <a href="#" class="text-black">-</a>
-                            <a href="#" class="border px-2">1</a>
-                            <a href="#" class="text-black">+</a>
-                        </div>
-                        <div class="text-right">&euro; 44.00 <span class="text-sm close">&#10005;</span></div>
-                    </div>
-                </div>
-                <div class="mt-4 text-center">
-                    <a href="#" class="text-black">&leftarrow;</a>
-                    <span class="text-gray-500">Back to shop</span>
-                </div>
-            </div>
-            <div class="bg-gray-300 p-4 rounded-lg shadow-md">
-                <div class="text-center mb-5">
-                    <h5 class="text-2xl font-bold">Summary</h5>
-                    <hr class="my-3">
-                </div>
-                <div class="flex justify-between">
-                    <div class="">ITEMS 3</div>
-                    <div class="text-right">&euro; 132.00</div>
-                </div>
-                <form class="mt-3">
-                    <p>SHIPPING</p>
-                    <select class="block w-full p-2 border border-gray-300 bg-gray-100 mt-1">
-                        <option class="text-gray-500">Standard-Delivery- &euro;5.00</option>
-                    </select>
-                    <p class="mt-3">GIVE CODE</p>
-                    <input id="code" class="block w-full p-2 border border-gray-300 bg-gray-100" placeholder="Enter your code">
-                </form>
-                <div class="border-t border-gray-300 mt-4 py-3 flex justify-between">
-                    <div class="">TOTAL PRICE</div>
-                    <div class="text-right">&euro; 137.00</div>
-                </div>
-                <button class="btn bg-black border border-black text-white w-full py-2 mt-4">CHECKOUT</button>
-            </div>
-        </div>
-    </div>
-</body>
-</html> --}}
