@@ -56,7 +56,7 @@ const addproductspost = async (req, res) => {
 
     const { name, description, category, price, quantity, rating, offers } = req.body;
 
-    // Extract the file paths of uploaded images from req.files
+    
     const images = req.files.map((file) => file.filename);
 console.log('image:',images);
     // Create a new Product document based on the schema
@@ -68,14 +68,14 @@ console.log('image:',images);
       quantity,
       rating,
       offers,
-      images, // Assign the extracted image filenames
+      images, 
     });
 
     // Save the new product to the database
     await newProduct.save();
 
-    // Redirect to a success page or product listing page
-    res.redirect('/productmanagement'); // Fixed the URL path
+    
+    res.redirect('/productmanagement'); 
   } catch (error) {
     console.error('Error adding product:', error);
     res.status(500).send('Error adding product');

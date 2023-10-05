@@ -318,14 +318,13 @@ const resetPasswordPost = async (req, res) => {
     const user = await usermodel.findOneAndUpdate({ email }, { password: hashedPassword });
 
     if (!user) {
-      // Handle the case where the user is not found
+      
       return res.status(404).send('User not found');
     }
 
-    // Password reset successful, you might want to redirect the user to a login page
+    // Password reset successful, 
     return res.redirect('/login');
   } catch (error) {
-    // Handle errors, log them, and send an appropriate response
     console.error('Error resetting password:', error);
     return res.status(500).send('Internal Server Error');
   }
@@ -529,9 +528,90 @@ const remove = async (req, res) => {
 
 // user profle 
 
-const profile = (req,res)=>{
-  res.render("profile")
+const profile = async(req,res)=>{
+  try {
+    
+    const userId = req.session.logedUser._id; 
+    const user = await usermodel.findById(userId); 
+
+    if (!user) {
+   
+        return res.status(404).send('User not found');
+    }
+
+   
+    res.render('profile', { user }); 
+} catch (error) {
+    console.error('Error rendering user profile:', error);
+    res.status(500).send('Internal Server Error');
 }
+}
+
+const profilepost = async (req, res) => {
+  try {
+    const userId = req.session.logedUser._id;
+    const user = await usermodel.findById(userId);
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    if (req.file) {
+      // Update the user's profile image path in the database
+      user.profileImage = req.file.path.substring(7);;
+      console.log(user.profileImage);
+      await user.save();
+    }
+
+    // Redirect back to the profile page after the upload
+    res.redirect('/profile');
+  } catch (error) {
+    console.error('Error uploading profile image:', error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+
+
+const addAddresspost = async (req, res) => {
+  try {
+    const userId = req.session.logedUser._id; // Assuming you have a user ID in the session
+
+    // Extract address details from the request body
+    const { tag, address, city, pin } = req.body;
+
+    // Find the user by ID
+    const user = await usermodel.findById(userId);
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    // Create a new address object
+    const newAddress = {
+      address,
+      city,
+      pin
+    };
+
+    // Push the new address into the user's addresses array
+    user.addresses.push(newAddress);
+
+    // Save the updated user object
+    await user.save();
+
+    // Redirect the user to their profile page
+    res.redirect('/profile');
+  } catch (error) {
+    console.error('Error adding new address:', error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+const addnewaddress = (req,res)=>{
+  res.render('addnewaddress')
+}
+
 
 module.exports = {
     signup,
@@ -553,5 +633,8 @@ module.exports = {
     addToCart,
     remove,
     profile,
+    profilepost,
+    addAddresspost,
+    addnewaddress,
 
 };

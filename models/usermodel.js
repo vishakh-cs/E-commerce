@@ -1,5 +1,29 @@
 const mongoose = require('mongoose')
 
+const addressSchema = new mongoose.Schema({
+    address: {
+        type: String,
+        required: true
+    },
+    city: {
+        type: String,
+        required: true
+    },
+    state : {
+        type:String ,
+    },
+    pin: {
+        type: Number,
+        match: /^\d{6}$/,
+    },
+    contry : {
+        type:String
+    },
+    phone : {
+        type:Number
+    },
+});
+
 const Schema = new mongoose.Schema({
     username : {
         type: String,
@@ -26,6 +50,11 @@ const Schema = new mongoose.Schema({
             required: true,
             default: false
         },
+        profileImage: {
+            type: String,
+            required:false,
+        },
+        addresses: [addressSchema],
         cart: [
             {
                 productId: {

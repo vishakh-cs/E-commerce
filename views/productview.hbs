@@ -45,9 +45,11 @@
                 </div>
                 <p class="text-2xl text-orange-500 font-bold mb-4">Rs. {{product.price}}</p>
                 <p class="text-lg text-gray-700 mb-6">{{product.description}}</p>
+                <div id="cartMessage" class="bg-green-500 text-white px-4 py-2 rounded-full mb-4 hidden">Product added to cart!</div>
                <a href="#" class="block w-full bg-orange-500 text-white text-center py-2 rounded-lg mb-2 hover:bg-orange-600 transition duration-300 ease-in-out add-to-cart-btn" data-productid="{{product._id}}">
                 Add to Cart
                 </a>
+
                 <a href="#" class="block w-full bg-blue-500 text-white text-center py-2 rounded-lg mb-2 hover:bg-blue-600 transition duration-300 ease-in-out">
                     Buy Now
                 </a>
@@ -99,7 +101,7 @@
         </section>
     </div>
      <script>
-       document.addEventListener('DOMContentLoaded', () => {
+     document.addEventListener('DOMContentLoaded', () => {
     const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
     addToCartButtons.forEach((button) => {
         button.addEventListener('click', (event) => {
@@ -122,6 +124,15 @@
                 // Handle the response data, e.g., update the UI to reflect the cart changes
                 console.log(data.message);
                 console.log(data.cart); // The updated cart data
+                
+                // Show the cart message
+                const cartMessage = document.getElementById('cartMessage');
+                cartMessage.style.display = 'block';
+                
+                // Hide the cart message after a few seconds (e.g., 3 seconds)
+                setTimeout(() => {
+                    cartMessage.style.display = 'none';
+                }, 1000); 
             })
             .catch((error) => {
                 console.error('Error adding product to cart:', error);
@@ -129,6 +140,7 @@
         });
     });
 });
+
     </script>
 </body>
 </html>

@@ -8,49 +8,47 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
-    <!-- Navigation Bar (You can include your navigation bar here) -->
-    <!-- Replace the following with your navigation bar code -->
+
     <nav class="bg-blue-500 p-4">
         <div class="container mx-auto text-white">
-            <!-- Your navigation links and branding -->
+            <!-- Your navigation content here -->
         </div>
     </nav>
 
-    <!-- User Profile Header -->
     <header class="bg-white shadow-md py-8">
         <div class="container mx-auto flex items-center">
-            <!-- User Profile Picture -->
             <div class="w-1/4">
                 <div class="w-32 h-32 bg-gray-200 rounded-full overflow-hidden mx-auto">
-                    <!-- Replace with the user's profile picture URL -->
-                    <img src="user-profile-image.jpg" alt="User Profile Picture" class="w-full h-full object-cover">
+                    <img id="profileImage" src="/{{ user.profileImage }}" alt="User Profile Picture" class="w-full h-full object-cover">
                 </div>
             </div>
             <div class="w-3/4 ml-8">
                 <!-- User's Name -->
-                <h1 class="text-3xl font-semibold">John Doe</h1>
+                <h1 class="text-3xl font-semibold">{{ user.username }}</h1>
                 <!-- User's Email (You can display other user details here) -->
-                <p class="text-gray-600">john.doe@example.com</p>
+                <p class="text-gray-600">{{ user.email }}</p>
             </div>
         </div>
     </header>
 
+    <div class="container mx-auto py-4">
+        <form action="/profile/upload" method="POST" enctype="multipart/form-data">
+            <input type="file" name="profileImage">
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+
     <!-- User Profile Content -->
     <section class="container mx-auto py-8 flex">
-        <!-- Left Column (User Information) -->
         <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4">
-            <!-- User Details (You can display more user details here) -->
             <h2 class="text-xl font-semibold mb-4">User Information</h2>
             <div>
-                <p><strong>Email:</strong> john.doe@example.com</p>
-                <p><strong>Location:</strong> New York, USA</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
                 <!-- Add more user details as needed -->
             </div>
         </div>
 
-        <!-- Right Column (Additional Sections) -->
         <div class="w-1/2 bg-white p-6 shadow-md rounded-lg ml-4">
-            <!-- Additional Sections (You can add more sections as needed) -->
             <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
             <div>
                 <!-- Display user's recent activity, orders, or other relevant information here -->
@@ -58,12 +56,40 @@
         </div>
     </section>
 
-    <!-- Footer (You can include your footer here) -->
-    <!-- Replace the following with your footer code -->
+    <!-- User Profile Content -->
+    <section class="container mx-auto py-8 flex">
+        <!-- ... Existing profile content ... -->
+        <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4">
+            <h2 class="text-xl font-semibold mb-4">Addresses</h2>
+            <div>
+                <ul>
+                    {{#each user.addresses}}
+                    <li>
+                        <p><strong>{{this.tag}} Saved Address:</strong></p>
+                        Address :{{this.address}}<br>
+                       City : {{this.city}}<br>
+                        Pin : {{this.pin}}<br>
+                        Phone :{{this.phone}} </p>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        <button id="addAddressButton" class="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4">Add New Address</button>
+    </section>
+
     <footer class="bg-blue-500 p-4 mt-8">
         <div class="container mx-auto text-white">
-            <!-- Your footer content -->
+            <!-- Your footer content here -->
         </div>
     </footer>
+
+    <script>
+        // JavaScript to navigate to the "addnewaddress" page when the button is clicked
+        document.getElementById("addAddressButton").addEventListener("click", function() {
+            // Redirect to the addnewaddress page
+            window.location.href = "/addnewaddress"; // Change the URL to the actual path of your addnewaddress page
+        });
+    </script>
 </body>
 </html>
