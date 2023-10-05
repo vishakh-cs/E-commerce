@@ -71,7 +71,9 @@ router.post('/profile/upload', upload.single('profileImage'), usercontroller.pro
 
 router.post('/profile/addAddress', usercontroller.addAddresspost);
 
-router.get('/addnewaddress',usercontroller.addnewaddress)
+router.get('/addnewaddress',usercontroller.addnewaddress);
+
+router.post('/profile/deleteAddress/:addressId',usercontroller.deleteAddressPost)
 
 
 

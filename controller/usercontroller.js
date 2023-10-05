@@ -557,8 +557,7 @@ const profilepost = async (req, res) => {
     }
 
     if (req.file) {
-      // Update the user's profile image path in the database
-      user.profileImage = req.file.path.substring(7);;
+      user.profileImage = req.file.path.substring(7);
       console.log(user.profileImage);
       await user.save();
     }
@@ -578,7 +577,7 @@ const addAddresspost = async (req, res) => {
     const userId = req.session.logedUser._id; // Assuming you have a user ID in the session
 
     // Extract address details from the request body
-    const { tag, address, city, pin } = req.body;
+    const { tag, address, city, pin, state, country, phone } = req.body;
 
     // Find the user by ID
     const user = await usermodel.findById(userId);
@@ -589,15 +588,18 @@ const addAddresspost = async (req, res) => {
 
     // Create a new address object
     const newAddress = {
+      tag,
       address,
       city,
-      pin
+      pin,
+      state,
+      country,
+      phone,
     };
 
-    // Push the new address into the user's addresses array
     user.addresses.push(newAddress);
 
-    // Save the updated user object
+
     await user.save();
 
     // Redirect the user to their profile page
@@ -608,9 +610,40 @@ const addAddresspost = async (req, res) => {
   }
 }
 
+
 const addnewaddress = (req,res)=>{
   res.render('addnewaddress')
 }
+
+
+const deleteAddressPost = async (req, res) => {
+  const userId = req.session.logedUser._id;
+  const addressId = req.params.addressId;
+
+  try {
+      const user = await usermodel.findById(userId);
+
+      if (!user) {
+          return res.status(404).send('User not found');
+      }
+      const addressIndex = user.addresses.findIndex(address => address._id.toString() === addressId);
+
+      if (addressIndex === -1) {
+          return res.status(404).send('Address not found');
+      }
+
+      
+      user.addresses.splice(addressIndex, 1);
+
+      // Save the updated user object
+      await user.save();
+
+      res.redirect('/profile');
+  } catch (error) {
+      console.error('Error deleting address:', error);
+      res.status(500).send('Internal Server Error');
+  }
+};
 
 
 module.exports = {
@@ -636,5 +669,6 @@ module.exports = {
     profilepost,
     addAddresspost,
     addnewaddress,
+    deleteAddressPost,
 
 };

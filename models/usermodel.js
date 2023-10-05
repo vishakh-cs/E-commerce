@@ -16,7 +16,7 @@ const addressSchema = new mongoose.Schema({
         type: Number,
         match: /^\d{6}$/,
     },
-    contry : {
+    country : {
         type:String
     },
     phone : {
