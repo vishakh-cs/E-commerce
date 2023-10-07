@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <!-- Link to Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.7/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for payment methods */
+        .payment-method {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .payment-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-8">
+        <h1 class="text-3xl font-semibold mb-8 text-center">Checkout</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Payment Information (Left Side) -->
+            <div class="bg-white rounded-lg p-4 shadow-md">
+                <div class="mb-4">
+                    <h2 class="text-xl font-semibold">Payment Information</h2>
+                </div>
+                <div class="payment-method mb-2">
+                    <img src="https://static.vecteezy.com/system/resources/previews/000/574/730/large_2x/credit-card-icon-vector.jpg" alt="Credit Card" class="payment-icon">
+                    <input type="radio" id="credit-card" name="payment-method" value="credit-card" class="mr-2" checked>
+                    <label for="credit-card" class="text-blue-500 font-semibold">Credit Card</label>
+                </div>
+                <div class="payment-method mb-2">
+                    <img src="https://th.bing.com/th/id/OIP.Naqd2InLp3W58CUf3FrbSAAAAA?pid=ImgDet&rs=1" alt="Bank Transfer" class="payment-icon">
+                    <input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer" class="mr-2">
+                    <label for="bank-transfer" class="text-blue-500 font-semibold">Bank Transfer</label>
+                </div>
+                <div class="payment-method mb-2">
+                    <img src="https://www.bdsdtechnology.com/webroot/images/UPI.png" alt="UPI Transfer" class="payment-icon">
+                    <input type="radio" id="upi-transfer" name="payment-method" value="upi-transfer" class="mr-2">
+                    <label for="upi-transfer" class="text-blue-500 font-semibold">UPI Transfer</label>
+                </div>
+                <div class="payment-method mb-2">
+                    <img src="https://png.pngtree.com/png-clipart/20210523/original/pngtree-cash-on-delivery-pin-point-png-image_6331307.jpg" alt="Cash on Delivery" class="payment-icon">
+                    <input type="radio" id="cash-on-delivery" name="payment-method" value="cash-on-delivery" class="mr-2">
+                    <label for="cash-on-delivery" class="text-blue-500 font-semibold">Cash on Delivery</label>
+                </div>
+            </div>
+
+            <!-- Order Summary (Right Side) -->
+            <div class="bg-white rounded-lg p-4 overflow-auto shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+                <ul>
+                    {{#each cartProducts}}
+                    <li class="flex justify-between mb-2 items-center">
+                        <div class="flex items-center">
+                            <img src="/uploads/{{this.product.images}}" alt="{{this.product.name}}" class="w-24 h-32 mr-4">
+                            <span class="font-semibold text-gray-800">{{this.product.name}}</span>
+                        </div>
+                        <span>{{this.quantity}} x ${{this.product.price}}</span>
+                    </li>
+                    {{/each}}
+                </ul>
+                <hr class="my-2">
+                <div class="flex justify-between font-semibold">
+                    <span>Total:</span>
+                    <span id="totalPriceSummary" class="text-green-600">${{totalPrice}}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delivery Information (Half Size) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <!-- Delivery Options -->
+            <div class="bg-white rounded-lg p-4">
+                <h2 class="text-xl font-semibold mb-4">Delivery Options</h2>
+                <div class="mb-2">
+                    <input type="radio" id="standard-shipping" name="delivery-option" value="standard" class="mr-2" checked>
+                    <label for="standard-shipping" class="text-blue-500 font-semibold">Standard Shipping</label>
+                </div>
+                <div class="mb-2">
+                    <input type="radio" id="express-shipping" name="delivery-option" value="express" class="mr-2">
+                    <label for="express-shipping" class="text-blue-500 font-semibold">Express Shipping</label>
+                </div>
+            <!-- User Addresses -->
+            <div class="bg-white rounded-lg p-4">
+                <h2 class="text-xl font-semibold mb-4">Addresses</h2>
+                <ul>
+                    {{#each user.addresses}}
+                    {{#if primary}}
+                    <li class="address-item flex justify-between items-center mb-4" data-address-id="{{_id}}">
+                        <div>
+                            <p><strong>{{tag}} Saved Address:</strong></p>
+                            <p>Address: {{address}}</p>
+                            <p>City: {{city}}</p>
+                            <p>Pin: {{pin}}</p>
+                            <p>Phone: {{phone}}</p>
+                            <p>State: {{state}}</p>
+                            <p>Country: {{country}}</p>
+                        </div>
+                    </li>
+                    {{/if}}
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+         </div>
+        <div class="text-center mt-8">
+            <button id="checkout-button" class="bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50" onclick="completePurchase()">Complete Purchase</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle the "Complete Purchase" button click
+        function completePurchase() {
+            // Check the selected payment method
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+
+            if (paymentMethod === 'cash-on-delivery') {
+                // Redirect to the order success page
+                window.location.href = '/ordersuccess'; 
+            } else {
+                // Handle other payment methods
+                // You can add your logic here for other payment methods
+            }
+        }
+    </script>
+</body>
+</html>

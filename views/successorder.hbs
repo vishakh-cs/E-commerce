@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success</title>
+    <link href="/dist/output.css" rel="stylesheet">
+    <style>
+        /* Add custom styles for improved aesthetics */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h1 class="text-3xl font-semibold text-center text-green-500">Order Successful</h1>
+            
+            <section class="thank-you-message text-center mt-6">
+                <h2 class="text-xl font-semibold text-green-500">Thank You for Your Order!</h2>
+                <p>Your order has been successfully placed.</p>
+            </section>
+            
+            <section class="order-details text-center mt-6">
+                <h3 class="text-lg font-semibold">Order Details:</h3>
+                {{#if orderDetails.product}}
+                    <p>You have ordered {{orderDetails.product.name}}.</p>
+                    <img src="{{orderDetails.product.images}}" alt="{{orderDetails.product.name}}" class="w-40 h-40 mx-auto mt-4">
+                {{/if}}
+            </section>
+            
+            <section class="additional-actions text-center mt-6">
+                <h2 class="text-xl font-semibold">What would you like to do next?</h2>
+                <ul class="mt-4 space-y-2">
+                    <li>
+                        <a href="/" class="text-blue-500 hover:underline">Continue Shopping</a>
+                    </li>
+                    <li>
+                        <a href="/orders" class="text-blue-500 hover:underline">View All Orders</a>
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

@@ -75,6 +75,11 @@
                             <p>State: {{this.state}}</p>
                             <p>Country: {{this.country}}</p>
                         </div>
+                        <div class="mb-2">
+                            <input type="radio" id="primary-address-{{this._id}}" name="primary-address" value="{{this._id}}" class="mr-2">
+                            <label for="primary-address-{{this._id}}" class="text-blue-500 font-semibold">Primary Address</label>
+                            <button onclick="setPrimaryAddress('{{this._id}}')" class="ml-2">Set Primary</button>
+                        </div>
                         <form action="/profile/deleteAddress/{{this._id}}" method="post">
                             <button class="text-red-500 hover:underline" type="submit">Delete</button>
                         </form>
@@ -91,6 +96,30 @@
         </div>
     </footer>
     <script>
+        function setPrimaryAddress(addressId) {
+            // Send a POST request to set the address as primary
+            fetch(`/api/setPrimaryAddress/${addressId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // Handle success, e.g., display a success message
+                console.log(data.message);
+            })
+            .catch((error) => {
+                // Handle error, e.g., display an error message
+                console.error('Error:', error);
+            });
+        }
+
         // JavaScript to check the number of addresses and show a message if there are more than 3
         var addAddressButton = document.getElementById("addAddressButton");
 

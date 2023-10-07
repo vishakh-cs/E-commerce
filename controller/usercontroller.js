@@ -3,6 +3,7 @@ const usermodel = require("../models/usermodel");
 const Products = require("../models/productmodel")
 const randomstring = require('randomstring');
 const bcrypt = require('bcrypt');
+const order = require('../models/orderModel');
 
 // signup get
 const signup = (req, res) => {
@@ -543,7 +544,7 @@ const profile = async(req,res)=>{
     res.render('profile', { user }); 
 } catch (error) {
     console.error('Error rendering user profile:', error);
-    res.status(500).send('Internal Server Error');
+    res.redirect('/login')
 }
 }
 
@@ -569,6 +570,36 @@ const profilepost = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 }
+
+// set primary 
+
+const setPrimaryAddress = async (req, res) => {
+  console.log("hi im here");
+  const userId = req.session.logedUser._id;
+  const addressId = req.params.id;
+
+  try {
+      const user = await usermodel.findById(userId);
+      
+      if (!user) {
+          return res.status(404).send('User not found');
+      }
+
+      user.addresses.forEach((address) => {
+          if (address._id.toString() === addressId) {
+              address.primary = true;
+          } else {
+              address.primary = false;
+          }
+      });
+
+      await user.save();
+      res.redirect('/profile'); // Redirect back to the profile page
+  } catch (error) {
+      console.error('Error setting primary address:', error);
+      res.status(500).send('Internal Server Error');
+  }
+};
 
 
 
@@ -645,6 +676,102 @@ const deleteAddressPost = async (req, res) => {
   }
 };
 
+// checkout page 
+const checkout = async (req, res) => {
+  try {
+    if (!req.session.logedUser) {
+      return res.redirect('/login');
+    }
+
+    const userId = req.session.logedUser._id;
+    const user = await usermodel.findById(userId);
+
+    // Find the primary address in the user's addresses array
+    const primaryAddress = user.addresses.find((address) => address.primary === true);
+
+    // Fetch user's cart products and calculate the total price
+    const userCart = user.cart || [];
+    const cartProducts = await Promise.all(userCart.map(async (cartItem) => {
+      const product = await Products.findById(cartItem.productId);
+      return {
+        product,
+        quantity: cartItem.quantity
+      };
+    }));
+
+    // Calculate the total price
+    const totalPrice = cartProducts.reduce((total, item) => total + item.product.price * item.quantity, 0);
+
+    // Render the checkout page with user data, primary address, and cart details
+    res.render('checkout', {
+      user,
+      primaryAddress,
+      cartProducts,
+      totalPrice
+    });
+  } catch (error) {
+    console.error('Error rendering checkout page:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+const orderSuccess = async (req, res) => {
+  try {
+    if (!req.session.logedUser) {
+      return res.redirect('/login');
+    }
+
+    const userId = req.session.logedUser._id;
+    const user = await usermodel.findById(userId);
+
+    // Fetch user's cart products and populate the product details
+    const cartProducts = await Promise.all(user.cart.map(async (cartItem) => {
+      const populatedCartItem = await usermodel.populate(cartItem, {
+        path: 'productId',
+        model: 'Product' // Replace with your actual product model name
+      });
+      return {
+        product: populatedCartItem.productId,
+        quantity: cartItem.quantity
+      };
+    }));
+
+    // Create a new order document
+    const newOrder = new order({
+      userId: userId,
+      address: user.addresses[0]._id, // Assuming you want to use the user's primary address
+      // Add other order-related information as needed
+      products: cartProducts.map((cartItem) => ({
+        product: cartItem.product._id,
+        quantity: cartItem.quantity
+      })),
+    });
+
+    // Save the new order to the database
+    await newOrder.save();
+
+    // Clear the user's cart
+    user.cart = [];
+    await user.save();
+
+    // Assuming you have an `orderDetails` object containing the ordered product details
+    const orderDetails = {
+      productName: user.cart.productId,
+    };
+
+    // Render the order success page with user and order details
+    res.render('successorder', {
+      user,
+      cartProducts,
+      orderDetails, // Pass the order details to the view
+    });
+  } catch (error) {
+    console.error('Error rendering order success page:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
 
 module.exports = {
     signup,
@@ -670,5 +797,8 @@ module.exports = {
     addAddresspost,
     addnewaddress,
     deleteAddressPost,
+    checkout,
+    setPrimaryAddress,
+    orderSuccess,
 
 };

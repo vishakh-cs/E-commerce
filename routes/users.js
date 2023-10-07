@@ -75,6 +75,13 @@ router.get('/addnewaddress',usercontroller.addnewaddress);
 
 router.post('/profile/deleteAddress/:addressId',usercontroller.deleteAddressPost)
 
+router.get('/checkout',usercontroller.checkout)
+
+router.post('/api/setPrimaryAddress/:id', usercontroller.setPrimaryAddress);
+
+router.get('/ordersuccess',usercontroller.orderSuccess)
+
+
 
 
 module.exports = router;
