@@ -7,6 +7,7 @@ var logger = require('morgan');
 const nodemailer = require("nodemailer")
 const mongoose = require('mongoose')
 require('dotenv').config();
+const nocache = require("nocache");
 
 
 const PORT = process.env.PORT 
@@ -15,6 +16,8 @@ var AdminRouter = require('./routes/admin');
 var usersRouter = require('./routes/users');
 
 var app = express();
+app.use(nocache());
+
 
 mongoose.connect("mongodb://localhost:27017/Ecommerce-Users",{
     useNewUrlParser: true,

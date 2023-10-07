@@ -750,21 +750,26 @@ const orderSuccess = async (req, res) => {
     // Save the new order to the database
     await newOrder.save();
 
-    // Clear the user's cart
-    user.cart = [];
-    await user.save();
-
-    // Assuming you have an `orderDetails` object containing the ordered product details
     const orderDetails = {
-      productName: user.cart.productId,
+      productNames: cartProducts.map((cartItem) => cartItem.product.name).join(', '),
+      productImages: cartProducts.map((cartItem) => cartItem.product.images)
     };
+       
 
     // Render the order success page with user and order details
     res.render('successorder', {
       user,
       cartProducts,
-      orderDetails, // Pass the order details to the view
+      orderDetails, 
     });
+
+
+    // Clear the user's cart
+    user.cart = [];
+    await user.save();
+
+    req.session.logedUser.cart = [];
+    
   } catch (error) {
     console.error('Error rendering order success page:', error);
     res.status(500).send('Internal Server Error');
