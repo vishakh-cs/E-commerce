@@ -45,7 +45,7 @@ const signupPost = async (req, res) => {
         }
       });
   
-      // Create a new user object with the hashed password and save it to the database
+      // Create a new user object to the database
       const newUser = new usermodel({
         username: req.body.name,
         email: req.body.email,
@@ -120,7 +120,7 @@ const otppost = async (req, res) => {
         } catch (error) {
           console.error('Error deleting OTP:', error);
         }
-      }, 3 * 60 * 1000); // 3 minutes in milliseconds
+      }, 3 * 60 * 1000); 
     } else {
       // Incorrect OTP
       // Delete user data from the database
@@ -148,7 +148,7 @@ const forgotpassword = (req, res) => {
 const forgotpasswordPost = async (req, res) => {
   try {
     // Check if the provided email exists in the database
-    const email = req.body.email; // Access the email property directly
+    const email = req.body.email; 
     req.session.email= email;
 
     // Generate a new OTP 
@@ -179,7 +179,7 @@ const forgotpasswordPost = async (req, res) => {
 
     const mailOptions = {
       from: 'wizmailer07@gmail.com',
-      to: email, // Use the email variable directly
+      to: email,
       subject: 'Forgot Password OTP',
       text: `Your OTP (One-Time Password) is: ${OTP}`,
     };
@@ -229,7 +229,7 @@ const email = useremail;
     console.log('User:', user);
 
     if (!user) {
-      // User not found, handle this case (e.g., return an error message)
+     
       return res.status(404).send('User not found');
     }
 
@@ -381,9 +381,9 @@ const productview = async(req, res) => {
     const product = await Products.findById(req.params.productId);
 
     // Get the first image URL
-    const firstImageUrl = product.images[0]; // Assuming images is an array of image URLs
+    const firstImageUrl = product.images[0]; // images is an array of image URLs
 
-    // Render the product view page and pass the product and firstImageUrl to the template
+    // Render the product view page and pass the product and firstImageUrl 
     res.render('productview', { product, firstImageUrl });
   } catch (err) {
     console.error(err);
@@ -528,7 +528,6 @@ const remove = async (req, res) => {
 }
 
 // user profle 
-
 const profile = async(req,res)=>{
   try {
     
@@ -539,14 +538,14 @@ const profile = async(req,res)=>{
    
         return res.status(404).send('User not found');
     }
-
-   
     res.render('profile', { user }); 
 } catch (error) {
     console.error('Error rendering user profile:', error);
     res.redirect('/login')
 }
 }
+
+// profile post
 
 const profilepost = async (req, res) => {
   try {
@@ -594,7 +593,7 @@ const setPrimaryAddress = async (req, res) => {
       });
 
       await user.save();
-      res.redirect('/profile'); // Redirect back to the profile page
+      res.redirect('/profile'); 
   } catch (error) {
       console.error('Error setting primary address:', error);
       res.status(500).send('Internal Server Error');
@@ -605,7 +604,7 @@ const setPrimaryAddress = async (req, res) => {
 
 const addAddresspost = async (req, res) => {
   try {
-    const userId = req.session.logedUser._id; // Assuming you have a user ID in the session
+    const userId = req.session.logedUser._id; 
 
     // Extract address details from the request body
     const { tag, address, city, pin, state, country, phone } = req.body;
@@ -641,11 +640,12 @@ const addAddresspost = async (req, res) => {
   }
 }
 
-
+// dispaly add new address
 const addnewaddress = (req,res)=>{
   res.render('addnewaddress')
 }
 
+// delete address 
 
 const deleteAddressPost = async (req, res) => {
   const userId = req.session.logedUser._id;
@@ -698,11 +698,8 @@ const checkout = async (req, res) => {
         quantity: cartItem.quantity
       };
     }));
-
     // Calculate the total price
     const totalPrice = cartProducts.reduce((total, item) => total + item.product.price * item.quantity, 0);
-
-    // Render the checkout page with user data, primary address, and cart details
     res.render('checkout', {
       user,
       primaryAddress,
@@ -714,6 +711,8 @@ const checkout = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
+// order success page
 
 const orderSuccess = async (req, res) => {
   try {
@@ -739,8 +738,8 @@ const orderSuccess = async (req, res) => {
     // Create a new order document
     const newOrder = new order({
       userId: userId,
-      address: user.addresses[0]._id, // Assuming you want to use the user's primary address
-      // Add other order-related information as needed
+      address: user.addresses[0]._id, 
+      // order-related information
       products: cartProducts.map((cartItem) => ({
         product: cartItem.product._id,
         quantity: cartItem.quantity
@@ -754,22 +753,16 @@ const orderSuccess = async (req, res) => {
       productNames: cartProducts.map((cartItem) => cartItem.product.name).join(', '),
       productImages: cartProducts.map((cartItem) => cartItem.product.images)
     };
-       
-
     // Render the order success page with user and order details
     res.render('successorder', {
       user,
       cartProducts,
       orderDetails, 
     });
-
-
     // Clear the user's cart
     user.cart = [];
     await user.save();
-
     req.session.logedUser.cart = [];
-    
   } catch (error) {
     console.error('Error rendering order success page:', error);
     res.status(500).send('Internal Server Error');
