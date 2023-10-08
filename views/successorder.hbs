@@ -22,20 +22,22 @@
             <section class="thank-you-message text-center mt-6">
                 <h2 class="text-xl font-semibold text-green-500">Thank You for Your Order!</h2>
                 <p>Your order has been successfully placed.</p>
+            </section>
 
-  <section class="order-details text-center mt-6">
-    <h3 class="text-lg font-semibold">Order Details:</h3>
-    {{#if orderDetails.productNames}}
-        <p>You have ordered {{orderDetails.productNames}}.</p>
-        {{#if orderDetails.productImages}}
-            {{#each orderDetails.productImages}}
-               <img src="/uploads/{{this}}" alt="{{orderDetails.productNames}}" class="w-40 h-40 mx-auto mt-4">
-            {{/each}}
-        {{/if}}
-    {{else}}
-        <p>No product details available.</p>
-    {{/if}}
-</section>
+            <section class="order-details text-center mt-6">
+                <h3 class="text-lg font-semibold">Order Details:</h3>
+                {{#if orderDetails.productNames}}
+                    <p>You have ordered {{orderDetails.productNames}}.</p>
+                    {{#if orderDetails.productImages}}
+                        {{#each orderDetails.productImages}}
+                            <img src="/uploads/{{this}}" alt="{{orderDetails.productNames}}" class="w-40 h-40 mx-auto mt-4">
+                        {{/each}}
+                    {{/if}}
+                {{else}}
+                    <p>No product details available.</p>
+                {{/if}}
+                <p>Total Price: ${{totalPrice}}</p> <!-- Display the total price here -->
+            </section>
 
             <section class="additional-actions text-center mt-6">
                 <h2 class="text-xl font-semibold">What would you like to do next?</h2>

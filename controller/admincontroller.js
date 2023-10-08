@@ -1,6 +1,7 @@
 const productmodel = require('../models/productmodel')
 const usermodel = require('../models/usermodel')
 const categoryModel = require("../models/categoryModel")
+const orderModel = require('../models/orderModel')
 
 
 // admin login get
@@ -318,7 +319,44 @@ const searchUsers = async (req, res) => {
     res.status(500).send('Error searching users');
   }
 };
-  
+
+// order-Management - -------------------->
+
+const orderManagement = async (req, res) => {
+  try {
+    const orderitems = await orderModel.find({});
+    res.render("admin/orderManagement", { orders: orderitems });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// update the order status
+
+const updateOrderStatus = async (req, res) => {
+  const orderId = req.params.orderId;
+  const newStatus = req.body.status; // Assuming the status is sent in the request body
+
+  try {
+    // Find the order by orderId and update its status
+    const updatedOrder = await orderModel.findByIdAndUpdate(
+      orderId,
+      { status: newStatus },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ success: false, error: 'Order not found' });
+    }
+
+    // Send a success response
+    return res.status(200).json({ success: true, message: 'Order status updated successfully' });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+};
 
 module.exports ={
     adminlogin,
@@ -339,5 +377,6 @@ module.exports ={
     category,
     deleteProduct,
     categoryManagement,
-    
+    orderManagement,
+    updateOrderStatus,
 }

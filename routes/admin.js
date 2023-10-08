@@ -54,4 +54,6 @@ router.post('/delete/:id',admincontroller.deleteProduct);
 
 router.post('/admin/add-product',upload.array('images'),admincontroller.addproductspost)
 
+router.get('/adminOrder',admincontroller.orderManagement)
+
 module.exports = router;

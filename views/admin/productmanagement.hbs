@@ -7,8 +7,50 @@
     <link href="/dist/output.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="p-6">
+<body class="bg-gray-100">
+    <!-- Sidebar -->
+    <nav class="bg-gray-800 text-white h-screen w-64 fixed top-0 left-0 overflow-y-auto">
+        <div class="p-4">
+            <h1 class="text-2xl font-semibold">Admin Dashboard</h1>
+        </div>
+        <ul>
+            <!-- Dashboard Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="#" class="block">
+                    <span class="text-gray-300">Dashboard</span>
+                </a>
+            </li>
+            <!-- User Management Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/user" class="block">
+                    <span class="text-gray-300">User Management</span>
+                </a>
+            </li>
+            <!-- Product Management Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="productmanagement" class="block">
+                    <span class="text-gray-300">Product Management</span>
+                </a>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/categories" class="block">
+                    <span class="text-gray-300">Category Management</span>
+                </a>
+            </li>
+            <!-- Product add Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/addproducts" class="block">
+                    <span class="text-gray-300">Add Product</span>
+                </a>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/adminOrder" class="block">
+                    <span class="text-gray-300">Order Management</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="ml-64 p-6"> <!-- Adjusted margin-left to make space for the sidebar -->
         <h2 class="text-3xl font-semibold mb-6">Product Management</h2>
         
         <!-- Product List/Table -->
@@ -18,47 +60,47 @@
                     <thead>
                         <tr>
                             <!-- Product Image Header -->
-                            <th class="px-6 py-10 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="px-6 py-5 sm:py-10 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
                                 Product Image
                             </th>
                             
                             <!-- Product Name Header -->
-                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="px-6 py-3 sm:py-5 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
                                 Product Name
                             </th>
                             
                             <!-- Price Header -->
-                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="px-6 py-3 sm:py-5 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
                                 Price
                             </th>
                             
                             <!-- Quantity Header -->
-                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="px-6 py-3 sm:py-5 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
                                 Quantity
                             </th>
                             
                             <!-- Description Header -->
-                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="px-6 py-3 sm:py-5 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
                                 Description
                             </th>
                             
                             <!-- Category Header -->
-                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="px-6 py-3 sm:py-5 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
                                 Category
                             </th>
                             
                             <!-- Rating Header -->
-                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="px-6 py-3 sm:py-5 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
                                 Rating
                             </th>
                             
                             <!-- Offers Header -->
-                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="px-6 py-3 sm:py-5 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
                                 Offers
                             </th>
                             
                             <!-- Actions Header -->
-                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="px-6 py-3 sm:py-5 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
                                 Actions
                             </th>
                         </tr>
@@ -67,7 +109,7 @@
                         <!-- Loop through your product data and populate the table rows -->
                         {{#each products}}
                         <tr>
-                            <td class="px-6 py-4 whitespace-no-wrap">
+                            <td class="px-6 py-4 sm:py-6 whitespace-no-wrap">
                                 <!-- Loop through the images array and display each image -->
                                 {{#each this.images}}
                                 <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
@@ -76,18 +118,18 @@
                                 </div>
                                 {{/each}}
                             </td>
-                            <td class="px-6 py-4 whitespace-no-wrap">{{this.name}}</td>
-                            <td class="px-6 py-4 whitespace-no-wrap text-lg font-semibold text-green-600">${{this.price}}</td>
-                            <td class="px-6 py-4 whitespace-no-wrap">{{this.quantity}}</td>
-                            <td class="px-6 py-4 whitespace-no-wrap text-blue-900">{{this.description}}</td>
-                            <td class="px-6 py-4 whitespace-no-wrap text-blue-900">{{this.category}}</td>
-                            <td class="px-6 py-4 whitespace-no-wrap">{{this.rating}}</td>
-                            <td class="px-6 py-4 whitespace-no-wrap text-blue-900">{{this.offers}}</td>
-                            <td class="px-6 py-4 whitespace-no-wrap space-x-2">
-<a href="/edit/{{this._id}}" class="text-indigo-600 hover:text-indigo-900 font-semibold">Edit</a>
+                            <td class="px-6 py-4 sm:py-6 whitespace-no-wrap">{{this.name}}</td>
+                            <td class="px-6 py-4 sm:py-6 whitespace-no-wrap text-lg font-semibold text-green-600">${{this.price}}</td>
+                            <td class="px-6 py-4 sm:py-6 whitespace-no-wrap">{{this.quantity}}</td>
+                            <td class="px-6 py-4 sm:py-6 whitespace-no-wrap text-blue-900">{{this.description}}</td>
+                            <td class="px-6 py-4 sm:py-6 whitespace-no-wrap text-blue-900">{{this.category}}</td>
+                            <td class="px-6 py-4 sm:py-6 whitespace-no-wrap">{{this.rating}}</td>
+                            <td class="px-6 py-4 sm:py-6 whitespace-no-wrap text-blue-900">{{this.offers}}</td>
+                            <td class="px-6 py-4 sm:py-6 whitespace-no-wrap space-x-2">
+                                <a href="/edit/{{this._id}}" class="text-indigo-600 hover:text-indigo-900 font-semibold">Edit</a>
                                 <form method="post" action="/delete/{{this._id}}">
-        <button type="submit" class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
-    </form>
+                                    <button type="submit" class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
+                                </form>
                             </td>
                         </tr>
                         {{/each}}

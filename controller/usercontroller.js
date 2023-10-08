@@ -691,6 +691,10 @@ const checkout = async (req, res) => {
 
     // Fetch user's cart products and calculate the total price
     const userCart = user.cart || [];
+    if (userCart.length === 0) {
+      // Redirect the user to a shopping cart page or display a message
+      return res.redirect('/cart/:userid'); // You can change this URL
+    }
     const cartProducts = await Promise.all(userCart.map(async (cartItem) => {
       const product = await Products.findById(cartItem.productId);
       return {
@@ -727,7 +731,7 @@ const orderSuccess = async (req, res) => {
     const cartProducts = await Promise.all(user.cart.map(async (cartItem) => {
       const populatedCartItem = await usermodel.populate(cartItem, {
         path: 'productId',
-        model: 'Product' // Replace with your actual product model name
+        model: 'Product' 
       });
       return {
         product: populatedCartItem.productId,
@@ -735,15 +739,22 @@ const orderSuccess = async (req, res) => {
       };
     }));
 
+    // Calculate the total price of the order
+    const totalPrice = cartProducts.reduce((total, cartItem) => {
+      return total + (cartItem.product.price * cartItem.quantity);
+    }, 0);
+
     // Create a new order document
     const newOrder = new order({
       userId: userId,
-      address: user.addresses[0]._id, 
-      // order-related information
+      address: user.addresses[0]._id,
       products: cartProducts.map((cartItem) => ({
         product: cartItem.product._id,
-        quantity: cartItem.quantity
+        quantity: cartItem.quantity,
+        productImage: cartItem.product.images.join(', ') 
+        
       })),
+      totalPrice: totalPrice
     });
 
     // Save the new order to the database
@@ -753,12 +764,15 @@ const orderSuccess = async (req, res) => {
       productNames: cartProducts.map((cartItem) => cartItem.product.name).join(', '),
       productImages: cartProducts.map((cartItem) => cartItem.product.images)
     };
+
     // Render the order success page with user and order details
     res.render('successorder', {
       user,
       cartProducts,
-      orderDetails, 
+      orderDetails,
+      totalPrice // Pass the total price to the view for display
     });
+
     // Clear the user's cart
     user.cart = [];
     await user.save();
@@ -768,6 +782,36 @@ const orderSuccess = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
+// increment cart item
+
+const incrementQuantity = async (req, res) => {
+  console.log("hi im plus");
+  const productId = req.params.productId;
+  const userId = req.session.loggedUser._id;
+  try {
+      // Find the user's cart and increment the quantity of the product
+      const user = await usermodel.findOneAndUpdate(
+          { _id: userId, 'cart.product': productId },
+          { $inc: { 'cart.$.quantity': 1 } }, // increment quantity
+          { new: true } // return the updated user
+      );
+      if (user) {
+          res.json({ message: 'Quantity incremented successfully', cart: user.cart });
+      } else {
+          res.status(404).json({ message: 'Product not found in the cart' });
+      }
+  } catch (error) {
+      console.error('Error incrementing quantity:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+// decrement cart items
+
+
+
 
 
 
@@ -798,5 +842,6 @@ module.exports = {
     checkout,
     setPrimaryAddress,
     orderSuccess,
+    incrementQuantity,
 
 };

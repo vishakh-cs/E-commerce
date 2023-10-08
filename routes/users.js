@@ -59,13 +59,15 @@ router.post('/signup',usercontroller.signupPost)
 router.post('/resendOTP', usercontroller.resendOTP);
 
 // <-------cart---------->
-router.get('/cart/:userid',usercontroller.cart)
+router.get('/cart/:userid',usercontroller.cart);
 
 router.post('/cart/add/:productId', usercontroller.addToCart);
 
-router.post('/cart/remove/:productId',usercontroller.remove)
+router.post('/cart/remove/:productId',usercontroller.remove);
 
-router.get('/profile',usercontroller.profile)
+router.post('/cartinc/add/:productId',usercontroller.incrementQuantity);
+
+router.get('/profile',usercontroller.profile);
 
 router.post('/profile/upload', upload.single('profileImage'), usercontroller.profilepost);
 

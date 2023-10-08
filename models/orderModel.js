@@ -26,6 +26,10 @@ const orderSchema = new mongoose.Schema({
                 type: Number,
                 required: true,
                 default: 1
+            },
+            productImage: {
+                type: String, 
+                required: true
             }
         }
     ],
@@ -37,9 +41,10 @@ const orderSchema = new mongoose.Schema({
         method: {
             type: String
         },
-        amount: {
-            type: Number // Use Number for the payment amount
-        }
+    },
+    totalPrice: {
+        type: Number, 
+        required: true 
     }
 });
 

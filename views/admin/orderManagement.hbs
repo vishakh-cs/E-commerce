@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management</title>
+    <link href="/dist/output.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Sidebar -->
+    <nav class="bg-gray-800 text-white h-screen w-64 fixed top-0 left-0 overflow-y-auto">
+        <div class="p-4">
+            <h1 class="text-2xl font-semibold">Admin Dashboard</h1>
+        </div>
+        <ul>
+            <!-- Dashboard Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="#" class="block">
+                    <span class="text-gray-300">Dashboard</span>
+                </a>
+            </li>
+            <!-- User Management Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/user" class="block">
+                    <span class="text-gray-300">User Management</span>
+                </a>
+            </li>
+            <!-- Product Management Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="productmanagement" class="block">
+                    <span class="text-gray-300">Product Management</span>
+                </a>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/categories" class="block">
+                    <span class="text-gray-300">Category Management</span>
+                </a>
+            </li>
+            <!-- Product Add Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/addproducts" class="block">
+                    <span class="text-gray-300">Add Product</span>
+                </a>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/adminOrder" class="block">
+                    <span class="text-gray-300">Order Management</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="ml-64 p-6"> <!-- Adjusted margin-left to make space for the sidebar -->
+        <h2 class="text-3xl font-semibold mb-6">Order Management</h2>
+        
+        <!-- Order List/Table -->
+        <div class="overflow-x-auto">
+            <div class="w-full overflow-x-scroll">
+                <table class="w-full divide-y divide-gray-200 border rounded-lg">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                                Image
+                            </th>
+                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                                Product ID
+                            </th>
+                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                                Order ID
+                            </th>
+                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                                Quantity
+                            </th>
+                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                                Total Price
+                            </th>
+                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                                Customer ID
+                            </th>
+                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each orders}}
+                        <tr>
+                             {{#each this.products}}
+                            <td class="px-6 py-4 whitespace-no-wrap"><img src="/uploads/{{this.productImage}}" alt="{{this.product.productName}}" class="w-16 h-16"></td>
+                            <td class="px-6 py-4 whitespace-no-wrap">{{this._id}}</td> 
+                            {{/each}}
+                            <td class="px-6 py-4 whitespace-no-wrap">{{this._id}}</td>
+                            {{#each this.products}}
+                            <td class="px-6 py-4 whitespace-no-wrap">{{this.quantity}}</td>
+                            {{/each}}                                               
+                            <td class="px-6 py-4 whitespace-no-wrap">${{this.totalPrice}}</td>
+                            <td class="px-6 py-4 whitespace-no-wrap">{{this.userId}}</td>
+                            <td class="px-6 py-4 whitespace-no-wrap">{{this.status}}</td>
+                            <td class="px-6 py-4 whitespace-no-wrap space-x-2">
+                                <a href="/editOrder/{{this.orderId}}" class="text-indigo-600 hover:text-indigo-900 font-semibold">Edit</a>
+                                <form method="post" action="/deleteOrder/{{this.orderId}}">
+                                    <button type="submit" class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
