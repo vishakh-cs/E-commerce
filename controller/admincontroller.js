@@ -335,28 +335,25 @@ const orderManagement = async (req, res) => {
 // update the order status
 
 const updateOrderStatus = async (req, res) => {
-  const orderId = req.params.orderId;
-  const newStatus = req.body.status; // Assuming the status is sent in the request body
+  const { orderId, status } = req.body;
+  console.log('Received orderId:', orderId);
+    console.log('Received status:', status);
 
   try {
-    // Find the order by orderId and update its status
-    const updatedOrder = await orderModel.findByIdAndUpdate(
-      orderId,
-      { status: newStatus },
-      { new: true }
-    );
+      
+      const updatedOrder = await orderModel.findByIdAndUpdate(orderId, { status }, { new: true });
 
-    if (!updatedOrder) {
-      return res.status(404).json({ success: false, error: 'Order not found' });
-    }
-
-    // Send a success response
-    return res.status(200).json({ success: true, message: 'Order status updated successfully' });
+      if (updatedOrder) {
+          res.redirect('/adminOrder') 
+      } else {
+          res.status(404).json({ message: 'Order not found' });
+      }
   } catch (error) {
-    console.error('Error updating order status:', error);
-    return res.status(500).json({ success: false, error: 'Internal server error' });
+      console.error('Error updating order status:', error);
+      res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 module.exports ={
     adminlogin,

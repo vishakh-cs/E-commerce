@@ -62,6 +62,7 @@
                             <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
                                 Image
                             </th>
+
                             <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
                                 Product ID
                             </th>
@@ -81,7 +82,7 @@
                                 Status
                             </th>
                             <th class="px-6 py-3 bg-gray-100 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
-                                Actions
+                                Created
                             </th>
                         </tr>
                     </thead>
@@ -91,20 +92,24 @@
                              {{#each this.products}}
                             <td class="px-6 py-4 whitespace-no-wrap"><img src="/uploads/{{this.productImage}}" alt="{{this.product.productName}}" class="w-16 h-16"></td>
                             <td class="px-6 py-4 whitespace-no-wrap">{{this._id}}</td> 
-                            {{/each}}
-                            <td class="px-6 py-4 whitespace-no-wrap">{{this._id}}</td>
-                            {{#each this.products}}
                             <td class="px-6 py-4 whitespace-no-wrap">{{this.quantity}}</td>
-                            {{/each}}                                               
+                            {{/each}}
+                             <td class="px-6 py-4 whitespace-no-wrap">{{this._id}}</td>
+                           
                             <td class="px-6 py-4 whitespace-no-wrap">${{this.totalPrice}}</td>
                             <td class="px-6 py-4 whitespace-no-wrap">{{this.userId}}</td>
-                            <td class="px-6 py-4 whitespace-no-wrap">{{this.status}}</td>
-                            <td class="px-6 py-4 whitespace-no-wrap space-x-2">
-                                <a href="/editOrder/{{this.orderId}}" class="text-indigo-600 hover:text-indigo-900 font-semibold">Edit</a>
-                                <form method="post" action="/deleteOrder/{{this.orderId}}">
-                                    <button type="submit" class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
-                                </form>
-                            </td>
+<td class="px-6 py-4 whitespace-no-wrap">
+    <form action="/updatestatus" method="post">
+        <select name="status">
+            <option value="Pending">Pending</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancel">Cancel</option>
+        </select>
+        <input type="hidden" name="orderId" value="{{this._id}}">
+        <button type="submit" class="text-green-600 hover:text-green-900 font-semibold">Update</button>
+    </form>
+</td>
+
                         </tr>
                         {{/each}}
                     </tbody>

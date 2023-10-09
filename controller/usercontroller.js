@@ -528,22 +528,48 @@ const remove = async (req, res) => {
 }
 
 // user profle 
-const profile = async(req,res)=>{
+const profile = async (req, res) => {
   try {
-    
-    const userId = req.session.logedUser._id; 
-    const user = await usermodel.findById(userId); 
+    const userId = req.session.logedUser._id;
+    const user = await usermodel.findById(userId);
 
     if (!user) {
-   
-        return res.status(404).send('User not found');
+      return res.status(404).send('User not found');
     }
-    res.render('profile', { user }); 
-} catch (error) {
+
+    // Fetch the user's recent orders from your database
+    const recentOrders = await order
+      .find({ userId: userId })
+      .limit(5)
+      .sort({ createdAt: -1 });
+
+    // Iterate through recent orders and populate product images
+    for (const order of recentOrders) {
+      for (const order of recentOrders) {
+        for (const orderProduct of order.products) {
+            const product = await Products.findById(orderProduct.product);
+            console.log("Product:", product); // Add this line for debugging
+            if (product && product.images.length > 0) {
+                orderProduct.productImage = product.images[0]; // Assuming you want to use the first image in the array
+                console.log("hii", orderProduct.productImage);
+            }
+        }
+    }
+  }    
+    user.recentOrders = recentOrders.map((order) => ({
+      orderId: order._id,
+      status: order.status,
+      totalPrice: order.totalPrice,
+      products: order.products, 
+    }));
+
+    res.render('profile', { user });
+  } catch (error) {
     console.error('Error rendering user profile:', error);
-    res.redirect('/login')
-}
-}
+    res.redirect('/login');
+  }
+};
+
 
 // profile post
 

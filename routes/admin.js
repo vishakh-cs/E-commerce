@@ -56,4 +56,6 @@ router.post('/admin/add-product',upload.array('images'),admincontroller.addprodu
 
 router.get('/adminOrder',admincontroller.orderManagement)
 
+router.post('/updatestatus', admincontroller.updateOrderStatus);
+
 module.exports = router;
