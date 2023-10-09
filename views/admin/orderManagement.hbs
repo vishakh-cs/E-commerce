@@ -52,6 +52,14 @@
     </nav>
     <div class="ml-64 p-6"> <!-- Adjusted margin-left to make space for the sidebar -->
         <h2 class="text-3xl font-semibold mb-6">Order Management</h2>
+
+    <div class="mb-6">
+        <label for="sortBy">Sort by Created Date:</label>
+        <select id="sortBy" name="sortBy">
+            <option value="ascending">Ascending</option>
+            <option value="descending">Descending</option>
+        </select>
+    </div>
         
         <!-- Order List/Table -->
         <div class="overflow-x-auto">
@@ -109,7 +117,7 @@
         <button type="submit" class="text-green-600 hover:text-green-900 font-semibold">Update</button>
     </form>
 </td>
-
+ <td class="px-6 py-4 whitespace-no-wrap">${{this.orderDate}}</td>
                         </tr>
                         {{/each}}
                     </tbody>
@@ -117,5 +125,29 @@
             </div>
         </div>
     </div>
+</body>
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <script>
+        $(document).ready(function () {
+            $('#sortBy').on('change', function () {
+                const selectedValue = $(this).val();
+                const table = $('.divide-y tbody');
+                const rows = table.find('tr').toArray();
+
+                rows.sort(function (a, b) {
+                    const dateA = new Date($(a).find('td:last').text());
+                    const dateB = new Date($(b).find('td:last').text());
+
+                    if (selectedValue === 'ascending') {
+                        return dateA - dateB;
+                    } else {
+                        return dateB - dateA;
+                    }
+                });
+
+                table.empty().append(rows);
+            });
+        });
+    </script>
 </body>
 </html>

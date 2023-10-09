@@ -52,6 +52,14 @@
     </nav>
     <div class="ml-64 p-6"> <!-- Adjusted margin-left to make space for the sidebar -->
         <h2 class="text-3xl font-semibold mb-6">Product Management</h2>
+<!--sort prize -->
+<div class="mb-6">
+    <label for="sortByPrice">Sort by Price:</label>
+    <select id="sortByPrice" name="sortByPrice">
+        <option value="lowToHigh">Low to High</option>
+        <option value="highToLow">High to Low</option>
+    </select>
+</div>
         
         <!-- Product List/Table -->
         <div class="overflow-x-auto">
@@ -140,4 +148,28 @@
     </div>
     <a href="/admindashboard">dashboard</a>
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#sortByPrice').on('change', function () {
+            const selectedValue = $(this).val();
+            const table = $('.divide-y tbody');
+            const rows = table.find('tr').toArray();
+
+            rows.sort(function (a, b) {
+                const priceA = parseFloat($(a).find('td:nth-child(3)').text().replace('$', ''));
+                const priceB = parseFloat($(b).find('td:nth-child(3)').text().replace('$', ''));
+
+                if (selectedValue === 'lowToHigh') {
+                    return priceA - priceB;
+                } else {
+                    return priceB - priceA;
+                }
+            });
+
+            table.empty().append(rows);
+        });
+    });
+</script>
+
 </html>

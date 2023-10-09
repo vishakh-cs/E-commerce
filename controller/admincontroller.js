@@ -30,27 +30,35 @@ const adminloginpost = (req, res) => {
   }
 }
 
-
+// admin dashboard
  const admindashboard = (req,res)=>{
 res.render('admin/admindashboard')
  }
 
+ // product management
  const productmanagement = async (req, res) => {
   try {
-    // Fetch all products from the database
-    const products = await productmodel.find();
+    const { sortByPrice } = req.query;
+    const sortOptions = {
+        lowToHigh: { price: 1 },
+        highToLow: { price: -1 },
+    };
 
-    // Log the products and their image URLs for debugging
+    let sortOption = sortOptions.lowToHigh;
+
+    if (sortOptions[sortByPrice]) {
+        sortOption = sortOptions[sortByPrice];
+    }
+    const products = await productmodel.find().sort(sortOption);
     console.log('Products:', products);
-
-    // Render the 'admin/productmanagement' view with the products data
     res.render('admin/productmanagement', { products });
-  } catch (error) {
+} catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).send('Error fetching products');
-  }
+}
 };
 
+// add product post 
 
 const addproductspost = async (req, res) => {
   try {
@@ -324,7 +332,15 @@ const searchUsers = async (req, res) => {
 
 const orderManagement = async (req, res) => {
   try {
-    const orderitems = await orderModel.find({});
+    let orderitems = await orderModel.find({});
+
+    // Sort orders based on the selected sorting option
+    if (req.query.sortBy === 'ascending') {
+      orderitems.sort((a, b) => a.orderDate - b.orderDate);
+    } else if (req.query.sortBy === 'descending') {
+      orderitems.sort((a, b) => b.orderDate - a.orderDate);
+    }
+
     res.render("admin/orderManagement", { orders: orderitems });
   } catch (error) {
     console.error(error);
@@ -332,8 +348,8 @@ const orderManagement = async (req, res) => {
   }
 };
 
-// update the order status
 
+// update the order status
 const updateOrderStatus = async (req, res) => {
   const { orderId, status } = req.body;
   console.log('Received orderId:', orderId);

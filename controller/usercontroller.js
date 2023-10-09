@@ -548,10 +548,10 @@ const profile = async (req, res) => {
       for (const order of recentOrders) {
         for (const orderProduct of order.products) {
             const product = await Products.findById(orderProduct.product);
-            console.log("Product:", product); // Add this line for debugging
+            // console.log("Product:", product); 
             if (product && product.images.length > 0) {
                 orderProduct.productImage = product.images[0]; // Assuming you want to use the first image in the array
-                console.log("hii", orderProduct.productImage);
+                // console.log("hii", orderProduct.productImage);
             }
         }
     }
