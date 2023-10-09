@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your eCommerce Store</title>
-    <!-- Include Tailwind CSS -->
     <link href="/dist/output.css" rel="stylesheet">
     <!-- Include Swiper CSS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
@@ -13,12 +12,11 @@
     <!-- Header -->
     <header class="bg-nav-bar-red text-white py-4 xl:py-5">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="font-display text-xl">Classic Soul</h1>
+            <h1 class="font-display text-xl"><strong>Classic Soul</strong> </h1>
             <!-- Navigation menu with Men and Women links -->
             <nav class="hidden md:block">
                 <ul class="flex px-4 font-semibold font-heading space-x-12">
-                    <li><a class="hover:text-gray-200" href="#">Men</a></li>
-                    <li><a class="hover:text-gray-200" href="#">Women</a></li>
+                    <li><a class="hover:text-gray-200" href="/category">Category</a></li>
                 </ul>
             </nav>
             <div class="hidden xl:flex items-center space-x-5">
@@ -63,6 +61,16 @@
             </a>
         </div>
     </header>
+
+ <!-- Search Bar -->
+<div class="bg-gray-100 py-7 shadow-md">
+    <div class="container mx-auto">
+        <div class="flex items-center justify-center">
+            <input type="text" placeholder="Search for products..." class="w-full sm:w-3/4 lg:w-1/2 px-2 py-3 rounded-full border border-gray-300 focus:outline-none focus:border-indigo-500 shadow-sm">
+            <button class="ml-2 bg-slate-700 hover:bg-red-600 text-white font-semibold px-9 py-3 rounded-full transition duration-300 ease-in-out focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-sm">Search</button>
+        </div>
+    </div>
+</div>
 
     <!-- Banner Carousel -->
     <section class="bg-gray-200 py-8 xl:py-12">

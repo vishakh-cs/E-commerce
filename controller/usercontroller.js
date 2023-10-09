@@ -4,6 +4,7 @@ const Products = require("../models/productmodel")
 const randomstring = require('randomstring');
 const bcrypt = require('bcrypt');
 const order = require('../models/orderModel');
+const categorySchema = require('../models/categoryModel')
 
 // signup get
 const signup = (req, res) => {
@@ -838,7 +839,26 @@ const incrementQuantity = async (req, res) => {
 
 
 
+//-------------------------------category ------------------------------------------------
 
+// category
+
+const category = async(req,res)=>{
+  try {
+    const categoryName = req.query.categoryName; 
+    console.log("categoryname",categoryName);
+
+    const cat = await categorySchema.find()
+    
+    // Use the categoryName as needed to fetch products for that category
+    const products = await Products.find({ category: categoryName });
+
+    res.render('category', { category: cat,categoryName, products });
+  } catch (error) {
+    console.error('Error listing products by category:', error);
+    res.status(500).send('Error listing products by category');
+  }
+};
 
 
 module.exports = {
@@ -869,5 +889,6 @@ module.exports = {
     setPrimaryAddress,
     orderSuccess,
     incrementQuantity,
+    category,
 
 };

@@ -92,9 +92,18 @@ console.log('image:',images);
 };
 
 
-const addproducts = (req,res)=>{
-  res.render('admin/addproducts')
-}
+const addproducts = async (req, res) => {
+  try {
+    // Fetch categories to populate the dropdown
+    const categories = await categoryModel.find({}, 'name');
+    
+    res.render('admin/addproducts', { categories });
+  } catch (error) {
+    console.error('Error rendering Add Product page:', error);
+    res.status(500).send('Error rendering Add Product page');
+  }
+};
+
 
 // update product 
 // Route to display the edit form for a specific product
@@ -213,22 +222,29 @@ const categoryManagement = async (req, res) => {
   try {
     const { categoryName, categoryDescription } = req.body;
 
-    // Create a new category document
-    const newCategory = new categoryModel({
-      name: categoryName,
-      description: categoryDescription,
-    });
+    // Check if the category already exists
+    const existingCategory = await categoryModel.findOne({ name: categoryName });
 
-    // Save the new category to the database
-    await newCategory.save();
+    if (existingCategory) {
+      // If the category already exists, show a popup message
+      res.send('<script>alert("Category already exists!"); window.location.href = "/categories";</script>');
+    } else {
+      // Create a new category document
+      const newCategory = new categoryModel({
+        name: categoryName,
+        description: categoryDescription,
+      });
 
-    // Redirect back to the Category Management page after creating the category
-    res.redirect('/categories'); 
+      // Save the new category to the database
+      await newCategory.save();
+      res.redirect('/categories');
+    }
   } catch (error) {
     console.error('Error creating category:', error);
     res.status(500).send('Error creating category');
   }
-}
+};
+
 
 //user controll
 const usermangement = async (req,res)=>{

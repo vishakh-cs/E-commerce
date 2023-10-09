@@ -83,7 +83,7 @@ router.post('/api/setPrimaryAddress/:id', usercontroller.setPrimaryAddress);
 
 router.get('/ordersuccess',usercontroller.orderSuccess)
 
-
+router.get('/category',usercontroller.category)
 
 
 module.exports = router;
