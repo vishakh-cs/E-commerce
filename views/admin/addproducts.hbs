@@ -14,7 +14,7 @@
             <h1 class="text-2xl font-semibold">Admin Dashboard</h1>
         </div>
         <ul>
-             <!-- Dashboard Link -->
+            <!-- Dashboard Link -->
             <li class="px-4 py-2 hover:bg-gray-700">
                 <a href="#" class="block">
                     <span class="text-gray-300">Dashboard</span>
@@ -32,12 +32,12 @@
                     <span class="text-gray-300">Product Management</span>
                 </a>
             </li>
-             <li class="px-4 py-2 hover:bg-gray-700">
+            <li class="px-4 py-2 hover:bg-gray-700">
                 <a href="/categories" class="block">
                     <span class="text-gray-300">Category Management</span>
                 </a>
             </li>
-           <!-- Product add Link -->
+            <!-- Product add Link -->
             <li class="px-4 py-2 hover:bg-gray-700">
                 <a href="/addproducts" class="block">
                     <span class="text-gray-300">Add Product</span>
@@ -75,8 +75,21 @@
 <div class="mb-4">
     <label for="category" class="block text-gray-700 font-semibold">Category</label>
     <select id="category" name="category" class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+        <option value="" disabled selected>Select a category</option>
         {{#each categories}}
         <option value="{{this.name}}">{{this.name}}</option>
+        {{/each}}
+    </select>
+</div>
+
+<div class="mb-4">
+    <label for="subcategory" class="block text-gray-700 font-semibold">Sub-category</label>
+    <select id="subcategory" name="subcategory" class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+        <option value="" disabled selected>Select a subcategory</option>
+        {{#each categories}}
+            {{#each this.subcategories}}
+                <option value="{{this}}">{{this}}</option>
+            {{/each}}
         {{/each}}
     </select>
 </div>
@@ -107,6 +120,6 @@
             </form>
         </main>
     </div>
-     <a href="/admindashboard">dashboard</a>
+    <a href="/admindashboard">dashboard</a>
 </body>
 </html>

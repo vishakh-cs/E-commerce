@@ -62,29 +62,26 @@ res.render('admin/admindashboard')
 
 const addproductspost = async (req, res) => {
   try {
-
-    const { name, description, category, price, quantity, rating, offers } = req.body;
-
-    
+    const { name, description, category, subcategory, price, quantity, rating, offers } = req.body;
     const images = req.files.map((file) => file.filename);
-console.log('image:',images);
+
     // Create a new Product document based on the schema
     const newProduct = new productmodel({
       name,
       description,
       category,
+      subcategory, 
       price,
       quantity,
       rating,
       offers,
-      images, 
+      images,
     });
 
     // Save the new product to the database
     await newProduct.save();
 
-    
-    res.redirect('/productmanagement'); 
+    res.redirect('/productmanagement');
   } catch (error) {
     console.error('Error adding product:', error);
     res.status(500).send('Error adding product');
@@ -92,17 +89,19 @@ console.log('image:',images);
 };
 
 
+
 const addproducts = async (req, res) => {
   try {
-    // Fetch categories to populate the dropdown
-    const categories = await categoryModel.find({}, 'name');
-    
+    // Fetch categories and subcategories to populate the dropdowns
+    const categories = await categoryModel.find({});
+
     res.render('admin/addproducts', { categories });
   } catch (error) {
     console.error('Error rendering Add Product page:', error);
     res.status(500).send('Error rendering Add Product page');
   }
 };
+
 
 
 // update product 
@@ -218,9 +217,12 @@ const category = async (req,res)=>{
 }
 }
 
+// category management
+
 const categoryManagement = async (req, res) => {
   try {
-    const { categoryName, categoryDescription } = req.body;
+    const { categoryName, categoryDescription, subcategoryName } = req.body;
+    console.log("sub",subcategoryName);
 
     // Check if the category already exists
     const existingCategory = await categoryModel.findOne({ name: categoryName });
@@ -229,10 +231,11 @@ const categoryManagement = async (req, res) => {
       // If the category already exists, show a popup message
       res.send('<script>alert("Category already exists!"); window.location.href = "/categories";</script>');
     } else {
-      // Create a new category document
+     
       const newCategory = new categoryModel({
         name: categoryName,
         description: categoryDescription,
+        subcategory: subcategoryName, 
       });
 
       // Save the new category to the database
@@ -244,6 +247,50 @@ const categoryManagement = async (req, res) => {
     res.status(500).send('Error creating category');
   }
 };
+
+
+// delete category 
+
+const removeCategory = async (req,res)=>{
+  try {
+    const categoryId = req.params.id;
+
+    await categoryModel.findByIdAndDelete(categoryId);
+
+    // Redirect or send a response as needed
+    res.redirect('/categories'); // Redirect to the category management page
+} catch (error) {
+    console.error('Error deleting category:', error);
+    res.status(500).send('Error deleting category');
+}
+}
+
+// add subcategory
+
+const addSubcategory = async (req, res) => {
+  try {
+      const categoryId = req.params.id;
+      const { subcategory } = req.body;
+
+      // Find the category by ID
+      const category = await categoryModel.findById(categoryId);
+
+      if (!category) {
+          return res.status(404).json({ error: 'Category not found' });
+      }
+      category.subcategories.push(subcategory);
+
+      // Save the updated category
+      await category.save();
+
+      // Return a success response
+      res.status(200).json({ message: 'Subcategory added successfully' });
+  } catch (error) {
+      console.error('Error adding subcategory:', error);
+      res.status(500).json({ error: 'Failed to add subcategory' });
+  }
+};
+
 
 
 //user controll
@@ -406,6 +453,9 @@ module.exports ={
     category,
     deleteProduct,
     categoryManagement,
+    removeCategory,
+    addSubcategory,
     orderManagement,
     updateOrderStatus,
+
 }

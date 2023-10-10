@@ -32,6 +32,10 @@ router.get('/categories',admincontroller.category)
 
 router.post('/categories',admincontroller.categoryManagement)
 
+router.delete('/categories/:id',admincontroller.removeCategory);
+
+router.post('/categories/:id/add-subcategory',admincontroller.addSubcategory);
+
 router.get('/edit/:id',admincontroller.editproducts)
 
 router.post('/edit/:id',admincontroller.editproductspost)

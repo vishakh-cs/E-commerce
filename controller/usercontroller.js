@@ -843,22 +843,41 @@ const incrementQuantity = async (req, res) => {
 
 // category
 
-const category = async(req,res)=>{
-  try {
-    const categoryName = req.query.categoryName; 
-    console.log("categoryname",categoryName);
+// const category = async(req,res)=>{
+//   try {
+//     const categoryName = req.query.categoryName; 
+//     console.log("categoryname",categoryName);
 
-    const cat = await categorySchema.find()
+//     const cat = await categorySchema.find()
     
-    // Use the categoryName as needed to fetch products for that category
+//     // Use the categoryName as needed to fetch products for that category
+//     const products = await Products.find({ category: categoryName });
+
+//     res.render('category', { category: cat,categoryName, products });
+//   } catch (error) {
+//     console.error('Error listing products by category:', error);
+//     res.status(500).send('Error listing products by category');
+//   }
+// };
+
+const category = async (req, res) => {
+  try {
+    const categoryName = req.query.categoryName;
+
+    // Use the categoryName to fetch products for that category
     const products = await Products.find({ category: categoryName });
 
-    res.render('category', { category: cat,categoryName, products });
+    // Fetch subcategories for the selected category
+    const categoryData = await categorySchema.findOne({ name: categoryName });
+    const subcategories = categoryData ? categoryData.subcategories : [];
+
+    res.render('category', { categoryName, products, subcategories });
   } catch (error) {
     console.error('Error listing products by category:', error);
     res.status(500).send('Error listing products by category');
   }
 };
+
 
 
 module.exports = {
