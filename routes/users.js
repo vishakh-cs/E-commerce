@@ -85,15 +85,18 @@ router.get('/ordersuccess',usercontroller.orderSuccess)
 
 router.get('/category',usercontroller.category)
 
-
-router.post('/user/cart/update',usercontroller.decreaseCount)
-
-
 router.post('/cancelOrder/:orderId',usercontroller.cancelOrder)
 
 router.post('/user/updateEmail',usercontroller.changeEmail)
 
 router.get('/logout',usercontroller.logout)
+
+router.get('/increaseCount/:productId',usercontroller.increaseCount)
+
+router.get('/decreaseCount/:productId',usercontroller.decreaseCount)
+
+
+
 
 
 

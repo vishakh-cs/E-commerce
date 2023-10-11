@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Cart</title>
-    <!-- Link to the Tailwind CSS CDN -->
+    <script src="/javascripts/cartcount.js"></script>
     <link href="/dist/output.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container mx-auto mt-8">
         <div class="flex">
@@ -32,7 +34,8 @@
                                     {{#each this.product.images}}
                                     <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
                                         <!-- Update the src attribute to use the current image filename -->
-                                        <img src="/uploads/{{this}}" alt="{{../../product.name}}" class="w-full h-full object-cover">
+                                        <img src="/uploads/{{this}}" alt="{{../../product.name}}"
+                                            class="w-full h-full object-cover">
                                     </div>
                                     {{/each}}
                                     <div>
@@ -40,13 +43,29 @@
                                         <p class="text-gray-600">{{this.product.description}}</p>
                                     </div>
                                 </td>
+
+
                                 <td class="py-4 px-4">
-                                    <input type="number" value="{{this.quantity}}" min="1" class="w-16 px-2 py-1 border rounded" data-productid="{{this.product._id}}">
+                                    <div class="mx-auto  flex h-8 items-stretch text-gray-600">
+                                        <a href="/decreaseCount/{{this.product._id}}"
+                                            class="flex items-center justify-center rounded-l-md bg-gray-200 px-4 transition hover:bg-black hover:text-white minus-cart"
+                                           >-</a>
+                                        <div
+                                            class="flex w-3 items-center justify-center bg-gray-100 px-4 text-xs uppercase transition quantity-display">
+                                            {{this.quantity}}
+                                        </div>
+                                        <a href="/increaseCount/{{this.product._id}}"
+                                            class="flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:bg-black hover:text-white Add-cart"
+                                           >+</a>
+                                    </div>
                                 </td>
+
                                 <td class="py-4 px-4">${{this.product.price}}</td>
-                                <td class="py-4 px-4 total-amount">$<span class="total">{{this.quantity}} * {{this.product.price}}</span></td>
+                                <td class="py-4 px-4 total-amount">$<span class="total">{{this.quantity}} *
+                                        {{this.product.price}}</span></td>
                                 <td class="py-4 px-4">
-                                    <button class="text-red-500 hover:text-red-700 remove-item" data-productid="{{this.product._id}}">Remove</button>
+                                    <button class="text-red-500 hover:text-red-700 remove-item"
+                                        data-productid="{{this.product._id}}">Remove</button>
                                 </td>
                             </tr>
                             {{/each}}
@@ -58,7 +77,7 @@
                         <span class="text-xl font-semibold">Total:</span>
                         <span id="totalPrice" class="text-xl font-semibold">${{totalPrice}}</span>
                     </div>
-                   
+
                 </div>
             </div>
 
@@ -81,7 +100,8 @@
                     </div>
                 </div>
                 <a href="/checkout">
-                    <button id="checkoutButton" class="mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Checkout</button>
+                    <button id="checkoutButton"
+                        class="mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Checkout</button>
                 </a>
             </div>
         </div>
@@ -122,24 +142,88 @@
             fetch(`/cart/remove/${productId}`, {
                 method: 'POST',
             })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.success) {
-                    // Remove the item from the cart UI
-                    const removedItem = document.querySelector(`[data-productid="${productId}"]`);
-                    removedItem.closest('tr').remove();
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        // Remove the item from the cart UI
+                        const removedItem = document.querySelector(`[data-productid="${productId}"]`);
+                        removedItem.closest('tr').remove();
 
-                    // Update the total price
-                    updateTotalPrice();
-                } else {
-                    // Handle the error (e.g., display an error message)
-                    console.error('Error removing item from cart:', data.error);
-                }
-            })
-            .catch((error) => {
-                console.error('Error removing item from cart:', error);
-            });
+                        // Update the total price
+                        updateTotalPrice();
+                    } else {
+                        // Handle the error (e.g., display an error message)
+                        console.error('Error removing item from cart:', data.error);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error removing item from cart:', error);
+                });
         }
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const quantityButtons = document.querySelectorAll('.quantity-button');
+
+            quantityButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const productId = button.getAttribute('data-productid');
+                    const inputElement = document.querySelector(`[data-productid="${productId}"]`);
+                    let quantity = parseInt(inputElement.value);
+
+                    if (button.classList.contains('increase-quantity')) {
+                        quantity++;
+                    } else if (button.classList.contains('decrease-quantity') && quantity > 1) {
+                        quantity--;
+                    }
+
+                    inputElement.value = quantity;
+                    updateTotalPrice();
+                    updateCartItemQuantity(productId, quantity);
+                });
+            });
+        });
+
+        function updateTotalPrice() {
+            const itemTotalElements = document.querySelectorAll('.total-amount');
+            let totalPrice = 0;
+
+            itemTotalElements.forEach((itemTotalElement) => {
+                const quantityElement = itemTotalElement.querySelector('.total');
+                const priceElement = itemTotalElement.previousElementSibling.querySelector('input');
+
+                const total = parseFloat(quantityElement.textContent) * parseFloat(priceElement.value);
+                totalPrice += total;
+                itemTotalElement.innerHTML = `$${total.toFixed(2)}`;
+            });
+
+            document.getElementById('totalPrice').textContent = `$${totalPrice.toFixed(2)}`;
+            document.getElementById('totalPriceSummary').textContent = `$${totalPrice.toFixed(2)}`;
+        }
+
+        function updateCartItemQuantity(productId, quantity) {
+            const data = {
+                productId,
+                quantity,
+            };
+
+            fetch(`/cart/updateQuantity`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Handle the response from the server if needed
+                })
+                .catch((error) => {
+                    console.error('Error updating cart item quantity:', error);
+                });
+        }
+    </script>
+
 </body>
+
 </html>
