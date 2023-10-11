@@ -67,8 +67,12 @@
 
                 <p class="text-2xl text-orange-500 font-bold mb-4">Rs. {{product.price}}</p>
                 <p class="text-lg text-gray-700 mb-6">{{product.description}}</p>
-            </div>
 
+                 <div id="cartMessage" class=" text-green-800 px-4 py-2 rounded-md mt-4  text-center hidden">
+               Item added to cart!
+            </div>
+            </div>
+           
             <a href="#"
                 class="block w-full bg-orange-500 text-white text-center py-2 rounded-lg mb-2 hover:bg-orange-600 transition duration-300 ease-in-out add-to-cart-btn"
                 data-productid="{{product._id}}">

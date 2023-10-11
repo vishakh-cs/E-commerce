@@ -6,6 +6,21 @@
     <title>User Profile</title>
     <!-- Link to the Tailwind CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.all.min.js"></script>
+<style>
+.fixed-size-div {
+    width: 50vw; 
+    height: 20vh; 
+}
+
+.fixed-size-div {
+       width: 40vw; 
+    height: 55vh; 
+}
+
+</style>
+
 </head>
 <body class="bg-gray-100">
 
@@ -33,66 +48,72 @@
         </div>
     </header>
 
-    <div class="container mx-auto py-4">
-        <form action="/profile/upload" method="POST" enctype="multipart/form-data">
-            <input type="file" name="profileImage">
-            <button type="submit">Upload</button>
-        </form>
+<div class="container mx-auto py-4">
+    <form action="/profile/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="profileImage">
+        <button type="submit">Upload</button>
+    </form>
+</div>
+
+<div class="container mx-auto flex justify-between items-center">
+    <a href="/logout"  class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg inline-block">
+        Logout
+    </a>
+</div>
+
+<section class="container mx-auto py-8 flex grow-0">
+    <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4 fixed-size-div">
+        <h2 class="text-xl font-semibold mb-4">User Information</h2>
+        <div>
+           <p><strong>Email:</strong> <span id="userEmail">{{ user.email }}</span> <button onclick="editEmail()">Edit</button></p>
+            <!-- Add more user details as needed -->
+        </div>
     </div>
 
-    <!-- User Profile Content -->
-    <section class="container mx-auto py-8 flex">
-        <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4">
-            <h2 class="text-xl font-semibold mb-4">User Information</h2>
-            <div>
-                <p><strong>Email:</strong> {{ user.email }}</p>
-                <!-- Add more user details as needed -->
-            </div>
-        </div>
-
-        <div class="w-1/2 bg-white p-6 shadow-md rounded-lg ml-4">
-            <h2 class="text-xl font-semibold mb-4">Recent Order</h2>
-          <div>
-{{#each user.recentOrders}}
-  <div class="mb-4">
-    <p><strong>Order ID:</strong> {{ orderId }}</p>
-    <p><strong>Status:</strong> {{ status }}</p>
-    <p><strong>Total Price:</strong> ${{ totalPrice }}</p>
-    <h3>Products:</h3>
-    <ul>
-      {{#each products}}
-      
-        <li class="product-item flex items-center mt-2">
-          <div class="w-16 h-16 bg-gray-200 overflow-hidden">
-            <img src="/uploads/{{ this.productImage }}" alt="Product Image" class="w-full h-full object-cover">
-          </div>
-          <div class="ml-4">
-            <p><strong>Product ID:</strong> {{ this.product._id }}</p>
-            <p><strong>Quantity:</strong> {{ this.quantity }}</p>
-            <!-- Add more product details as needed -->
-          </div>
-        </li>
-      {{/each}}
-    </ul>
-    <!-- Cancel Order Button -->
-    <form action="/cancelOrder/{{ orderId }}" method="POST">
-      <button type="submit" class="text-red-500 hover:underline">Cancel Order</button>
-    </form>
-  </div>
-{{/each}}
+<div class="w-1/2 bg-white p-6 shadow-md rounded-lg ml-4">
+    <h2 class="text-xl font-semibold mb-4">Recent Order</h2>
+    <table class="w-full border-collapse border border-gray-300">
+        <thead>
+            <tr>
+                <th class="border border-gray-300 py-2 px-4">Order ID</th>
+                <th class="border border-gray-300 py-2 px-4">Status</th>
+                <th class="border border-gray-300 py-2 px-4">Total Price</th>
+                <th class="border border-gray-300 py-2 px-4">Product Image</th>
+                <th class="border border-gray-300 py-2 px-4">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each user.recentOrders}}
+                <tr class="text-center">
+                    <td class="border border-gray-300 py-2 px-4">{{ orderId }}</td>
+                    <td class="border border-gray-300 py-2 px-4">{{ status }}</td>
+                    <td class="border border-gray-300 py-2 px-4">${{ totalPrice }}</td>
+                    <td class="border border-gray-300 py-2 px-4">
+                        <img src="/uploads/{{ products.[0].productImage }}" alt="Product Image" class="w-16 h-16 object-cover">
+                    </td>
+                    <td class="border border-gray-300 py-2 px-4">
+                        <!-- Cancel Order Button -->
+                        <form action="/cancelOrder/{{ orderId }}" method="POST">
+                            <button type="button" class="text-red-500 hover:underline" onclick="cancelOrder('{{ orderId }}')">Cancel Order</button>
+                        </form>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
 
 
-            </div>
         </div>
     </section>
 
     <!-- User Profile Content -->
-   <section class="container mx-auto py-8 flex">
-        <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4">
-            <h2 class="text-xl font-semibold mb-4">Addresses</h2>
-            <div>
-                <ul>
-                    {{#each user.addresses}}
+<section class="container mx-auto py-8 flex">
+    <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4 fixed-size-div">
+        <h2 class="text-xl font-semibold mb-4">Addresses</h2>
+        <div>
+            <ul>
+                {{#each user.addresses}}
                     <li class="address-item flex justify-between items-center mb-4" data-address-id="{{this._id}}">
                         <div>
                             <p><strong>{{this.tag}} Saved Address:</strong></p>
@@ -117,13 +138,46 @@
             </div>
         </div>
     </section>
-    <button id="addAddressButton" class="bg-blue-500 text-white py-2 px-4 ml-24 rounded-lg">Add New Address</button>
+  <button id="addAddressButton" class="bg-blue-500 text-white py-2 px-4 ml-24 rounded-lg">Add New Address</button>
     <footer class="bg-blue-500 p-4 mt-8">
         <div class="container mx-auto text-white">
             <!-- Your footer content here -->
         </div>
     </footer>
     <script>
+function cancelOrder(orderId) {
+    Swal.fire({
+        title: 'Confirm Cancellation',
+        text: 'Are you sure you want to cancel this order?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, cancel it',
+        cancelButtonText: 'No, keep it',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Send a request to cancel the order here
+            fetch(`/cancelOrder/${orderId}`, {
+                method: 'POST',
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // Handle success, e.g., display a success message
+                Swal.fire('Order Cancelled', 'The order has been successfully cancelled.', 'success');
+
+            })
+                            // Reload the page
+                location.reload();
+
+        }
+    });
+}
         function setPrimaryAddress(addressId) {
             // Send a POST request to set the address as primary
             fetch(`/api/setPrimaryAddress/${addressId}`, {
@@ -148,21 +202,75 @@
             });
         }
 
-        // JavaScript to check the number of addresses and show a message if there are more than 3
+        
         var addAddressButton = document.getElementById("addAddressButton");
 
         addAddressButton.addEventListener("click", function () {
             // Get the number of addresses
             var addressesCount = document.querySelectorAll(".address-item").length;
 
-            // Check if there are more than 3 addresses
-            if (addressesCount >= 3) {
-                alert("You already have three or more addresses. You cannot add more.");
+            
+            if (addressesCount >= 2) {
+                alert("You already have two or more addresses. You cannot add more.");
             } else {
                 // Redirect to the addnewaddress page
-                window.location.href = "/addnewaddress"; // Change the URL to the actual path of your addnewaddress page
+                window.location.href = "/addnewaddress";
             }
         });
     </script>
+<script>
+    function editEmail() {
+    const userEmailElement = document.getElementById("userEmail");
+    const currentEmail = userEmailElement.textContent;
+
+    // Create an input field for editing
+    const emailInput = document.createElement("input");
+    emailInput.type = "email";
+    emailInput.value = currentEmail;
+
+    // Replace the email text with the input field
+    userEmailElement.innerHTML = "";
+    userEmailElement.appendChild(emailInput);
+
+    // Add a "Save" button
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "Save";
+    saveButton.onclick = saveEmail;
+
+    userEmailElement.appendChild(saveButton);
+}
+function saveEmail() {
+    const userEmailElement = document.getElementById("userEmail");
+    const newEmail = userEmailElement.querySelector("input").value;
+
+    // Send a request to update the user's email
+    fetch("/user/updateEmail", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ newEmail: newEmail }),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+           
+            console.log(data.message);
+
+            // Replace the input field with the new email
+            userEmailElement.innerHTML = newEmail;
+        })
+        .catch((error) => {
+            
+            console.error("Error:", error);
+        });
+}
+
+</script>
+
 </body>
 </html>

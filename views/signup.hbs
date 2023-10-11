@@ -72,18 +72,24 @@
                     isValid = false;
                 }
 
-                if (passwordInput.value === '') {
-                    displayErrorMessage(passwordInput, 'Password is required');
-                    isValid = false;
-                }
+if (passwordInput.value === '') {
+    displayErrorMessage(passwordInput, 'Password is required');
+    isValid = false;
+}
 
-                if (confirmPasswordInput.value === '') {
-                    displayErrorMessage(confirmPasswordInput, 'Confirm Password is required');
-                    isValid = false;
-                } else if (passwordInput.value !== confirmPasswordInput.value) {
-                    displayErrorMessage(confirmPasswordInput, 'Passwords do not match');
-                    isValid = false;
-                }
+if (passwordInput.value.length < 6) {
+    displayErrorMessage(passwordInput, 'Password must be at least 6 characters long');
+    isValid = false;
+}
+
+if (confirmPasswordInput.value === '') {
+    displayErrorMessage(confirmPasswordInput, 'Confirm Password is required');
+    isValid = false;
+} else if (passwordInput.value !== confirmPasswordInput.value) {
+    displayErrorMessage(confirmPasswordInput, 'Passwords do not match');
+    isValid = false;
+}
+
 
                 // If the form is valid, you can submit it
                 if (isValid) {

@@ -91,6 +91,10 @@ router.post('/user/cart/update',usercontroller.decreaseCount)
 
 router.post('/cancelOrder/:orderId',usercontroller.cancelOrder)
 
+router.post('/user/updateEmail',usercontroller.changeEmail)
+
+router.get('/logout',usercontroller.logout)
+
 
 
 

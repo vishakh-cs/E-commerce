@@ -597,6 +597,31 @@ const profilepost = async (req, res) => {
   }
 }
 
+// edit user email
+
+const changeEmail = async (req, res) => {
+  const useremail = req.session.logedUser.email;
+  const newEmail = req.body.newEmail; // Extract newEmail as a string
+
+  try {
+      const user = await usermodel.findOne({ email: useremail });
+
+      if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+      }
+
+      user.email = newEmail;
+      await user.save();
+
+      return res.json({ message: 'User email updated successfully', user });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Error updating email' });
+  }
+};
+
+
+
 // set primary 
 
 const setPrimaryAddress = async (req, res) => {
@@ -931,6 +956,15 @@ const cancelOrder = async (req, res) => {
 }
 
 
+// logout
+
+const logout = async (req,res)=>{
+  const varr = req.session.loggedUser
+  req.session.destroy();
+  console.log("dis",varr);
+  res.redirect('/login')
+}
+
 
 module.exports = {
     signup,
@@ -963,5 +997,7 @@ module.exports = {
     category,
     decreaseCount,
     cancelOrder,
+    changeEmail,
+    logout,
 
 };
