@@ -95,6 +95,13 @@ router.get('/increaseCount/:productId',usercontroller.increaseCount)
 
 router.get('/decreaseCount/:productId',usercontroller.decreaseCount)
 
+router.get('/changepassword',usercontroller.ChangePassword)
+
+router.post('/changepasswordPost',usercontroller.changePasswordPost)
+
+// router.post('/user/updateEmail',usercontroller.changeEmail)
+
+
 
 
 

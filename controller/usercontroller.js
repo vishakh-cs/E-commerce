@@ -379,13 +379,16 @@ const home = async (req, res) => {
 const productview = async (req, res) => {
   try {
 
+    const userID = req.session.logedUser
+    const user = await usermodel.findById(userID);
+
     const product = await Products.findById(req.params.productId);
 
     // Get the first image URL
     const firstImageUrl = product.images[0]; // images is an array of image URLs
 
     // Render the product view page and pass the product and firstImageUrl 
-    res.render('productview', { product, firstImageUrl });
+    res.render('productview', { product, firstImageUrl , user });
   } catch (err) {
     console.error(err);
     res.status(500).send('Internal Server Error');
@@ -679,7 +682,7 @@ const profile = async (req, res) => {
           const product = await Products.findById(orderProduct.product);
           // console.log("Product:", product); 
           if (product && product.images.length > 0) {
-            orderProduct.productImage = product.images[0]; // Assuming you want to use the first image in the array
+            orderProduct.productImage = product.images[0]; // use the first image in the array
             // console.log("hii", orderProduct.productImage);
           }
         }
@@ -780,7 +783,51 @@ const setPrimaryAddress = async (req, res) => {
   }
 };
 
+// change password
+// render change passwword page 
+const ChangePassword = (req,res)=>{
+  try{
+  const userId = req.session.logedUser._id;
+  if(!userId){
+    return  res.redirect('/login') ;
+  }  else{
+    res.render('changepassword')
+  }
+} catch (error) {
+  console.error('Error setting primary address:', error);
+  res.status(500).send('Internal Server Error');
+}}
 
+
+
+
+// change password post 
+const changePasswordPost = async (req, res) => {
+  try {
+    const newPassword = req.body.password;
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const email = req.session.logedUser.email;
+    console.log("saru",email);
+
+    const user = await usermodel.findOneAndUpdate({email }, { password: hashedPassword });
+
+    if (!user) {
+
+      return res.status(404).send('User not found');
+    }
+    // Password reset successful, 
+    return res.redirect('/login');
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    return res.status(500).send('Internal Server Error');
+  }
+};
+
+
+
+// add address post
 
 const addAddresspost = async (req, res) => {
   try {
@@ -1116,5 +1163,7 @@ module.exports = {
   logout,
   increaseCount,
   decreaseCount,
+  ChangePassword,
+  changePasswordPost,
 
 };
