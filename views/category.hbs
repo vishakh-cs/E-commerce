@@ -10,7 +10,7 @@
     <!-- Navbar -->
     <header class="bg-nav-bar-red text-white py-4 xl:py-5">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="font-display text-xl"><strong>Classic Soul</strong></h1>
+        <a href="/"> <h1 class="font-display text-xl"><strong>Classic Soul</strong></h1></a> 
             <!-- Navigation menu with categories listed dynamically -->
             <nav>
                 <ul class="flex px-4 font-semibold font-heading space-x-12">
@@ -22,72 +22,56 @@
         </div>
     </header>
 
-    <!-- Category Listing -->
-        <div class="container mx-auto py-8">
-            <h1 class="text-3xl font-semibold mb-4">Categories</h1>
-            <ul class="flex flex-wrap"> <!-- Added flex and flex-wrap classes -->
-                {{#each category}}
-                <li class="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6 mb-4"> <!-- Adjust the width for different screen sizes -->
-                    <!-- Add a form to send the category name to UserController -->
-                    <form method="GET" action='/category' class="text-center block border border-gray-300 p-4 rounded-lg hover:border-indigo-500 transition duration-300 ease-in-out">
-                        <input type="hidden" name="categoryName" value="{{this.name}}"> <!-- Hidden input to store the category name -->
-                        <h2 class="text-xl font-semibold">{{this.name}}</h2>
-                        <button type="submit">View Products</button> <!-- Submit button to send the form data to UserController -->
-                    </form>
-                </li>
+    <!-- Filter by Subcategory -->
+    <div class="mb-4">
+        <label for="subCategoryFilter" class="text-lg font-semibold">Filter by Subcategory:</label>
+        <select id="subCategoryFilter" class="px-4 py-2 border border-gray-300 rounded-md ml-2">
+            <option value="">All</option>
+            {{#each category}}
+                {{#each this.subcategories}}
+                    <option value="{{this}}">{{this}}</option>
                 {{/each}}
-            </ul>
-        </div>
-    
-        <!-- Product Listing -->  
-        <div class="container mx-auto py-8">
-            <h1 class="text-3xl font-semibold mb-4">Products in {{categoryName}}</h1>
-            <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-8 ">
-                {{#each products}}
-                <li>
-                    <a href="/products/{{_id}}">
-                    <div class="border border-gray-200 mx-3 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out h-4/5"> 
-                        {{#each this.images}}
-                        <img src="/uploads/{{this}}" alt="{{../name}}" class="w-full h-3/4 mb-2">
-                        {{/each}}       
-                        <h2 class="text-lg font-semibold">{{this.name}}</h2>
-                        <p class="text-gray-600">{{this.description}}</p>
-                        <p class="text-gray-800 font-semibold mt-2">$ {{price}}</p>
-                    </div>
-                    </a>
-                </li>
-                {{/each}}
-            </ul>
-        </div>
+            {{/each}}
+        </select>
+    </div>
 
- <!-- Product subcategory listing-->  
-<div class="container mx-auto py-8">
-    <h1 class="text-3xl font-semibold mb-4">Subcategories in {{categoryName}}</h1>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-8">
-        {{#each subcategories}}
-        <div class="mb-4">
-            <h2 class="text-xl font-semibold">{{this}}</h2>
-            <!-- Display all products for this subcategory -->
-            <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-8">
-                {{#each products}}
-                <li>
+    <!-- Category Listing -->
+    <div class="container mx-auto py-8">
+        <h1 class="text-3xl font-semibold mb-4">Categories</h1>
+        <ul class="flex flex-wrap"> <!-- Added flex and flex-wrap classes -->
+            {{#each category}}
+            <li class="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6 mb-4"> <!-- Adjust the width for different screen sizes -->
+                <!-- Add a form to send the category name to UserController -->
+                <form method="GET" action='/category' class="text-center block border border-gray-300 p-4 rounded-lg hover:border-indigo-500 transition duration-300 ease-in-out">
+                    <input type="hidden" name="categoryName" value="{{this.name}}"> <!-- Hidden input to store the category name -->
+                    <h2 class="text-xl font-semibold">{{this.name}}</h2>
+                    <button type="submit">View Products</button> <!-- Submit button to send the form data to UserController -->
+                </form>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+
+    <!-- Product Listing -->
+    <div class="container mx-auto py-8">
+        <h1 class="text-3xl font-semibold mb-4">Products in {{categoryName}}</h1>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-8">
+            {{#each products}}
+                <li class="product-item" data-subcategory="{{subcategory}}">
                     <a href="/products/{{_id}}">
                         <div class="border border-gray-200 mx-3 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out h-4/5"> 
                             {{#each this.images}}
-                            <img src="/uploads/{{this}}" alt="{{../name}}" class="w-full h-3/4 mb-2">
+                                <img src="/uploads/{{this}}" alt="{{../name}}" class="w-full h-3/4 mb-2">
                             {{/each}}       
-                            <h3 class="text-lg font-semibold">{{this.name}}</h3>
+                            <h2 class="text-lg font-semibold">{{this.name}}</h2>
                             <p class="text-gray-600">{{this.description}}</p>
-                            <p class="text-gray-800 font-semibold mt-2">$ {{this.price}}</p>
+                            <p class="text-gray-800 font-semibold mt-2">$ {{price}}</p>
                         </div>
                     </a>
                 </li>
-                {{/each}}
-            </ul>
-        </div>
-        {{/each}}
+            {{/each}}
+        </ul>
     </div>
-</div>
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-8">
@@ -96,5 +80,24 @@
             <!-- Social media links, contact information, etc. can be added here -->
         </div>
     </footer>
+
+    <!-- JavaScript for Filtering Products by Subcategory -->
+    <script>
+        const subCategoryFilter = document.getElementById('subCategoryFilter');
+        const productItems = document.querySelectorAll('.product-item');
+
+        subCategoryFilter.addEventListener('change', () => {
+            const selectedSubcategory = subCategoryFilter.value.toLowerCase();
+
+            productItems.forEach(item => {
+                const itemSubcategory = item.getAttribute('data-subcategory').toLowerCase();
+                if (!selectedSubcategory || selectedSubcategory === itemSubcategory) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

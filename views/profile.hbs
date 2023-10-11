@@ -61,6 +61,7 @@
     <h3>Products:</h3>
     <ul>
       {{#each products}}
+      
         <li class="product-item flex items-center mt-2">
           <div class="w-16 h-16 bg-gray-200 overflow-hidden">
             <img src="/uploads/{{ this.productImage }}" alt="Product Image" class="w-full h-full object-cover">
@@ -73,6 +74,10 @@
         </li>
       {{/each}}
     </ul>
+    <!-- Cancel Order Button -->
+    <form action="/cancelOrder/{{ orderId }}" method="POST">
+      <button type="submit" class="text-red-500 hover:underline">Cancel Order</button>
+    </form>
   </div>
 {{/each}}
 

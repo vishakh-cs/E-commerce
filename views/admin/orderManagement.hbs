@@ -96,29 +96,28 @@
                     </thead>
                     <tbody>
                         {{#each orders}}
-                        <tr>
-                             {{#each this.products}}
-                            <td class="px-6 py-4 whitespace-no-wrap"><img src="/uploads/{{this.productImage}}" alt="{{this.product.productName}}" class="w-16 h-16"></td>
-                            <td class="px-6 py-4 whitespace-no-wrap">{{this._id}}</td> 
-                            <td class="px-6 py-4 whitespace-no-wrap">{{this.quantity}}</td>
+                            {{#each this.products}}
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-no-wrap"><img src="/uploads/{{this.productImage}}" alt="{{this.product.productName}}" class="w-20 h-16"></td>
+                                    <td class="px-6 py-4 whitespace-no-wrap">{{this.product._id}}</td> 
+                                    <td class="px-6 py-4 whitespace-no-wrap">{{../_id}}</td>
+                                    <td class="px-6 py-4 whitespace-no-wrap">{{this.quantity}}</td>
+                                    <td class="px-6 py-4 whitespace-no-wrap">${{this.totalPrice}}</td>
+                                    <td class="px-6 py-4 whitespace-no-wrap">{{../userId}}</td>
+                                    <td class="px-6 py-4 whitespace-no-wrap">
+                                        <form action="/updatestatus" method="post">
+                                            <select name="status">
+                                                <option value="Pending">Pending</option>
+                                                <option value="Delivered">Delivered</option>
+                                                <option value="Cancel">Cancel</option>
+                                            </select>
+                                            <input type="hidden" name="orderId" value="{{../_id}}">
+                                            <button type="submit" class="text-green-600 hover:text-green-900 font-semibold">Update</button>
+                                        </form>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-no-wrap">${{../orderDate}}</td>
+                                </tr>
                             {{/each}}
-                             <td class="px-6 py-4 whitespace-no-wrap">{{this._id}}</td>
-                           
-                            <td class="px-6 py-4 whitespace-no-wrap">${{this.totalPrice}}</td>
-                            <td class="px-6 py-4 whitespace-no-wrap">{{this.userId}}</td>
-<td class="px-6 py-4 whitespace-no-wrap">
-    <form action="/updatestatus" method="post">
-        <select name="status">
-            <option value="Pending">Pending</option>
-            <option value="Delivered">Delivered</option>
-            <option value="Cancel">Cancel</option>
-        </select>
-        <input type="hidden" name="orderId" value="{{this._id}}">
-        <button type="submit" class="text-green-600 hover:text-green-900 font-semibold">Update</button>
-    </form>
-</td>
- <td class="px-6 py-4 whitespace-no-wrap">${{this.orderDate}}</td>
-                        </tr>
                         {{/each}}
                     </tbody>
                 </table>
