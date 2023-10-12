@@ -102,6 +102,8 @@ router.post('/changepasswordPost',usercontroller.changePasswordPost)
 
 // router.get('/newaddresscheckout',usercontroller.newaddressCkeckout);
 
+router.get('/notfound',usercontroller.notfound)
+
 
 
 

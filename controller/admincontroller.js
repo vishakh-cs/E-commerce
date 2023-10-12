@@ -69,13 +69,20 @@ const addproductspost = async (req, res) => {
     const { name, description, category, subcategory, price, quantity, rating, offers } = req.body;
     const images = req.files.map((file) => file.filename);
 
+    // Calculate the discount amount
+    const discountPercentage = parseFloat(offers); // Convert offers to a floating-point number
+    const discountAmount = (discountPercentage / 100) * price;
+
+    // Calculate the final price after discount
+    const discountedPrice = price - discountAmount;
+
     // Create a new Product document based on the schema
     const newProduct = new productmodel({
       name,
       description,
       category,
       subcategory, 
-      price,
+      price: discountedPrice, // Set the discounted price
       quantity,
       rating,
       offers,
@@ -91,6 +98,7 @@ const addproductspost = async (req, res) => {
     res.status(500).send('Error adding product');
   }
 };
+
 
 
 
@@ -381,7 +389,7 @@ const searchUsers = async (req, res) => {
     // Get the search query from the form
     const searchQuery = req.body.search;
 
-    // Use a regular expression to perform a case-insensitive search
+    //  regular expression to perform a case-insensitive search
     const regex = new RegExp(searchQuery, 'i');
 
     // Find users whose username matches the search query

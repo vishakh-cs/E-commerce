@@ -258,11 +258,11 @@ function cancelOrder(orderId) {
                 return response.json();
             })
             .then((data) => {
-                // Handle success, e.g., display a success message
+                
                 console.log(data.message);
             })
             .catch((error) => {
-                // Handle error, e.g., display an error message
+              
                 console.error('Error:', error);
             });
         }

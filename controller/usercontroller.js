@@ -417,29 +417,40 @@ const cart = async (req, res) => {
     }
 
     // Fetch products from the database based on the user's cart items
-    const array = req.params.userid;
     const userCart = req.session.logedUser.cart;
 
     console.log('cartitem', userCart);
     const cartProducts = await Promise.all(userCart.map(async (cartItem) => {
-      const product = await Products.findById(cartItem.productId);
-      return {
-        product,
-        quantity: cartItem.quantity
-      };
+      try {
+        const product = await Products.findById(cartItem.productId);
+        if (!product) {
+          throw new Error('Product not found'); // Handle the case where the product is not found
+        }
+        return {
+          product,
+          quantity: cartItem.quantity
+        };
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        return null; // Return null for products that could not be found
+      }
     }));
     console.log('promise', cartProducts);
 
-    // Calculate total price
-    const totalPrice = cartProducts.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    // Filter out null products
+    const validCartProducts = cartProducts.filter((item) => item !== null);
 
-    // Render the cart page with cart products and total price
-    res.render('cart', { cartProducts, totalPrice });
+    // Calculate total price
+    const totalPrice = validCartProducts.reduce((total, item) => total + item.product.price * item.quantity, 0);
+
+    // Render the cart page with valid cart products and total price
+    res.render('cart', { cartProducts: validCartProducts, totalPrice });
   } catch (error) {
     console.error('Error rendering cart page:', error);
     res.status(500).send('Internal Server Error');
   }
 }
+
 
 // add to cart 
 const addToCart = async (req, res) => {
@@ -923,19 +934,33 @@ const checkout = async (req, res) => {
       // Redirect the user to a shopping cart page or display a message
       return res.redirect('/cart/:userid'); // You can change this URL
     }
+
     const cartProducts = await Promise.all(userCart.map(async (cartItem) => {
-      const product = await Products.findById(cartItem.productId);
-      return {
-        product,
-        quantity: cartItem.quantity
-      };
+      try {
+        const product = await Products.findById(cartItem.productId);
+        if (!product) {
+          throw new Error('Product not found'); // Handle the case where the product is not found
+        }
+        return {
+          product,
+          quantity: cartItem.quantity
+        };
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        return null; // Return null for products that could not be found
+      }
     }));
+
+    // Filter out null products
+    const validCartProducts = cartProducts.filter((item) => item !== null);
+
     // Calculate the total price
-    const totalPrice = cartProducts.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    const totalPrice = validCartProducts.reduce((total, item) => total + item.product.price * item.quantity, 0);
+
     res.render('checkout', {
       user,
       primaryAddress,
-      cartProducts,
+      cartProducts: validCartProducts,
       totalPrice
     });
   } catch (error) {
@@ -943,6 +968,7 @@ const checkout = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
 
 // order success page
 
@@ -957,18 +983,29 @@ const orderSuccess = async (req, res) => {
 
     // Fetch user's cart products and populate the product details
     const cartProducts = await Promise.all(user.cart.map(async (cartItem) => {
-      const populatedCartItem = await usermodel.populate(cartItem, {
-        path: 'productId',
-        model: 'Product'
-      });
-      return {
-        product: populatedCartItem.productId,
-        quantity: cartItem.quantity
-      };
+      try {
+        const populatedCartItem = await usermodel.populate(cartItem, {
+          path: 'productId',
+          model: 'Product'
+        });
+        if (!populatedCartItem.productId) {
+          throw new Error('Product not found'); // Handle the case where the product is not found
+        }
+        return {
+          product: populatedCartItem.productId,
+          quantity: cartItem.quantity
+        };
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        return null; // Return null for products that could not be found
+      }
     }));
 
+    // Filter out null products
+    const validCartProducts = cartProducts.filter((cartItem) => cartItem !== null);
+
     // Calculate the total price of the order
-    const totalPrice = cartProducts.reduce((total, cartItem) => {
+    const totalPrice = validCartProducts.reduce((total, cartItem) => {
       return total + (cartItem.product.price * cartItem.quantity);
     }, 0);
 
@@ -976,11 +1013,10 @@ const orderSuccess = async (req, res) => {
     const newOrder = new order({
       userId: userId,
       address: user.addresses[0]._id,
-      products: cartProducts.map((cartItem) => ({
+      products: validCartProducts.map((cartItem) => ({
         product: cartItem.product._id,
         quantity: cartItem.quantity,
         productImage: cartItem.product.images.join(', ')
-
       })),
       totalPrice: totalPrice
     });
@@ -989,16 +1025,16 @@ const orderSuccess = async (req, res) => {
     await newOrder.save();
 
     const orderDetails = {
-      productNames: cartProducts.map((cartItem) => cartItem.product.name).join(', '),
-      productImages: cartProducts.map((cartItem) => cartItem.product.images)
+      productNames: validCartProducts.map((cartItem) => cartItem.product.name).join(', '),
+      productImages: validCartProducts.map((cartItem) => cartItem.product.images)
     };
 
     // Render the order success page with user and order details
     res.render('successorder', {
       user,
-      cartProducts,
+      cartProducts: validCartProducts,
       orderDetails,
-      totalPrice // Pass the total price to the view for display
+      totalPrice 
     });
 
     // Clear the user's cart
@@ -1034,9 +1070,6 @@ const incrementQuantity = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
-
-// decrement cart items
 
 
 
@@ -1143,6 +1176,14 @@ const logout = async (req, res) => {
   res.redirect('/login')
 }
 
+// 404
+
+const notfound = (req,res)=>{
+  res.render('404')
+
+}
+
+
 
 module.exports = {
   signup,
@@ -1180,5 +1221,6 @@ module.exports = {
   decreaseCount,
   ChangePassword,
   changePasswordPost,
+  notfound,
 
 };
