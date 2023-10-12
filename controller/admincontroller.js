@@ -6,9 +6,13 @@ const orderModel = require('../models/orderModel')
 
 // admin login get
 const adminlogin = (req,res)=>{
+  if(req.session.admin){
+    return res.redirect('/admindashboard');
+  }
     res.render('admin/adminlogin')
 }
 
+// admin login post
 
 const adminloginpost = (req, res) => {
   const adminname = req.body.username
@@ -404,12 +408,19 @@ const orderManagement = async (req, res) => {
       orderitems.sort((a, b) => b.orderDate - a.orderDate);
     }
 
+    // Calculate the total price for each order and set it in the result
+    orderitems = orderitems.map(order => {
+      const totalPrice = order.products.reduce((acc, product) => acc + (product.product.price * product.quantity), 0);
+      return { ...order.toObject(), totalPrice };
+    });
+
     res.render("admin/orderManagement", { orders: orderitems });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 
 // update the order status

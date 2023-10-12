@@ -342,6 +342,9 @@ const loginpost = async (req, res) => {
   try {
     const user = await usermodel.findOne({ email: loginemail });
 
+    if(user.isblocked){
+      return res.json({ status : "Your account is blocked by admin"})
+    }
     if (user && await bcrypt.compare(password, user.password)) {
       // storing name and password on session
       req.session.logedUser = {
@@ -376,6 +379,7 @@ const home = async (req, res) => {
   }
 };
 
+// product view 
 const productview = async (req, res) => {
   try {
 
