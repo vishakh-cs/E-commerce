@@ -43,3 +43,92 @@ const adminUpdateProduct = async (req, res) => {
       .send('error fetching:update product failed to update in database');
   }
 };
+
+
+
+// new add 
+<script>
+    // Function to toggle the visibility of the new address form
+    function toggleNewAddressForm() {
+        const newAddressForm = document.getElementById('new-address-form');
+        if (newAddressForm.style.display === 'none' || newAddressForm.style.display === '') {
+            newAddressForm.style.display = 'block';
+        } else {
+            newAddressForm.style.display = 'none';
+        }
+    }
+    function saveNewAddress(event) {
+    event.preventDefault(); // Prevent the form from submitting in the traditional way
+
+    const name = document.getElementById('name').value; // Get the values from the form fields
+    const address = document.getElementById('address').value;
+    const city = document.getElementById('city').value;
+    const pin = document.getElementById('pin').value;
+    const phone = document.getElementById('phone').value;
+    const state = document.getElementById('state').value;
+    const country = document.getElementById('country').value;
+
+    const data = { name, address, city, pin, phone, state, country }; 
+    fetch('/users/savenewAddress', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json()) 
+    .then(result => {
+        console.log('Address saved:', result); 
+        
+    })
+    .catch(error => {
+        console.error('Error:', error); 
+    });
+}
+</script>
+
+baki 
+
+// new address ceckout
+const saveAddress = async (req, res) => {
+  const { name, address, city, pin, phone, state, country } = req.body;
+
+  try {
+      // Create a new address object based on your User model schema
+      const newAddress = {
+          name,
+          address,
+          city,
+          pin,
+          phone,
+          state,
+          country,
+      };
+
+      // Find the user by ID and update the addresses array with the new address
+      const user = await usermodel.findByIdAndUpdate(req.user.id, {
+          $push: { addresses: newAddress },
+      });
+
+      res.json({ message: 'Address saved successfully', user });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
+    <!-- Form for adding a new address ( hidden) -->
+    <form id="new-address-form" class="hidden mt-4">
+        <!-- Add form fields for new address here -->
+        <input type="text" placeholder="Address" class="mb-2">
+        <input type="text" placeholder="City" class="mb-2">
+        <input type="text" placeholder="Pin" class="mb-2">
+        <input type="text" placeholder="Phone" class="mb-2">
+        <input type="text" placeholder="State" class="mb-2">
+         <input type="text" placeholder="Country" class="mb-2">
+
+        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-full">Save Address</button>
+    </form>
+              <button id="add-address-button" class="bg-blue-500 hover-bg-blue-700 text-white font-semibold py-2 px-4 rounded-full mt-4" onclick="toggleNewAddressForm()">Add New Address</button>
+    end --->

@@ -138,14 +138,19 @@ const otppost = async (req, res) => {
 
 // login get
 const login = (req, res) => {
+  if(req.session.logedUser){
+    res.redirect('/')
+  }
   res.render('login')
 }
 
 
+// forgot password get
 const forgotpassword = (req, res) => {
   res.render('forgotpassword');
 }
 
+// forgot password post
 const forgotpasswordPost = async (req, res) => {
   try {
     // Check if the provided email exists in the database
@@ -601,64 +606,57 @@ const increaseCount = async (req, res) => {
 
 const decreaseCount = async (req, res) => {
   try {
-    const productId = req.params.productId
+      const productId = req.params.productId;
+      const userCart = req.session.logedUser.cart;
+      const userId = req.session.logedUser._id;
 
-    const product = await Products.findById(productId);
+      // Find the index of the product in the cart
+      const existingProductIndex = userCart.findIndex(item => item.productId.toString() === productId);
 
+      if (existingProductIndex !== -1) {
+          // If product already exists in the cart
+          if (userCart[existingProductIndex].quantity > 1) {
+              // Decrease the quantity only if it's greater than 1
+              userCart[existingProductIndex].quantity -= 1;
+          } else {
+              // If quantity is 1, do not decrease it further
+              return res.redirect("back")
+          }
+      } else {
+          // If product is not in the cart, return an error (or handle it according to your use case)
+          return res.json({ success: false, error: 'Product not found in the cart' });
+      }
 
-    if (!product) {
-      return res.json({ success: false, error: 'product not found' });
-    }
+      // Save the updated cart to the session
+      req.session.save(async (err) => {
+          if (err) {
+              console.error('Error saving session:', err);
+              return res.status(500).json({ error: 'Internal Server Error' });
+          }
 
-    const userCart = req.session.logedUser.cart;
+          // Update the user's cart in the database
+          try {
+              const saveCart = req.session.logedUser.cart;
+              const user = await usermodel.findById(userId);
 
-    const userId = req.session.logedUser._id;
+              if (!user) {
+                  return res.status(404).json({ error: 'User not found' });
+              }
 
-    // to check product is already in the cart
-    const existingProductIndex = userCart.findIndex(item => item.productId.toString() === productId);
+              user.cart = saveCart;
+              await user.save();
 
-    if (existingProductIndex !== -1) {
-      // If product already exists, increase its quantity
-      userCart[existingProductIndex].quantity -= 1;
-    } else {
-
-      userCart.push({
-        productId: productId,
-        quantity: 1
+              return res.redirect("back");
+          } catch (error) {
+              console.error('Error updating user cart in the database:', error);
+              return res.status(500).json({ error: 'Internal Server Error' });
+          }
       });
-    }
-
-    req.session.save(async (err) => {
-      if (err) {
-        console.error('Error saving session:', err);
-        return res.status(500).json({ error: 'Internal Server Error' });
-      }
-
-      try {
-        const saveCart = req.session.logedUser.cart
-        console.log("seved ", saveCart);
-        const user = await usermodel.findById(userId);
-
-        if (!user) {
-          return res.status(404).json({ error: 'User not found' });
-        }
-
-        user.cart = saveCart;
-        await user.save();
-
-        return res.redirect("back")
-      } catch (error) {
-        console.error('Error updating user cart in the database:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
-      }
-    });
-
-
   } catch (error) {
-    console.error('Error increaseCount:', error);
-    res.json({ error: 'Internal server error increaseCount ' });
+      console.error('Error decreaseCount:', error);
+      res.json({ error: 'Internal server error decreaseCount' });
   }
-}
+};
 
 
 
@@ -673,25 +671,23 @@ const profile = async (req, res) => {
       return res.status(404).send('User not found');
     }
 
-    // Fetch the user's recent orders from your database
+    // Fetch the user's recent orders and populate products
     const recentOrders = await order
       .find({ userId: userId })
       .limit(5)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .populate('products'); // Populate products within each order
 
     // Iterate through recent orders and populate product images
     for (const order of recentOrders) {
-      for (const order of recentOrders) {
-        for (const orderProduct of order.products) {
-          const product = await Products.findById(orderProduct.product);
-          // console.log("Product:", product); 
-          if (product && product.images.length > 0) {
-            orderProduct.productImage = product.images[0]; // use the first image in the array
-            // console.log("hii", orderProduct.productImage);
-          }
+      for (const orderProduct of order.products) {
+        const product = await Products.findById(orderProduct.product);
+        if (product && product.images.length > 0) {
+          orderProduct.productImage = product.images[0]; // use the first image in the array
         }
       }
     }
+    
     user.recentOrders = recentOrders.map((order) => ({
       orderId: order._id,
       status: order.status,
@@ -705,6 +701,7 @@ const profile = async (req, res) => {
     res.redirect('/login');
   }
 };
+
 
 
 // profile post
@@ -1121,6 +1118,20 @@ const cancelOrder = async (req, res) => {
     res.status(500).send('Internal server error');
   }
 }
+
+// // new address checkout
+
+// const newaddressCkeckout = async (req,res)=>{
+//   try {
+//     if (!req.session.logedUser) {
+//       return res.redirect('/login');
+//     }
+//     res.render('newaddresschk')
+
+// }
+
+
+
 
 
 // logout

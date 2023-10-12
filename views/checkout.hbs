@@ -108,7 +108,9 @@
                     </li>
                     {{/if}}
                     {{/each}}
-                </ul>
+              
+                   </ul> 
+                   <button id="add-address-button" class="bg-blue-500 hover-bg-blue-700 text-white font-semibold py-2 px-4 rounded-full mt-4" onclick="redirectToNewAddressCheckout()">Add New Address</button>
             </div>
         </div>
          </div>
@@ -116,7 +118,12 @@
             <button id="checkout-button" class="bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50" onclick="completePurchase()">Complete Purchase</button>
         </div>
     </div>
+       <script>
 
+         function redirectToNewAddressCheckout() {
+    window.location.href = '/addnewaddress';
+}
+</script>
     <script>
         // Function to handle the "Complete Purchase" button click
         function completePurchase() {
@@ -127,10 +134,10 @@
                 // Redirect to the order success page
                 window.location.href = '/ordersuccess'; 
             } else {
-                // Handle other payment methods
-                // You can add your logic here for other payment methods
+               
             }
         }
     </script>
+    
 </body>
 </html>

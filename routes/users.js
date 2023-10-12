@@ -100,7 +100,7 @@ router.get('/changepassword',usercontroller.ChangePassword)
 
 router.post('/changepasswordPost',usercontroller.changePasswordPost)
 
-// router.post('/user/updateEmail',usercontroller.changeEmail)
+// router.get('/newaddresscheckout',usercontroller.newaddressCkeckout);
 
 
 
