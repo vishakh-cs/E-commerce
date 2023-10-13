@@ -36,7 +36,7 @@
 </head>
 
 <body class="overflow-x-hidden">
-     <!-- Header -->
+    <!-- Header -->
     <header class="bg-nav-bar-red text-white py-4 xl:py-5">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="font-display text-xl"><strong>Classic Soul</strong> </h1>
@@ -48,33 +48,42 @@
             </nav>
             <div class="hidden xl:flex items-center space-x-5">
                 <a class="hover:text-gray-200 flex items-center" href="#">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                     <span class="ml-2">Wishlist</span>
                 </a>
                 <a class="flex items-center hover:text-gray-200" href="/cart/{{user._id}}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                     <span class="ml-2">Cart</span>
                     <span class="flex absolute -mt-5 ml-4">
-                        <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
+                        <span
+                            class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500"></span>
                     </span>
                 </a>
                 <!-- Sign In / Register -->
                 <a class="flex items-center hover:text-gray-200" href="/profile">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span class="ml-2">Profile</span>
                 </a>
             </div>
             <!-- Responsive navbar -->
             <a class="xl:hidden flex mr-6 items-center" href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1000 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1000 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 <span class="flex absolute -mt-5 ml-4">
                     <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
@@ -82,13 +91,15 @@
                 </span>
             </a>
             <a class="navbar-burger self-center mr-12 xl:hidden" href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </a>
         </div>
     </header>
-    <div class="container mx-auto mt-16 p-4 bg-white shadow-lg rounded-lg flex flex-wrap lg:flex-nowrap justify-between">
+    <div
+        class="container mx-auto mt-16 p-4 bg-white shadow-lg rounded-lg flex flex-wrap lg:flex-nowrap justify-between">
         <div class="w-full lg:w-1/2 lg:pr-8">
             <div class="p-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
@@ -120,20 +131,21 @@
                 <p class="text-2xl text-orange-500 font-bold mb-4">Rs. {{product.price}}</p>
                 <p class="text-lg text-gray-700 mb-6">{{product.description}}</p>
 
-                 <div id="cartMessage" class=" text-green-800 px-4 py-2 rounded-md mt-4  text-center hidden">
-               Item added to cart!
+                <div id="cartMessage" class=" text-green-800 px-4 py-2 rounded-md mt-4  text-center hidden">
+                    Item added to cart!
+                </div>
             </div>
-            </div>
-           
+
             <a href="#"
                 class="block w-full bg-orange-500 text-white text-center py-2 rounded-lg mb-2 hover:bg-orange-600 transition duration-300 ease-in-out add-to-cart-btn"
                 data-productid="{{product._id}}">
                 Add to Cart
             </a>
-            <a href="#"
+            <form action="/buynow/{{product._id}}" method="post"
                 class="block w-full bg-blue-500 text-white text-center py-2 rounded-lg mb-2 hover:bg-blue-600 transition duration-300 ease-in-out">
-                Buy Now
-            </a>
+                <button type="submit">Buy Now</button>
+            </form>
+
             <a href="#"
                 class="block w-full bg-gray-500 text-white text-center py-2 rounded-lg hover:bg-gray-600 transition duration-300 ease-in-out">
                 Add to Wishlist

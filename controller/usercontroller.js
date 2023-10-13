@@ -347,8 +347,12 @@ const loginpost = async (req, res) => {
   try {
     const user = await usermodel.findOne({ email: loginemail });
 
-    if(user.isblocked){
-      return res.json({ status : "Your account is blocked by admin"})
+    if (!user) {
+      return res.json({ status: "User not found" });
+    }
+
+    if (user.isblocked) {
+      return res.json({ status: "Your account is blocked by admin" });
     }
     if (user && await bcrypt.compare(password, user.password)) {
       // storing name and password on session
@@ -1152,19 +1156,101 @@ const cancelOrder = async (req, res) => {
   }
 }
 
-// // new address checkout
 
-// const newaddressCkeckout = async (req,res)=>{
-//   try {
-//     if (!req.session.logedUser) {
-//       return res.redirect('/login');
-//     }
-//     res.render('newaddresschk')
+// bynow button click 
+const buynow = async (req, res) => {
+  const productId = req.params.productId; 
+  const userId = req.session.logedUser._id;
 
-// }
+  try {
+  
+    const user = await usermodel.findById(userId);
+
+    if (!user) {
+    
+      return res.redirect('/login');
+    }
+
+    const primaryAddress = user.addresses.find((address) => address.primary === true);
+
+    if (!primaryAddress) {
+     
+      return res.status(404).json({ error: "Primary address not found" });
+    }
+    req.session.buynowprdt =  productId
+   
+    res.redirect('/buynowcheckoutpage');
+  } catch (error) {
+   
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 
+// buynow checkout page 
 
+const  buynowcheckoutpage = async (req,res)=>{
+
+  const userId = req.session.logedUser._id;
+  const productId = req.session.buynowprdt;
+  const product = await Products.findById(productId)
+
+  const user = await usermodel.findById(userId);
+if(!user){
+  return res.redirect("/login");
+}
+
+  const totalPrice = product.price *1;
+  const primaryAddress = user.addresses.find((address) => address.primary === true);
+  if (!primaryAddress) {
+   
+    return res.status(404).json({ error: "Primary address not found" });
+  }
+
+res.render('buyCheckout',{user,
+ primaryAddress,
+product,
+totalPrice})
+}
+ 
+// buysuccess page 
+
+const buySuccess = async (req, res) => {
+  try {
+    const userId = req.session.logedUser._id;
+    const productId = req.session.buynowprdt;
+
+    const user = await usermodel.findById(userId);
+    const product = await Products.findById(productId);
+
+    if (!user || !product) {
+      return res.status(404).json({ error: "User or product not found" });
+    }
+    // Assuming a single product is being ordered
+    const newOrder = new order({
+      userId: userId,
+      address: user.addresses[0]._id,
+      products: [
+        {
+          product: product._id,
+          quantity: 1, // Assuming a quantity of 1 for a single product
+          productImage: product.images[0], // Assuming the first image of the product
+        }
+      ],
+      totalPrice: product.price, // Assuming 'product' has a 'price' property
+    });
+    await newOrder.save();
+    // Clear the session data for buynowprdt
+    delete req.session.buynowprdt;
+
+    // Render the 'bynowSuccess' view (bynowSuccess.hbs) and pass user and product data
+    res.render('bynowSuccess', { user,product});
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 
 // logout
@@ -1222,5 +1308,8 @@ module.exports = {
   ChangePassword,
   changePasswordPost,
   notfound,
+  buynow,
+  buynowcheckoutpage,
+  buySuccess,
 
 };

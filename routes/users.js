@@ -104,6 +104,12 @@ router.post('/changepasswordPost',usercontroller.changePasswordPost)
 
 router.get('/notfound',usercontroller.notfound)
 
+router.post('/buynow/:productId',usercontroller.buynow)
+
+router.get('/buynowcheckoutpage',usercontroller.buynowcheckoutpage)
+
+router.get('/buynowSuccess',usercontroller.buySuccess)
+
 
 
 
