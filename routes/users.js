@@ -110,6 +110,8 @@ router.get('/buynowcheckoutpage',usercontroller.buynowcheckoutpage)
 
 router.get('/buynowSuccess',usercontroller.buySuccess)
 
+router.post('/searchprdt',usercontroller.searchprdt)
+
 
 
 

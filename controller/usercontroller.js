@@ -748,8 +748,7 @@ const profilepost = async (req, res) => {
 
 const changeEmail = async (req, res) => {
   const useremail = req.session.logedUser.email;
-  const newEmail = req.body.newEmail; // Extract newEmail as a string
-
+  const newEmail = req.body.newEmail; 
   try {
     const user = await usermodel.findOne({ email: useremail });
 
@@ -766,7 +765,6 @@ const changeEmail = async (req, res) => {
     return res.status(500).json({ error: 'Error updating email' });
   }
 };
-
 
 
 // set primary 
@@ -1227,24 +1225,22 @@ const buySuccess = async (req, res) => {
     if (!user || !product) {
       return res.status(404).json({ error: "User or product not found" });
     }
-    // Assuming a single product is being ordered
+    // single product is ordered
     const newOrder = new order({
       userId: userId,
       address: user.addresses[0]._id,
       products: [
         {
           product: product._id,
-          quantity: 1, // Assuming a quantity of 1 for a single product
-          productImage: product.images[0], // Assuming the first image of the product
+          quantity: 1, 
+          productImage: product.images[0], 
         }
       ],
-      totalPrice: product.price, // Assuming 'product' has a 'price' property
+      totalPrice: product.price, 
     });
     await newOrder.save();
     // Clear the session data for buynowprdt
     delete req.session.buynowprdt;
-
-    // Render the 'bynowSuccess' view (bynowSuccess.hbs) and pass user and product data
     res.render('bynowSuccess', { user,product});
   } catch (error) {
     console.error("Error:", error);
@@ -1252,6 +1248,19 @@ const buySuccess = async (req, res) => {
   }
 };
 
+
+// search product 
+const searchprdt = async (req, res) => {
+  const searchQuery = req.body.searchQuery;
+  try {
+    const regexPattern = new RegExp(searchQuery, 'i');
+    const products = await Products.find({ name: { $regex: new RegExp(searchQuery, 'i') } });
+      res.render('searchprdt', { products });
+  } catch (error) {
+      console.error('Error searching for products:', error);
+      res.status(500).send('Error searching for products');
+  }
+};
 
 // logout
 
@@ -1311,5 +1320,6 @@ module.exports = {
   buynow,
   buynowcheckoutpage,
   buySuccess,
+  searchprdt,
 
 };
