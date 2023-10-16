@@ -16,23 +16,51 @@
     <div class="container mx-auto mt-8 px-4">
         <h1 class="text-3xl font-semibold mb-4">Search Results</h1>
 
-        <!-- Product list -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {{#each products}}
-                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                    {{#each images}}
-                        <img src="/uploads/{{this}}" alt="{{../name}}" class="w-full h-48 object-cover">
-                    {{/each}}
-                    <div class="p-4">
-                        <h2 class="text-xl font-semibold mb-2">{{name}}</h2>
-                        <p class="text-gray-600 mb-4">{{description}}</p>
-                        <p class="text-gray-800 font-semibold text-lg">${{price}}</p>
-                        <a href="/products/{{_id}}" class="mt-4 block bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">View Details</a>
-                    </div>
-                </div>
+<!-- Product list -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-10">
+    {{#each products}}
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden mb-16">
+            {{#each images}}
+                <img src="/uploads/{{this}}" alt="{{../name}}" class="w-full h-72 object-cover">
             {{/each}}
+            <div class="p-4">
+                <h2 class="text-xl font-semibold mb-2">{{name}}</h2>
+                <p class="text-gray-600 mb-4">{{description}}</p>
+                <p class="text-gray-800 font-semibold text-lg">${{price}}</p>
+                <a href="/products/{{_id}}" class="mt-4 block bg-indigo-500 hover-bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">View Details</a>
+            </div>
         </div>
-    </div>
+    {{/each}}
+</div>
+
+{{!-- pagination --}}
+
+<div class="flex justify-center items-center mt-4">
+  <nav aria-label="Page navigation example">
+    <ul class="list-style-none flex">
+      <li>
+        <a href="#" id="previousPage" class="relative block rounded-full bg-gray-200 px-3 py-1.5 text-sm text-black transition-all duration-300 hover:bg-gray-300">Previous</a>
+      </li>
+
+      {{#each pages}}
+        <li>
+          <a href="#" id="page{{this}}" class="relative block rounded-full bg-gray-200 px-3 py-1.5 text-sm text-black transition-all duration-300 hover:bg-gray-300">{{this}}</a>
+        </li>
+      {{/each}}
+
+      <li>
+        <a href="#" id="nextPage" class="relative block rounded-full bg-gray-200 px-3 py-1.5 text-sm text-black transition-all duration-300 hover:bg-gray-300">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+
+      </li>
+    </ul>
+  </nav>
+</div>
+
 
     <!-- Footer section -->
     <footer class="bg-gray-900 text-white py-8 mt-8">
@@ -41,4 +69,43 @@
         </div>
     </footer>
 </body>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  // Code to handle pagination links
+  const currentPageElement = document.getElementById("currentPage"); // Assuming you have an element with this ID to store the current page
+  const totalPages = /* Get total number of pages from your server */;
+  
+  document.getElementById("previousPage").addEventListener("click", function (event) {
+    event.preventDefault();
+    const currentPage = parseInt(currentPageElement.textContent);
+    if (currentPage > 1) {
+      // Make an AJAX request to fetch the previous page data
+      // Update your UI with the fetched data
+      // Update currentPageElement.textContent
+    }
+  });
+
+  // Loop through page links and add click event listeners
+  for (let i = 1; i <= totalPages; i++) {
+    const pageLink = document.getElementById(`page${i}`);
+    pageLink.addEventListener("click", function (event) {
+      event.preventDefault();
+      // Make an AJAX request to fetch the specific page data
+      // Update your UI with the fetched data
+      // Update currentPageElement.textContent
+    });
+  }
+
+  document.getElementById("nextPage").addEventListener("click", function (event) {
+    event.preventDefault();
+    const currentPage = parseInt(currentPageElement.textContent);
+    if (currentPage < totalPages) {
+      // Make an AJAX request to fetch the next page data
+      // Update your UI with the fetched data
+      // Update currentPageElement.textContent
+    }
+  });
+});
+
+</script>
 </html>

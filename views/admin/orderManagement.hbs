@@ -102,7 +102,7 @@
                                     <td class="px-6 py-4 whitespace-no-wrap">{{this.product._id}}</td> 
                                     <td class="px-6 py-4 whitespace-no-wrap">{{../_id}}</td>
                                     <td class="px-6 py-4 whitespace-no-wrap">{{this.quantity}}</td>
-                                    <td class="px-6 py-4 whitespace-no-wrap">${{this.totalPrice}}</td>
+                                    <td class="px-6 py-4 whitespace-no-wrap">${{../totalPrice}}</td>
                                     <td class="px-6 py-4 whitespace-no-wrap">{{../userId}}</td>
                                     <td class="px-6 py-4 whitespace-no-wrap">
                                         <form action="/updatestatus" method="post">
@@ -150,3 +150,11 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+                                    {{!-- {{/each}}
+                                    <td class="px-6 py-4 whitespace-no-wrap">${{this.totalPrice}}</td>
+                                    {{#each this.products}} --}}

@@ -36,6 +36,9 @@ const adminloginpost = (req, res) => {
 
 // admin dashboard
  const admindashboard = (req,res)=>{
+  if(!req.session.admin){
+    return res.redirect('/adminlogin');
+  }
 res.render('admin/admindashboard')
  }
 
@@ -104,6 +107,9 @@ const addproductspost = async (req, res) => {
 
 const addproducts = async (req, res) => {
   try {
+    if(!req.session.admin){
+      return res.redirect('/adminlogin');
+    }
     // Fetch categories and subcategories to populate the dropdowns
     const categories = await categoryModel.find({});
 
@@ -417,11 +423,12 @@ const orderManagement = async (req, res) => {
     }
 
     // Calculate the total price for each order and set it in the result
-    orderitems = orderitems.map(order => {
-      const totalPrice = order.products.reduce((acc, product) => acc + (product.product.price * product.quantity), 0);
-      return { ...order.toObject(), totalPrice };
-    });
-
+    // orderitems = orderitems.map(order => {
+    //   const totalPrice = order.products.reduce((acc, product) => { return acc + (product.price * product.quantity)}, 0);
+     
+    //   return { ...order.toObject(), totalPrice };
+    // });
+    
     res.render("admin/orderManagement", { orders: orderitems });
   } catch (error) {
     console.error(error);

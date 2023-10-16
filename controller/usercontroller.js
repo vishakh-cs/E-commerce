@@ -14,6 +14,15 @@ const signup = (req, res) => {
 // signup post
 const signupPost = async (req, res) => {
   try {
+
+    // Check if the email is already registered
+    const existingUser = await usermodel.findOne({ email: req.body.email });
+
+    if (existingUser) {
+      // Email is already registered
+      return res.status(400).send('Email is already registered');
+    }
+
     const OTP = randomstring.generate({ length: 4, charset: 'numeric' });
 
     // Hash the user's entered password before saving it to the database
@@ -686,12 +695,16 @@ const profile = async (req, res) => {
       return res.status(404).send('User not found');
     }
 
+    if (user.isblocked) {
+      return res.json({ status: "Your account is blocked by admin" });
+    }
+
     // Fetch the user's recent orders and populate products
     const recentOrders = await order
       .find({ userId: userId })
       .limit(5)
       .sort({ createdAt: -1 })
-      .populate('products'); // Populate products within each order
+      .populate('products'); 
 
     // Iterate through recent orders and populate product images
     for (const order of recentOrders) {
@@ -1211,6 +1224,7 @@ res.render('buyCheckout',{user,
 product,
 totalPrice})
 }
+
  
 // buysuccess page 
 
@@ -1261,7 +1275,6 @@ const searchprdt = async (req, res) => {
       res.status(500).send('Error searching for products');
   }
 };
-
 // logout
 
 const logout = async (req, res) => {
@@ -1277,7 +1290,6 @@ const notfound = (req,res)=>{
   res.render('404')
 
 }
-
 
 
 module.exports = {
