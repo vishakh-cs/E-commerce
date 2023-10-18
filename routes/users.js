@@ -4,7 +4,10 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const usercontroller = require('../controller/usercontroller')
+
+const wishlistController = require('../controller/wishlistcontroller')
 // const userAuthMiddleware = require('../Middleware/userAuth')
+const isLoggedAuth = require('../Middleware/isLogged')
 
 
 
@@ -111,6 +114,14 @@ router.get('/buynowcheckoutpage',usercontroller.buynowcheckoutpage)
 router.get('/buynowSuccess',usercontroller.buySuccess)
 
 router.post('/searchprdt',usercontroller.searchprdt)
+
+// whislist ----------------------------------------------->
+
+router.get('/wishlist', wishlistController.whislist)
+
+router.get('/wishlistadd/:productId',isLoggedAuth, wishlistController.addToWishlist)
+
+router.post('/wishlistAddToCart',isLoggedAuth,wishlistController.wishlistAddtoCart)
 
 
 

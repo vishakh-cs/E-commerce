@@ -428,8 +428,6 @@ const cart = async (req, res) => {
     if (!req.session.logedUser || !req.session.logedUser.cart) {
       return res.status(404).send('Cart not found');
     }
-
-    // Fetch products from the database based on the user's cart items
     const userCart = req.session.logedUser.cart;
 
     console.log('cartitem', userCart);

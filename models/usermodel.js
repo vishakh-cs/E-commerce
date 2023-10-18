@@ -58,6 +58,14 @@ const Schema = new mongoose.Schema({
             type: String,
             required:false,
         },
+        wishlist: [
+            {
+                productId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Product'
+                }
+            }
+        ],
         addresses: [addressSchema],
         cart: [
             {
