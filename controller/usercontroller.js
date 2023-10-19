@@ -5,6 +5,7 @@ const randomstring = require('randomstring');
 const bcrypt = require('bcrypt');
 const order = require('../models/orderModel');
 const categorySchema = require('../models/categoryModel')
+const Razorpay = require('razorpay');
 
 // signup get
 const signup = (req, res) => {
@@ -435,7 +436,8 @@ const cart = async (req, res) => {
       try {
         const product = await Products.findById(cartItem.productId);
         if (!product) {
-          throw new Error('Product not found'); // Handle the case where the product is not found
+          console.error('Product not found for ID:', cartItem.productId);
+          return null; // Handle the case where the product is not found
         }
         return {
           product,
@@ -460,7 +462,7 @@ const cart = async (req, res) => {
     console.error('Error rendering cart page:', error);
     res.status(500).send('Internal Server Error');
   }
-}
+};
 
 
 // add to cart 
@@ -1290,6 +1292,34 @@ const notfound = (req,res)=>{
 }
 
 
+// payment intergation
+const razorpay = new Razorpay({
+  key_id: 'rzp_test_fCmEkNZsGOdLZx',
+  key_secret: 'lnuaRIvnBbWXS2amini5m1RA',
+});
+
+// Create a Razorpay order
+const createRazorpayOrder = async (amountInPaise, receipt, currency) => {
+  const options = {
+      amount: amountInPaise,  
+      currency: currency,
+      receipt: receipt,  
+      payment_capture: 1  
+  };
+
+  try {
+      const order = await razorpay.orders.create(options);
+      return order;
+  } catch (error) {
+      throw error;
+  }
+};
+const razorpaypage = (req,res)=>{
+  res.render('razorpay')
+}
+
+
+
 module.exports = {
   signup,
   login,
@@ -1331,5 +1361,7 @@ module.exports = {
   buynowcheckoutpage,
   buySuccess,
   searchprdt,
+  createRazorpayOrder,
+  razorpaypage,
 
 };

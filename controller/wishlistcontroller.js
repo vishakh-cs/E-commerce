@@ -7,13 +7,13 @@ const orderModel = require('../models/orderModel')
 const whislist = async (req, res) => {
     try {
         const userId = req.session.logedUser._id;
-        const user = await usermodel.findById(userId);
+        // const user = await usermodel.findById(userId);
 
         // Find products in the user's wishlist((it checks the id in both product db and in user.wishlist))
         // $in operator allows to find documents in the productmodel whose id matches any of the id values in the user.wishlist array.
-        const wishlistProducts = await productmodel.find({ _id: { $in: user.wishlist } });
+        const user = await usermodel.findById(userId).populate('wishlist.productId'); 
 
-        res.render('wishlist', { user, wishlistProducts });
+        res.render('wishlist', { wishlist: user.wishlist });
     } catch (error) {
         console.error("Error fetching user's wishlist:", error);
         res.status(500).send("Internal Server Error");
@@ -37,7 +37,9 @@ const addToWishlist = async (req, res) => {
         if (!product) {
             return res.status(404).json("Product not found.");
         }
-        user.wishlist.push(productId);
+        user.wishlist.push({
+            productId: productId
+        }); 
         await user.save();
          req.session.logedUser = user;
      res.redirect('/')
@@ -51,43 +53,57 @@ const addToWishlist = async (req, res) => {
 
 const wishlistAddtoCart = async (req, res) => {
     try {
-        const userId = req.session.logedUser._id;
         const productId = req.body.productId;
+        const userId = req.session.logedUser._id;
+        console.log("im here cart", productId);
+
+        const product = await productmodel.findById(productId);
+        console.log("product", product);
+        if (!product) {
+            return res.status(404).json("Product not found.");
+        }
 
         const user = await usermodel.findById(userId);
 
-        if (!user) {
-            return res.redirect('/login');
+        const updateduser = {
+            productId: product._id,
+            quantity: 1,
         }
+        console.log(`updates DATA :${updateduser}`);
 
-        // Check if the product is already in the user's cart
-        const existingProductInCart = user.cart.find(item => item.productId.toString() === productId);
-
-        if (existingProductInCart) {
-            existingProductInCart.quantity += 1;
-        } else {
-            user.cart.push({
-                productId: productId,
-                quantity: 1
-            });
-        }
-
-        // Use $pull to remove the product from the wishlist directly in the database
-        // await usermodel.findByIdAndUpdate(userId, {
-        //     $pull: {wishlist: productId }
-        // });
-
-        // Save the user document after updating cart and wishlist
+        // Add the product to the user's cart
+        user.cart.push(updateduser);
         await user.save();
-        req.session.logedUser = user;
-
-        // Return a success message
-        return res.status(200).json({ message: 'Product added to cart successfully and removed from wishlist' });
+        // req.session.logedUser = user;
+        console.log("helloooo");
+        res.status(200).json("success") // Redirect to the cart page or any other appropriate destination
     } catch (error) {
-        console.error('Error adding product to cart:', error);
+        console.error("Error adding item to cart from wishlist:", error);
+        return res.status(500).json("Internal Server Error");
+    }
+};
+
+
+// remove from cart
+const removeFromWishlist = async (req, res) => {
+    try {
+        const productId = req.body.productId; 
+        const userId = req.session.logedUser._id;
+        console.log("prdtid",productId);
+        const user = await usermodel.findByIdAndUpdate(userId)
+        user.wishlist.pull(productId)
+        await user.save()
+
+        return res.status(200).json({ message: 'Product removed from wishlist' });
+    } catch (error) {
+        console.error('Error removing product from wishlist:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+
+
+
 
 
 
@@ -96,4 +112,5 @@ module.exports ={
     whislist,
     addToWishlist,
     wishlistAddtoCart,
+    removeFromWishlist,
 }

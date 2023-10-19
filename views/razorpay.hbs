@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Page</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h1>Payment Page</h1>
+    <p>Order Total: $100</p>
+    <button id="payButton">Pay Now</button>
+
+    <script>
+        // Function to handle the payment process
+        function handlePayment() {
+            // Replace with your actual Razorpay test key
+            const key = 'YOUR_TEST_KEY';
+
+            // Replace with the actual order ID when you have one
+            const order_id = 'YOUR_ORDER_ID';
+
+            const options = {
+                key: key, 
+                amount: 10000,  
+                currency: 'INR',
+                name: 'Demo Store',
+                description: 'Payment for Order #123',
+                image: 'https://yourcompany.com/logo.png', 
+                order_id: order_id, 
+                handler: function (response) {
+                    // Handle the success callback (e.g., update your database)
+                    console.log('Payment successful:', response);
+
+                    // In a real integration, you would send the response to your server for verification
+                    // Example: Send response to your server for verification
+                    // fetch('/verify-payment', {
+                    //     method: 'POST',
+                    //     headers: {
+                    //         'Content-Type': 'application/json',
+                    //     },
+                    //     body: JSON.stringify(response),
+                    // })
+                    // .then((verificationResponse) => {
+                    //     // Handle verification response from your server
+                    // })
+                    // .catch((error) => {
+                    //     console.error('Verification error:', error);
+                    // });
+                },
+                prefill: {
+                    name: 'User Name',
+                    email: 'user@example.com',
+                    contact: '1234567890',
+                },
+            };
+
+            const paymentObject = new Razorpay(options);
+            paymentObject.open();
+        }
+
+        // Attach the handlePayment function to the Pay Now button
+        document.getElementById('payButton').addEventListener('click', handlePayment);
+    </script>
+</body>
+</html>

@@ -36,27 +36,28 @@
     <div class="container mx-auto p-4">
         <h1 class="text-3xl font-semibold mb-6">My Wishlist</h1>
         <div class="grid grid-cols-1 gap-4">
-            {{#each wishlistProducts}}
+            {{#each wishlist}}
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden p-4">
                     <div class="product-container">
-                        <img src="/uploads/{{this.images}}" alt="{{this.name}}" class="product-image">
+                        <img src="/uploads/{{this.productId.images}}" alt="{{this.productId.name}}" class="product-image">
                         <div class="product-details flex justify-between">
                             <div>
-                                <h2 class="text-xl font-semibold mb-2">{{this.name}}</h2>
-                                <p class="text-gray-600 mb-4">{{this.description}}</p>
-                                <p class="text-gray-800 font-semibold text-lg">${{this.price}}</p>
+                                <h2 class="text-xl font-semibold mb-2">{{this.productId.name}}</h2>
+                                <p class="text-gray-600 mb-4">{{this.productId.description}}</p>
+                                <p class="text-gray-800 font-semibold text-lg">${{this.productId.price}}</p>
                                 <p class="text-gray-500">
-                                    <span class="text-yellow-500">&#9733;</span> {{this.rating}}
+                                    <span class="text-yellow-500">&#9733;</span> {{this.productId.rating}}
                                 </p>
                             </div>
                             <div>
-                                <a href="" class="mt-4 block w-32 bg-indigo-500 hover-bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50 add-to-cart-btn" data-productid="{{this._id}}">Add to Cart</a>
+                                <a href="" class="mt-4 block w-32 bg-indigo-500 hover-bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50 add-to-cart-btn" data-productid="{{this.productId._id}}">Add to Cart</a>
 
                             </div>
                         </div>
-                        <button class="remove-button text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50">
-                            <span class="remove-button-text">&#10006;</span> <!-- X icon for remove -->   Remove
-                        </button>
+<a href=""><div class="remove-button text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 remove-from-wishlist" data-productid="{{this._id}}">
+    <span class="remove-button-text">&#10006;</span> <!-- X icon for remove --> Remove
+</div></a>
+
                     </div>
                 </div>
             {{/each}}
@@ -71,39 +72,57 @@
     </footer>
 </body>
 <script>
-       document.addEventListener('DOMContentLoaded', () => {
-            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-            addToCartButtons.forEach((button) => {
-                button.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    const productId = button.getAttribute('data-productid');
-fetch('/wishlistAddToCart', {
+    document.addEventListener('DOMContentLoaded', () => {
+        const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+        const removeFromWishlistButtons = document.querySelectorAll('.remove-from-wishlist');
+
+        addToCartButtons.forEach((button) => {
+            // Add to Cart button click event
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                const productId = button.getAttribute('data-productid');
+                console.log(productId)
+                fetch(`/cart/add/${productId}`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({ productId }),
 })
-
-                        .then((response) => response.json())
-                        .then((data) => {
-                            console.log(data.message);
-                            console.log(data.cart); 
-
-                            // Show the cart message
-                            const cartMessage = document.getElementById('cartMessage');
-                            cartMessage.style.display = 'block';
-
-                            // Hide the cart message after a few seconds (e.g., 3 seconds)
-                            setTimeout(() => {
-                                cartMessage.style.display = 'none';
-                            }, 1000);
-                        })
-                        .catch((error) => {
-                            console.error('Error adding product to cart:', error);
-                        });
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    // Show the cart message (if needed)
+                })
+                .catch((error) => {
+                    console.error('Error adding product to cart:', error);
                 });
             });
         });
+
+        removeFromWishlistButtons.forEach((button) => {
+            // Remove from Wishlist button click event
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                const productId = button.getAttribute('data-productid');
+                fetch('/removeFromWishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId }),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data.message);
+
+                   location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error removing product from wishlist:', error);
+                });
+            });
+        });
+    });
 </script>
 </html>

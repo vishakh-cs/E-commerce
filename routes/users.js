@@ -123,6 +123,12 @@ router.get('/wishlistadd/:productId',isLoggedAuth, wishlistController.addToWishl
 
 router.post('/wishlistAddToCart',isLoggedAuth,wishlistController.wishlistAddtoCart)
 
+router.post('/removeFromWishlist',isLoggedAuth,wishlistController.removeFromWishlist)
+
+router.post('/razorpay/callback',usercontroller.createRazorpayOrder);
+
+router.get('/razorpay',usercontroller.razorpaypage)
+
 
 
 

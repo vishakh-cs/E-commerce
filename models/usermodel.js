@@ -58,7 +58,7 @@ const Schema = new mongoose.Schema({
             type: String,
             required:false,
         },
-        wishlist: [
+     wishlist: [
             {
                 productId: {
                     type: mongoose.Schema.Types.ObjectId,
