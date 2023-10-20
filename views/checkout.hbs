@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
     <!-- Link to Tailwind CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.7/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        /* Custom styles for payment methods */
-        .payment-method {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-
-        .payment-icon {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-        }
-    </style>
+    <!-- Razorpay script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+<style>
+    /* Custom styles for payment methods */
+    .payment-method {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .payment-icon {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+    }
+</style>
+
 <body class="bg-gray-100">
     <div class="container mx-auto p-8">
         <h1 class="text-3xl font-semibold mb-8 text-center">Checkout</h1>
@@ -33,26 +39,32 @@
                     <h2 class="text-xl font-semibold">Payment Information</h2>
                 </div>
                 <div class="payment-method mb-2">
-                    <img src="https://static.vecteezy.com/system/resources/previews/000/574/730/large_2x/credit-card-icon-vector.jpg" alt="Credit Card" class="payment-icon">
+                    <img src="https://static.vecteezy.com/system/resources/previews/000/574/730/large_2x/credit-card-icon-vector.jpg"
+                        alt="Credit Card" class="payment-icon">
                     <input type="radio" id="credit-card" name="payment-method" value="credit-card" class="mr-2" checked>
                     <label for="credit-card" class="text-blue-500 font-semibold">Credit Card</label>
                 </div>
                 <div class="payment-method mb-2">
-                    <img src="https://th.bing.com/th/id/OIP.Naqd2InLp3W58CUf3FrbSAAAAA?pid=ImgDet&rs=1" alt="Bank Transfer" class="payment-icon">
+                    <img src="https://th.bing.com/th/id/OIP.Naqd2InLp3W58CUf3FrbSAAAAA?pid=ImgDet&rs=1"
+                        alt="Bank Transfer" class="payment-icon">
                     <input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer" class="mr-2">
                     <label for="bank-transfer" class="text-blue-500 font-semibold">Bank Transfer</label>
                 </div>
                 <div class="payment-method mb-2">
-                    <img src="https://www.bdsdtechnology.com/webroot/images/UPI.png" alt="UPI Transfer" class="payment-icon">
+                    <img src="https://www.bdsdtechnology.com/webroot/images/UPI.png" alt="UPI Transfer"
+                        class="payment-icon">
                     <input type="radio" id="upi-transfer" name="payment-method" value="upi-transfer" class="mr-2">
                     <label for="upi-transfer" class="text-blue-500 font-semibold">UPI Transfer</label>
                 </div>
                 <div class="payment-method mb-2">
-                    <img src="https://png.pngtree.com/png-clipart/20210523/original/pngtree-cash-on-delivery-pin-point-png-image_6331307.jpg" alt="Cash on Delivery" class="payment-icon">
-                    <input type="radio" id="cash-on-delivery" name="payment-method" value="cash-on-delivery" class="mr-2">
+                    <img src="https://png.pngtree.com/png-clipart/20210523/original/pngtree-cash-on-delivery-pin-point-png-image_6331307.jpg"
+                        alt="Cash on Delivery" class="payment-icon">
+                    <input type="radio" id="cash-on-delivery" name="payment-method" value="cash-on-delivery"
+                        class="mr-2">
                     <label for="cash-on-delivery" class="text-blue-500 font-semibold">Cash on Delivery</label>
                 </div>
             </div>
+
 
             <!-- Order Summary (Right Side) -->
             <div class="bg-white rounded-lg p-4 overflow-auto shadow-md">
@@ -61,17 +73,22 @@
                     {{#each cartProducts}}
                     <li class="flex justify-between mb-2 items-center">
                         <div class="flex items-center">
-                            <img src="/uploads/{{this.product.images}}" alt="{{this.product.name}}" class="w-24 h-32 mr-4">
+                            <img src="/uploads/{{this.product.images}}" alt="{{this.product.name}}"
+                                class="w-24 h-32 mr-4">
                             <span class="font-semibold text-gray-800">{{this.product.name}}</span>
                         </div>
                         <span>{{this.quantity}} x ${{this.product.price}}</span>
                     </li>
+                    <input type="hidden" id="productName" value="{{this.product.name}}">
+
                     {{/each}}
                 </ul>
                 <hr class="my-2">
                 <div class="flex justify-between font-semibold">
                     <span>Total:</span>
                     <span id="totalPriceSummary" class="text-green-600">${{totalPrice}}</span>
+                    <input type="hidden" id="productPrice" value="{{totalPrice}}">
+
                 </div>
             </div>
         </div>
@@ -82,13 +99,16 @@
             <div class="bg-white rounded-lg p-4">
                 <h2 class="text-xl font-semibold mb-4">Delivery Options</h2>
                 <div class="mb-2">
-                    <input type="radio" id="standard-shipping" name="delivery-option" value="standard" class="mr-2" checked>
+                    <input type="radio" id="standard-shipping" name="delivery-option" value="standard" class="mr-2"
+                        checked>
                     <label for="standard-shipping" class="text-blue-500 font-semibold">Standard Shipping</label>
                 </div>
                 <div class="mb-2">
                     <input type="radio" id="express-shipping" name="delivery-option" value="express" class="mr-2">
                     <label for="express-shipping" class="text-blue-500 font-semibold">Express Shipping</label>
                 </div>
+            </div>
+
             <!-- User Addresses -->
             <div class="bg-white rounded-lg p-4">
                 <h2 class="text-xl font-semibold mb-4">Addresses</h2>
@@ -108,36 +128,85 @@
                     </li>
                     {{/if}}
                     {{/each}}
-              
-                   </ul> 
-                   <button id="add-address-button" class="bg-blue-500 hover-bg-blue-700 text-white font-semibold py-2 px-4 rounded-full mt-4" onclick="redirectToNewAddressCheckout()">Add New Address</button>
+                </ul>
+                <button id="add-address-button"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full mt-4"
+                    onclick="redirectToNewAddressCheckout()">Add New Address</button>
             </div>
         </div>
-         </div>
+
         <div class="text-center mt-8">
-            <button id="checkout-button" class="bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50" onclick="completePurchase()">Complete Purchase</button>
+            <!-- Add a Razorpay payment button with the order details -->
+            <button id="checkout-button"
+                class="bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                onclick="completePurchase()">Complete Purchase</button>
         </div>
     </div>
-       <script>
 
-         function redirectToNewAddressCheckout() {
-    window.location.href = '/addnewaddress';
-}
-</script>
     <script>
-        // Function to handle the "Complete Purchase" button click
-        function completePurchase() {
-            // Check the selected payment method
-            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+        function redirectToNewAddressCheckout() {
+            window.location.href = '/addnewaddress';
+        }
+    </script>
 
-            if (paymentMethod === 'cash-on-delivery') {
-                // Redirect to the order success page
-                window.location.href = '/ordersuccess'; 
+    <script>
+        function completePurchase() {
+            const selectedPaymentMethod = document.querySelector('input[name="payment-method"]:checked');
+
+            if (selectedPaymentMethod) {
+                const paymentMethod = selectedPaymentMethod.value;
+                if (paymentMethod === 'cash-on-delivery') {
+                    window.location.href = '/ordersuccess';
+                } else if (paymentMethod === 'credit-card') {
+
+                    // Get product details from hidden input fields
+                    const productName = document.getElementById('productName').value;
+                    const productPrice = parseInt(document.getElementById('productPrice').value);
+
+
+                    // Create a Razorpay order
+                    $.ajax({
+                        url: '/createOrder',
+                        type: 'POST',
+                        data: { productName, productPrice }, // Send your data here
+                        success: function (res) {
+                            if (res.success) {
+                                var options = {
+                                    key: res.key_id,
+                                    amount: res.amount,
+                                    currency: "INR",
+                                    name: res.name,
+                                    description: res.description,
+                                    image: 'https://yourcompany.com/logo.png',
+                                    order_id: res.order_id,
+                                    handler: function (response) {
+                                        // Check if the payment was successful
+                                        if (response.razorpay_payment_id) {
+                                            alert('Payment successful');
+                                            window.location.href = '/ordersuccess';
+                                        } else {
+                                            alert('Payment failed');
+                                        }
+                                    },
+                                    prefill: {
+                                        name: res.name,
+                                        email: res.email,
+                                        contact: res.contact
+                                    }
+                                };
+                                var rzp = new Razorpay(options);
+                                rzp.open();
+                            } else {
+                                alert('Error creating order: ' + res.msg);
+                            }
+                        }
+                    });
+                }
             } else {
-               
+                alert('Please select a payment method.');
             }
         }
     </script>
-    
 </body>
+
 </html>

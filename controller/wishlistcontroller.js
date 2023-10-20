@@ -74,7 +74,6 @@ const wishlistAddtoCart = async (req, res) => {
         // Add the product to the user's cart
         user.cart.push(updateduser);
         await user.save();
-        // req.session.logedUser = user;
         console.log("helloooo");
         res.status(200).json("success") // Redirect to the cart page or any other appropriate destination
     } catch (error) {

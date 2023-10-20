@@ -1292,31 +1292,50 @@ const notfound = (req,res)=>{
 }
 
 
-// payment intergation
 const razorpay = new Razorpay({
   key_id: 'rzp_test_fCmEkNZsGOdLZx',
   key_secret: 'lnuaRIvnBbWXS2amini5m1RA',
 });
 
-// Create a Razorpay order
-const createRazorpayOrder = async (amountInPaise, receipt, currency) => {
-  const options = {
-      amount: amountInPaise,  
-      currency: currency,
-      receipt: receipt,  
-      payment_capture: 1  
-  };
-
+const createOrder = async (req, res) => {
   try {
-      const order = await razorpay.orders.create(options);
-      return order;
+      const { productName, productPrice } = req.body;
+      console.log("prdt",productName, productPrice);
+
+      // Ensure productPrice is in paise (multiply by 100)
+      const amount = productPrice * 100;
+
+      const options = {
+          amount: amount,
+          currency: 'INR',
+          receipt: 'razoruser@gmail.com',
+      };
+
+      razorpay.orders.create(options, (err, order) => {
+          if (!err) {
+              res.status(200).send({
+                  success: true,
+                  msg: 'Order Created',
+                  order_id: order.id,
+                  amount: amount,
+                  key_id: 'rzp_test_fCmEkNZsGOdLZx',
+                  product_name: productName,
+                  description: `Payment for ${productName}`,
+                  contact: '7907265303',
+                  name: 'vishakh',
+                  email: 'vishakhcs51@gmail.com',
+              });
+          } else {
+              res.status(400).send({ success: false, msg: 'Something went wrong' });
+          }
+      });
   } catch (error) {
-      throw error;
+      console.error('Error creating Razorpay order:', error);
+      res.status(500).send({ success: false, msg: 'Internal Server Error' });
   }
 };
-const razorpaypage = (req,res)=>{
-  res.render('razorpay')
-}
+
+
 
 
 
@@ -1361,7 +1380,6 @@ module.exports = {
   buynowcheckoutpage,
   buySuccess,
   searchprdt,
-  createRazorpayOrder,
-  razorpaypage,
+  createOrder,
 
 };
