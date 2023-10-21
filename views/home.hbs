@@ -94,15 +94,22 @@
     </section>
 
 <!-- Product List -->
-<h1 class="text-3xl font-semibold mt-8 text-center">Product List</h1><br>
+<h1 class="text-3xl font-semibold mt-8 text-center">Product List</h1>
 <div class="flex flex-wrap -mx-2 justify-evenly">
   {{#each products}}
     <div class="swiper-slide relative m-2 md:m-4 lg:m-10 flex w-full h-auto max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
       <div class="relative mx-2 mt-2 md:mx-3 md:mt-3 lg:mx-4 lg:mt-4 h-36 sm:h-48 md:h-52 lg:h-60 overflow-hidden rounded-xl flex flex-col justify-between">
         <a href="/products/{{_id}}">
-          {{#each this.images}}
-            <img id="image" class="object-contain object-center w-full h-full" src="/uploads/{{this}}" alt="{{../name}}" />
-          {{/each}}
+          {{#if quantity}}
+            {{#each this.images}}
+              <img id="image" class="object-contain object-center w-full h-full" src="/uploads/{{this}}" alt="{{../name}}" />
+            {{/each}}
+          {{else}}
+            <img src="/images/out-of-stock.png" alt="Out of Stock" class="w-full h-full">
+            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-100">
+              <p class="text-white font-semibold text-lg">Out of Stock</p>
+            </div>
+          {{/if}}
           <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition duration-300 ease-in-out">
             <a href="/products/{{_id}}" class="text-white font-semibold px-4 py-2 bg-indigo-500 hover:bg-indigo-700 transition duration-300 ease-in-out focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">View Product Details</a>
           </div>
@@ -123,12 +130,14 @@
           </div>
         </div>
         <div class="flex flex-col gap-3">
-          <a href="/wishlistadd/{{_id}}" class="flex items-center justify-center w-full bg-gray-900 px-2 py-1 text-sm text-white transition hover:bg-gray-700 rounded-md">
-            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-            </svg>
-            Add to Wishlist
-          </a>
+          {{#if quantity}}
+            <a href="/wishlistadd/{{_id}}" class="flex items-center justify-center w-full bg-gray-900 px-2 py-1 text-sm text-white transition hover:bg-gray-700 rounded-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+              </svg>
+              Add to Wishlist
+            </a>
+          {{/if}}
           <a href="/products/{{_id}}" class="flex items-center justify-center w-full bg-gray-900 px-2 py-1 text-sm text-white transition hover:bg-gray-700 rounded-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
@@ -140,6 +149,7 @@
     </div>
   {{/each}}
 </div>
+
 
   <!-- Product List -->
     {{!-- <div class="bg-gray-100 py-8">

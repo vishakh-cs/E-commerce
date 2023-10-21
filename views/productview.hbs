@@ -134,8 +134,8 @@
                 <div id="cartMessage" class=" text-green-800 px-4 py-2 rounded-md mt-4  text-center hidden">
                     Item added to cart!
                 </div>
-            </div>
-
+                        {{#if product.quantity}}
+            <!-- Product is in stock -->
             <a href="#"
                 class="block w-full bg-orange-500 text-white text-center py-2 rounded-lg mb-2 hover:bg-orange-600 transition duration-300 ease-in-out add-to-cart-btn"
                 data-productid="{{product._id}}">
@@ -145,12 +145,23 @@
                 class="block w-full bg-blue-500 text-white text-center py-2 rounded-lg mb-2 hover:bg-blue-600 transition duration-300 ease-in-out">
                 <button type="submit">Buy Now</button>
             </form>
-
-            <a href="#"
+                        <a href="#"
                 class="block w-full bg-gray-500 text-white text-center py-2 rounded-lg hover:bg-gray-600 transition duration-300 ease-in-out">
                 Add to Wishlist
             </a>
         </div>
+
+        {{else}}
+            <!-- Product is out of stock -->
+            <p class="text-red-600 font-semibold mb-4">Out of Stock</p>
+        {{/if}}
+    </div>
+</div>
+            </div>
+
+
+
+
     </div>
     </div>
 

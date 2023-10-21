@@ -25,6 +25,10 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  OutofStock : {
+    type: Boolean,
+    default: false,
+  },
   rating: {
     type: Number,
     required: true,

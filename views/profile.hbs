@@ -95,13 +95,34 @@
         </div>
 
         <!-- Wallet Link (Right-aligned) -->
-        <button class="text-yellow-50 w-36 bg-orange-400 rounded-2xl h-16 px-3 hover:underline ml-auto mt-4 inline-flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-current mr-2" viewBox="0 0 20 20">
-                <path d="M2 3a2 2 0 012-2h14a2 2 0 012 2v16a2 2 0 01-2 2H4a2 2 0 01-2-2V3zm5 12a3 3 0 100-6 3 3 0 000 6z"/>
-            </svg>
-           <strong> Wallet</strong>
-        </button>
+    <!-- Wallet Button -->
+    <button class="text-yellow-50 w-36 bg-orange-400 rounded-2xl h-16 px-3 hover:underline ml-auto mt-4 inline-flex items-center" id="walletButton">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-current mr-2" viewBox="0 0 20 20">
+            <path d="M2 3a2 2 0 012-2h14a2 2 0 012 2v16a2 2 0 01-2 2H4a2 2 0 01-2-2V3zm5 12a3 3 0 100-6 3 3 0 000 6z"/>
+        </svg>
+        <strong> Wallet</strong>
+    </button>
+<!-- Wallet Modal -->
+<div class="w-2/5 bg-amber-950 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white rounded-lg shadow-lg p-8 z-50 hidden" id="walletModal">
+    <div class="mb-4 text-center">
     </div>
+    <h2 class="text-2xl font-semibold text-center mb-4">My Wallet</h2>
+    <div class="mb-4">
+        <p><strong>Balance:</strong> $500.00</p>
+    </div>
+    <div class="mb-4">
+        <h3 class="text-lg font-semibold">Transaction History:</h3>
+        <ul>
+            <li>Deposit: $100.00</li>
+            <li>Withdrawal: $50.00</li>
+            <li>Deposit: $200.00</li>
+        </ul>
+    </div>
+    <button class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700 w-full" id="closeWalletModal">Close</button>
+</div>
+
+
+
 </header>
 
 
@@ -218,6 +239,19 @@
             <!-- Your footer content here -->
         </div>
     </footer>
+    <script>
+        const walletButton = document.getElementById("walletButton");
+        const walletModal = document.getElementById("walletModal");
+        const closeWalletModalButton = document.getElementById("closeWalletModal");
+
+        walletButton.addEventListener("click", () => {
+            walletModal.style.display = "block";
+        });
+
+        closeWalletModalButton.addEventListener("click", () => {
+            walletModal.style.display = "none";
+        });
+    </script>
 
     <script>
  

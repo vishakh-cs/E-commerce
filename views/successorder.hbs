@@ -11,46 +11,123 @@
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             color: #333;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container h1 {
+            font-size: 2rem;
+            color: #34D399;
+        }
+
+        .container h2 {
+            font-size: 1.5rem;
+            color: #34D399;
+        }
+
+        .message {
+            margin-top: 20px;
+        }
+
+        .message p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .order-details {
+            margin: 20px 0;
+        }
+
+        .order-details h3 {
+            font-size: 1.4rem;
+        }
+
+        .order-details p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .total-price {
+            font-size: 1.6rem;
+            color: #34D399;
+        }
+
+        .additional-actions {
+            margin: 20px 0;
+        }
+
+        .additional-actions h2 {
+            font-size: 1.5rem;
+            color: #34D399;
+        }
+
+        .additional-actions ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .additional-actions li {
+            margin: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .additional-actions a {
+            text-decoration: none;
+            color: #2563EB;
+            transition: color 0.3s;
+        }
+
+        .additional-actions a:hover {
+            color: #1E3A8A;
         }
     </style>
 </head>
 <body>
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg shadow-md h-screen w-screen">
-            <h1 class="text-3xl font-semibold text-center text-green-500">Order Successful</h1>
-            
-            <section class="thank-you-message text-center mt-6">
-                <h2 class="text-xl font-semibold text-green-500">Thank You for Your Order!</h2>
-                <p>Your order has been successfully placed.</p>
-            </section>
-
-            <section class="order-details text-center mt-6">
-                <h3 class="text-lg font-semibold">Order Details:</h3>
-                {{#if orderDetails.productNames}}
-                    <p>You have ordered {{orderDetails.productNames}}.</p>
-                    {{#if orderDetails.productImages}}
-                        {{#each orderDetails.productImages}}
-                            <img src="/uploads/{{this}}" alt="{{orderDetails.productNames}}" class="w-40 h-40 mx-auto mt-4">
-                        {{/each}}
-                    {{/if}}
-                {{else}}
-                    <p>No product details available.</p>
-                {{/if}}
-                <p>Total Price: ${{totalPrice}}</p>
-            </section>
-
-            <section class="additional-actions text-center mt-6">
-                <h2 class="text-xl font-semibold">What would you like to do next?</h2>
-                <ul class="mt-4 space-y-2">
-                    <li>
-                        <a href="/" class="text-blue-500 hover:underline">Continue Shopping</a>
-                    </li>
-                    <li>
-                        <a href="/profile" class="text-blue-500 hover:underline">View All Orders</a>
-                    </li>
-                </ul>
-            </section>
+    <div class="container">
+        <h1>Order Successful</h1>
+        
+        <div class="message">
+            <h2>Thank You for Your Order!</h2>
+            <p>Your order has been successfully placed.</p>
         </div>
+
+        <section class="order-details">
+            <h3>Order Details:</h3>
+            {{#if orderDetails.productNames}}
+                <p>You have ordered {{orderDetails.productNames}}.</p>
+                {{#if orderDetails.productImages}}
+                    {{#each orderDetails.productImages}}
+                        <img src="/uploads/{{this}}" alt="{{orderDetails.productNames}}" class="w-70 h-60 mx-auto mt-4">
+                    {{/each}}
+                {{/if}}
+            {{else}}
+                <p>No product details available.</p>
+            {{/if}}
+            <p class="total-price">Total Price: ${{totalPrice}}</p>
+        </section>
+
+        <section class="additional-actions">
+            <h2>What would you like to do next?</h2>
+            <ul>
+                <li>
+                    <a href="/" class="text-blue-500 hover:underline">Continue Shopping</a>
+                </li>
+                <li>
+                    <a href="/profile" class="text-blue-500 hover:underline">View All Orders</a>
+                </li>
+            </ul>
+        </section>
     </div>
 </body>
 </html>

@@ -1039,6 +1039,18 @@ const orderSuccess = async (req, res) => {
     // Save the new order to the database
     await newOrder.save();
 
+        // Decrease the quantity of each product in the cart
+        for (const cartItem of validCartProducts) {
+          const product = cartItem.product;
+          const updatedQuantity = product.quantity - cartItem.quantity;
+          if (updatedQuantity < 0) {
+            throw new Error(`Not enough quantity available for ${product.name}`);
+          }
+    
+          // Update the product's quantity in the database
+          await Products.findByIdAndUpdate(product._id, { quantity: updatedQuantity, OutofStock: updatedQuantity === 0 });
+        }
+
     const orderDetails = {
       productNames: validCartProducts.map((cartItem) => cartItem.product.name).join(', '),
       productImages: validCartProducts.map((cartItem) => cartItem.product.images)
