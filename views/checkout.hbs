@@ -168,7 +168,7 @@
                     $.ajax({
                         url: '/createOrder',
                         type: 'POST',
-                        data: { productName, productPrice }, // Send your data here
+                        data: { productName, productPrice , paymentMethod: paymentMethod },
                         success: function (res) {
                             if (res.success) {
                                 var options = {

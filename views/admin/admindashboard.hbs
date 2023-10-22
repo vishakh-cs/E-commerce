@@ -4,9 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <!-- Include Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <!--  Moment.js for date manipulation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+   <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f7fafc;
+    }
+
+    .sidebar {
+        background-color: #2d3748;
+        color: #ffffff;
+        width: 240px;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding-top: 20px;
+    }
+
+    .sidebar h1 {
+        font-size: 1.5rem;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar li {
+        padding: 10px 20px;
+        transition: 0.3s;
+    }
+
+    .sidebar li:hover {
+        background-color: #4a5568;
+    }
+
+    .content {
+        margin-left: 240px;
+        padding: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th,
+    td {
+        padding: 16px; /* Increase the height of td elements */
+        text-align: left;
+    }
+
+    th {
+        background-color: #4a5568;
+        color: #ffffff;
+    }
+
+    tr:nth-child(even) {
+        background-color: #edf2f7;
+    }
+
+    tr:hover {
+        background-color: #cbd5e0;
+    }
+</style>
 </head>
+
 <body class="bg-gray-100 font-sans">
     <!-- Sidebar -->
     <nav class="bg-gray-800 text-white h-screen w-64 fixed top-0 left-0 overflow-y-auto">
@@ -32,12 +101,12 @@
                     <span class="text-gray-300">Product Management</span>
                 </a>
             </li>
-             <li class="px-4 py-2 hover:bg-gray-700">
+            <li class="px-4 py-2 hover:bg-gray-700">
                 <a href="/categories" class="block">
                     <span class="text-gray-300">Category Management</span>
                 </a>
             </li>
-           <!-- Product add Link -->
+            <!-- Product Add Link -->
             <li class="px-4 py-2 hover:bg-gray-700">
                 <a href="/addproducts" class="block">
                     <span class="text-gray-300">Add Product</span>
@@ -57,15 +126,89 @@
         <header class="bg-white shadow py-4 px-6">
             <div class="flex justify-between items-center">
                 <h2 class="text-2xl font-semibold">Dashboard</h2>
-                <!-- Add user info or other header content here -->
             </div>
         </header>
 
         <!-- Main Content -->
         <main class="p-6">
-            <!-- Your dashboard content goes here -->
-            <p>Welcome to the Admin Dashboard. You can manage users and products here.</p>
+            <!-- Sales Report -->
+            <h2 class="text-xl font-semibold mb-4">Sales Report</h2>
+            <!-- Filter Options -->
+            <div class="mb-4">
+                <label for="filterBy">Filter by:</label>
+                <select id="filterBy" class="ml-2 p-2">
+                    <option value="all">All</option>
+                    <option value="day">Day</option>
+                    <option value="week">Week</option>
+                    <option value="month">Month</option>
+                </select>
+            </div>
+            <table class="min-w-full">
+                <thead>
+                    <tr>
+                        <th class="text-left">Order ID</th>
+                        <th class="text-left">Email ID</th>
+                        <th class="text-left">Products</th>
+                        <th class="text-left">Total Amount</th>
+                        <th class="text-left">Date</th>
+                    </tr>
+                </thead>
+                <tbody id="salesDataBody">
+                                   <tbody>
+                    {{#each salesData}}
+                 <tr data-sales-data="{{ this.date }}">
+                        <td>{{ this.orderId }}</td>
+                        <td>{{ this.user }}</td>
+                        <td>
+                            {{#each this.products}}
+                            <div>
+                                <p>{{ this.name }}</p>
+                                <img src="/uploads/{{ this.image }}" alt="{{ this.name }}" class="w-10 h-12" />
+                            </div>
+                            {{/each}}
+                        </td>
+
+                        <td>Rs. {{ this.totalAmount }}</td>
+                        <td>{{ this.date }}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+                </tbody>
+            </table>
         </main>
     </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterBy = document.getElementById("filterBy");
+        const salesData = document.querySelectorAll("[data-sales-data]");
+        const today = moment();
+        const thisWeek = moment().startOf("week");
+        const thisMonth = moment().startOf("month");
+
+function filterOrders(filter) {
+    const filterDate = filter === "day" ? today : filter === "week" ? thisWeek : filter === "month" ? thisMonth : null;
+
+    salesData.forEach((data) => {
+        const dateString = data.dataset.salesData;
+        const date = moment(dateString, 'MMM D, YYYY, h:mm A'); 
+
+        if (filter === "all" || (filterDate && date.isSameOrAfter(filterDate, "day"))) {
+            data.style.display = "table-row";
+        } else {
+            data.style.display = "none";
+        }
+    });
+}
+
+
+        filterBy.addEventListener("change", () => {
+            const selectedFilter = filterBy.value;
+            filterOrders(selectedFilter);
+        });
+        filterOrders("all");
+    });
+</script>
+
 </body>
 </html>

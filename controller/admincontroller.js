@@ -35,12 +35,56 @@ const adminloginpost = (req, res) => {
 }
 
 // admin dashboard
- const admindashboard = (req,res)=>{
-  if(!req.session.admin){
+const admindashboard = async (req, res) => {
+  if (!req.session.admin) {
     return res.redirect('/adminlogin');
   }
-res.render('admin/admindashboard')
- }
+
+  try {
+    const orders = await orderModel.find({}).populate('products.product'); // Populate product information
+
+    const salesData = [];
+    for (const order of orders) {
+      const user = await usermodel.findById(order.userId);
+      if (user) {
+        const formattedDate = order.orderDate.toLocaleString('en-US', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+    
+        const products = [];
+        for (const orderProduct of order.products) {
+          const product = await productmodel.findById(orderProduct.product);
+          if (product) {
+            products.push({
+              name: product.name,
+              image: product.images, // Update this to match your actual property name
+            });
+          }
+        }
+    
+        salesData.push({
+          orderId: order._id,
+          user: user.email,
+          products, // Add products array
+          totalAmount: order.totalPrice,
+          date: formattedDate,
+        });
+      }
+    }  
+
+    res.render('admin/admindashboard', { salesData });
+  } catch (error) {
+    console.error('Error fetching sales data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
+
 
  // product management
  const productmanagement = async (req, res) => {

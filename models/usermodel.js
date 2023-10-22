@@ -28,6 +28,25 @@ const addressSchema = new mongoose.Schema({
     }
 });
 
+const walletTransactionSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        enum: ['credit', 'debit'], 
+        required: true,
+    },
+    amount: {
+        type: Number,
+        required: true,
+    },
+    description: {
+        type: String,
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+    },
+});
+
 const Schema = new mongoose.Schema({
     username : {
         type: String,
@@ -53,6 +72,13 @@ const Schema = new mongoose.Schema({
             type: Boolean,
             required: true,
             default: false
+        },
+        wallet: {
+            amount: {
+                type: Number,
+                default: 0,
+            },
+            transactions: [walletTransactionSchema],
         },
         profileImage: {
             type: String,

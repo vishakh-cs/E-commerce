@@ -692,7 +692,7 @@ const profile = async (req, res) => {
     const user = await usermodel.findById(userId);
 
     if (!user) {
-      return res.status(404).send('User not found');
+      return res.redirect('/login')
     }
 
     if (user.isblocked) {
@@ -723,7 +723,9 @@ const profile = async (req, res) => {
       products: order.products,
     }));
 
-    res.render('profile', { user });
+    const walletTransactions = user.wallet.transactions
+
+    res.render('profile', { user, walletAmount: user.wallet.amount ,walletTransactions});
   } catch (error) {
     console.error('Error rendering user profile:', error);
     res.redirect('/login');
@@ -992,6 +994,8 @@ const orderSuccess = async (req, res) => {
     if (!req.session.logedUser) {
       return res.redirect('/login');
     }
+    const paymenttype = req.session.paymentMethod
+    console.log("im payment",paymenttype);
 
     const userId = req.session.logedUser._id;
     const user = await usermodel.findById(userId);
@@ -1033,7 +1037,10 @@ const orderSuccess = async (req, res) => {
         quantity: cartItem.quantity,
         productImage: cartItem.product.images.join(', ')
       })),
-      totalPrice: totalPrice
+      totalPrice: totalPrice,
+      payment: {
+        method: paymenttype
+    }
     });
 
     // Save the new order to the database
@@ -1150,34 +1157,58 @@ const category = async (req, res) => {
 // cancelOrder
 const cancelOrder = async (req, res) => {
   const orderId = req.params.orderId;
+  const userId = req.session.logedUser._id;
+
   try {
+    const user = await usermodel.findById(userId);
     const cancelOrder = await order.findById(orderId);
-    console.log("Cancel Order Object:", cancelOrder);
 
     if (!cancelOrder) {
       console.log("Order not found");
       return res.status(404).send("Error fetching data, order not found");
     }
 
-    // Ensure case-insensitive comparison and trim spaces and trim extra spaces 
+    // Ensure case-insensitive comparison and trim spaces
     if (cancelOrder.status.trim().toLowerCase() === "pending") {
       console.log("Cancelling order...");
       cancelOrder.status = "cancelled";
 
-      await cancelOrder.save();
-      console.log("Order Status After:", cancelOrder.status);
+      if (cancelOrder.payment.method === "credit-card") {
+        const refundAmount = cancelOrder.totalPrice;
 
-      return res.redirect('/profile');
+        // Create a refund wallet transaction
+        const refundTransaction = {
+          type: "credit", // You may want to customize this
+          amount: refundAmount,
+          description: "Refund for canceled order",
+        };
+
+        // Add the refund transaction to the user's wallet transactions
+        user.wallet.transactions.push(refundTransaction);
+        user.wallet.amount += refundAmount;
+
+        // Save the changes to the user's wallet and the order
+        await user.save();
+        await cancelOrder.save();
+
+        console.log("Order Status After:", cancelOrder.status);
+
+        // Return a success message or redirect to a relevant page
+        return res.redirect('/profile');
+      } else {
+        console.log("Order cannot be canceled");
+        return res.status(400).send('Order cannot be canceled');
+      }
     } else {
-      console.log("Order cannot be canceled");
-      return res.status(400).send('Order cannot be canceled');
+      console.log("Order status is not pending");
+      return res.status(400).send('Order status is not pending');
     }
-
   } catch (error) {
     console.error('Error cancelling order:', error);
     res.status(500).send('Internal server error');
   }
-}
+};
+
 
 
 // bynow button click 
@@ -1313,6 +1344,9 @@ const createOrder = async (req, res) => {
   try {
       const { productName, productPrice } = req.body;
       console.log("prdt",productName, productPrice);
+     const paymenttype = req.body.paymentMethod;
+    //  console.log("jjjjjjay",paymenttype);
+     req.session.paymentMethod = paymenttype
 
       // Ensure productPrice is in paise (multiply by 100)
       const amount = productPrice * 100;
