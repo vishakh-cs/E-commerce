@@ -2,15 +2,16 @@ var express = require('express');
 var router = express.Router();
 const admincontroller = require('../controller/admincontroller')
 const multer = require('multer');
+const isLoggedAdmin = require('../Middleware/isloggedAdmin')
 
 
 // Create a Multer storage configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, 'public/uploads/'); // Set the destination folder where uploaded files will be stored
+      cb(null, 'public/uploads/'); 
     },
     filename: (req, file, cb) => {
-      cb(null, file.originalname); // Use the original filename for storing the file
+      cb(null, file.originalname); 
     },
   });
   
@@ -26,7 +27,7 @@ router.get('/admindashboard',admincontroller.admindashboard)
 
 router.get('/productmanagement',admincontroller.productmanagement)
 
-router.get('/addproducts',admincontroller.addproducts)
+router.get('/addproducts',isLoggedAdmin,admincontroller.addproducts)
 
 router.get('/categories',admincontroller.category)
 
@@ -58,8 +59,10 @@ router.post('/delete/:id',admincontroller.deleteProduct);
 
 router.post('/admin/add-product',upload.array('images'),admincontroller.addproductspost)
 
-router.get('/adminOrder',admincontroller.orderManagement)
+router.get('/adminOrder',isLoggedAdmin,admincontroller.orderManagement)
 
 router.post('/updatestatus', admincontroller.updateOrderStatus);
+
+router.get('/sales-by-day',admincontroller.getSalesDataByDay);
 
 module.exports = router;

@@ -129,6 +129,8 @@ router.post('/removeFromWishlist',isLoggedAuth,wishlistController.removeFromWish
 
 router.post('/createOrder',usercontroller.createOrder)
 
+router.get('/viewOrder/:orderId',usercontroller.vieworder)
+
 
 
 

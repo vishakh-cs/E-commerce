@@ -2,6 +2,7 @@ const productmodel = require('../models/productmodel')
 const usermodel = require('../models/usermodel')
 const categoryModel = require("../models/categoryModel")
 const orderModel = require('../models/orderModel')
+const moment = require('moment');
 
 
 // admin login get
@@ -75,7 +76,6 @@ const admindashboard = async (req, res) => {
         });
       }
     }  
-
     res.render('admin/admindashboard', { salesData });
   } catch (error) {
     console.error('Error fetching sales data:', error);
@@ -83,6 +83,40 @@ const admindashboard = async (req, res) => {
   }
 };
 
+
+// getsales data 
+const getSalesDataByDay = async (req, res) => {
+  try {
+    const today = moment().startOf('day');
+    const endDate = moment().endOf('day');
+
+    const salesData = await orderModel.aggregate([
+      {
+        $match: {
+          orderDate: {
+            $gte: today.toDate(),
+            $lte: endDate.toDate(),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$orderDate' },
+            month: { $month: '$orderDate' },
+            day: { $dayOfMonth: '$orderDate' },
+          },
+          totalAmount: { $sum: '$totalPrice' },
+        },
+      },
+    ]);
+
+    res.json(salesData);
+  } catch (error) {
+    console.error('Error fetching sales data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
 
 
 
@@ -110,11 +144,11 @@ const admindashboard = async (req, res) => {
 };
 
 // add product post 
-
 const addproductspost = async (req, res) => {
   try {
     const { name, description, category, subcategory, price, quantity, rating, offers } = req.body;
     const images = req.files.map((file) => file.filename);
+    const croppedImage = req.body.croppedImage;
 
     // Calculate the discount amount
     const discountPercentage = parseFloat(offers); // Convert offers to a floating-point number
@@ -134,6 +168,7 @@ const addproductspost = async (req, res) => {
       rating,
       offers,
       images,
+      croppedImage, // Include the cropped image
     });
 
     // Save the new product to the database
@@ -149,11 +184,9 @@ const addproductspost = async (req, res) => {
 
 
 
+
 const addproducts = async (req, res) => {
   try {
-    if(!req.session.admin){
-      return res.redirect('/adminlogin');
-    }
     // Fetch categories and subcategories to populate the dropdowns
     const categories = await categoryModel.find({});
 
@@ -527,5 +560,6 @@ module.exports ={
     addSubcategory,
     orderManagement,
     updateOrderStatus,
+    getSalesDataByDay,
 
 }

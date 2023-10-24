@@ -56,6 +56,12 @@
                     <input type="radio" id="upi-transfer" name="payment-method" value="upi-transfer" class="mr-2">
                     <label for="upi-transfer" class="text-blue-500 font-semibold">UPI Transfer</label>
                 </div>
+                 <div class="payment-method mb-2">
+                    <img src="https://th.bing.com/th/id/OIP.WKdXg3kgDga65sdmAAuCZQHaGE?pid=ImgDet&rs=1" alt="wallet Transfer"
+                        class="payment-icon">
+                    <input type="radio" id="wallet-transfer" name="payment-method" value="wallet-transfer" class="mr-2">
+                    <label for="wallet-transfer" class="text-blue-500 font-semibold">Wallet</label>
+                </div>
                 <div class="payment-method mb-2">
                     <img src="https://png.pngtree.com/png-clipart/20210523/original/pngtree-cash-on-delivery-pin-point-png-image_6331307.jpg"
                         alt="Cash on Delivery" class="payment-icon">
@@ -158,6 +164,7 @@
                 if (paymentMethod === 'cash-on-delivery') {
                     window.location.href = '/ordersuccess';
                 } else if (paymentMethod === 'credit-card') {
+                    
 
                     // Get product details from hidden input fields
                     const productName = document.getElementById('productName').value;
@@ -201,12 +208,29 @@
                             }
                         }
                     });
-                }
-            } else {
-                alert('Please select a payment method.');
+                } else if (paymentMethod === 'wallet-transfer') {
+                const productName = document.getElementById('productName').value;
+                const productPrice = parseInt(document.getElementById('productPrice').value);
+
+                $.ajax({
+                    url: '/createOrder',
+                    type: 'POST',
+                    data: { productName, productPrice, paymentMethod: paymentMethod },
+                    success: function (res) {
+                        if (res.success) {
+                            alert('Payment from wallet successful');
+                            window.location.href = '/ordersuccess';
+                        } else {
+                            alert('Error creating wallet order: ' + res.msg);
+                        }
+                    }
+                });
             }
+        } else {
+            alert('Please select a payment method.');
         }
-    </script>
+    }
+</script>
 </body>
 
 </html>

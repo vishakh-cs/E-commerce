@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
     <!--  Moment.js for date manipulation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
    <style>
     body {
         font-family: Arial, sans-serif;
@@ -129,11 +130,15 @@
             </div>
         </header>
 
-        <!-- Main Content -->
+         <!-- Main Content -->
         <main class="p-6">
             <!-- Sales Report -->
             <h2 class="text-xl font-semibold mb-4">Sales Report</h2>
-            <!-- Filter Options -->
+
+            <!-- Chart Canvas -->
+            <canvas id="salesChart" width="400" height="100"></canvas>
+            <table class="min-w-full">
+                            <!-- Filter Options -->
             <div class="mb-4">
                 <label for="filterBy">Filter by:</label>
                 <select id="filterBy" class="ml-2 p-2">
@@ -143,7 +148,6 @@
                     <option value="month">Month</option>
                 </select>
             </div>
-            <table class="min-w-full">
                 <thead>
                     <tr>
                         <th class="text-left">Order ID</th>
@@ -177,6 +181,48 @@
             </table>
         </main>
     </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+  const salesChartCanvas = document.getElementById('salesChart').getContext('2d');
+
+  async function fetchSalesData() {
+    try {
+      const response = await fetch('/sales-by-day');
+      const data = await response.json();
+      const labels = data.map((entry) => moment(entry._id).format('MMM D'));
+      const values = data.map((entry) => entry.totalAmount);
+
+      const salesChart = new Chart(salesChartCanvas, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Total Amount',
+            data: values,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+          }],
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true,
+              },
+            }],
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Error fetching sales data:', error);
+    }
+  }
+
+  fetchSalesData();
+});
+
+    </script>
 
     <script>
     document.addEventListener("DOMContentLoaded", function () {

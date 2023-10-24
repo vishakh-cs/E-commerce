@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+    <div class="bg-white p-8 rounded-lg shadow-md w-1/2 flex">
+        <div class="w-1/2 pr-4">
+            <h1 class="text-2xl font-semibold mb-4">Order Details</h1>
+            <!-- Products in the Order -->
+            <div class="mb-4">
+                <ul>
+                    {{#each products}}
+                    <div class="border-b-2 border-gray-200 p-2">
+                        <p class="text-xl font-semibold text-blue-600">Product: {{this.name}}</p>
+                        <img src="/uploads/{{this.images}}" alt="{{this.name}}"
+                            class="w-1/3 mt-5 h-32 object-cover mb-2">
+                        <p><strong>Quantity: {{this.quantity}}</strong></p>
+                        <p><strong>Price: ${{this.price}}</strong></p>
+                    
+                    {{/each}}
+                    <p><strong>Status: {{orderitems.status}}</strong></p>
+                    </div>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Shipping Information -->
+        <div class="w-1/2">
+            <h2 class="text-2xl font-semibold mb-4">Shipping Information</h2>
+            {{#each user.addresses}}
+            <div class="border rounded-lg p-4 mb-4">
+                <p class="text-xl font-semibold text-blue-600">Shipping Address</p>
+                <p><strong>Name: {{this.name}}</strong></p>
+                <p><strong>Address: {{this.address}}, {{this.city}}, {{this.pin}}</strong></p>
+                <p><strong>Phone: {{this.phone}}</strong></p>
+                <p><strong>State: {{this.state}}</strong></p>
+                <p><strong>Country: {{this.country}}</strong></p>
+            </div>
+            {{/each}}
+                    <!-- Back Button -->
+        <a href="/profile"
+            class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-full inline-block self-start">
+            Back to Profile
+        </a>
+                    <!-- Return Button -->
+            <a href="#" class="bg-gray-300 hover:bg-gray-400 text-gray-600 py-2 px-4 rounded-full inline-block self-start">
+                Return
+            </a>
+        </div>
+    </div>
+
+</body>
+
+</html>

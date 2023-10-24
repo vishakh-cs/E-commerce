@@ -44,6 +44,9 @@ const productSchema = new mongoose.Schema({
       required: true,
     },
   ],
+  croppedImage: {
+    type: String, // Store the cropped image data as a string
+  },
   createdAt: {
     type: Date,
     default: Date.now,

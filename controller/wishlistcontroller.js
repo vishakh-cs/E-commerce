@@ -27,27 +27,33 @@ const addToWishlist = async (req, res) => {
         const userid = req.session.logedUser._id;
 
         // Check if the product is already in the user's wishlist
-        const user = await usermodel.findById(userid);
-        if (user.wishlist.includes(productId)) {
+        const updatedUser = await usermodel.findOneAndUpdate(
+            {
+                _id: userid,
+                "wishlist.productId": { $ne: productId } // Check the product not in  wishlist --->
+            },
+            {
+                $push: {
+                    wishlist: {
+                        productId: productId
+                    }
+                }
+            },
+            { new: true }
+        );
+
+        if (!updatedUser) {
             return res.json("Item is already in the wishlist.");
         }
 
-        // If the product is not in the wishlist, add it
-        const product = await productmodel.findById(productId);
-        if (!product) {
-            return res.status(404).json("Product not found.");
-        }
-        user.wishlist.push({
-            productId: productId
-        }); 
-        await user.save();
-         req.session.logedUser = user;
-     res.redirect('/')
+        req.session.logedUser = updatedUser;
+        res.redirect('/');
     } catch (error) {
         console.error("Error adding item to wishlist:", error);
         return res.status(500).json("Internal Server Error");
     }
 };
+
 
 // wishlist to cart
 

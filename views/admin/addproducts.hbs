@@ -6,6 +6,7 @@
     <title>Add Product - Admin Dashboard</title>
     <!-- Include Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
 </head>
 <body class="bg-gray-100 font-sans">
     <!-- Sidebar -->
@@ -114,6 +115,22 @@
                     <label for="images" class="block text-gray-700 font-semibold">Images (Multiple)</label>
                     <input type="file" id="images" name="images" accept="image/*" multiple class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500" required>
                 </div>
+<div class="mb-4">
+    <div class="crop-container">
+        <img id="image-preview" src="#" alt="Cropped Image" class="img-preview">
+    </div>
+</div>
+
+<!-- Add Crop and Save buttons -->
+<div class="mb-4">
+    <button type="button" id="crop-button" class="bg-green-500 hover-bg-green-600 text-white font-semibold px-4 py-2 rounded transition duration-300 ease-in-out">Crop</button>
+    <button type="button" id="save-button" class="bg-blue-500 hover-bg-blue-600 text-white font-semibold px-4 py-2 rounded transition duration-300 ease-in-out">Save</button>
+</div>
+
+<!-- Add an input element for uploading the cropped image to the server -->
+<input type="hidden" id="cropped-image" name="croppedImage" />
+
+
                 <div class="mb-4">
                     <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded transition duration-300 ease-in-out">Add Product</button>
                 </div>
@@ -121,5 +138,78 @@
         </main>
     </div>
     <a href="/admindashboard">dashboard</a>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const imageInput = document.getElementById("images");
+    const imagePreview = document.getElementById("image-preview");
+    const croppedImageInput = document.getElementById("cropped-image");
+    let cropper;
+
+    // Function to initialize Cropper with the image source
+    function initializeCropper(src) {
+        if (cropper) {
+            cropper.destroy();
+        }
+        imagePreview.style.display = "block";
+        imagePreview.src = src;
+
+        // Initialize Cropper with options
+        cropper = new Cropper(imagePreview, {
+            aspectRatio: 1,
+            viewMode: 1,
+        });
+    }
+
+    imageInput.addEventListener("change", function () {
+        const files = this.files;
+        if (files && files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                initializeCropper(e.target.result);
+            };
+            reader.readAsDataURL(files[0]);
+        }
+    });
+
+    // Add a crop button event listener
+    const cropButton = document.getElementById("crop-button");
+    cropButton.addEventListener("click", function () {
+        if (cropper) {
+            const croppedCanvas = cropper.getCroppedCanvas();
+            const croppedDataUrl = croppedCanvas.toDataURL();
+            initializeCropper(croppedDataUrl);
+
+            // Set the cropped image data in the hidden input field
+            croppedImageInput.value = croppedDataUrl;
+        }
+    });
+
+    // Add a save button event listener
+    const saveButton = document.getElementById("save-button");
+    saveButton.addEventListener("click", function () {
+        if (cropper) {
+            const croppedCanvas = cropper.getCroppedCanvas();
+            const croppedDataUrl = croppedCanvas.toDataURL();
+
+            // Send the cropped image data to the server using XMLHttpRequest or fetch API
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/admin/add-product", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify({ croppedImage: croppedDataUrl }));
+
+            // Handle the server response if needed
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log("Image uploaded successfully.");
+                } else {
+                    console.error("Error in uploading the image.");
+                }
+            };
+        }
+    });
+});
+</script>
+
 </body>
 </html>

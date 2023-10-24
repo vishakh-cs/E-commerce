@@ -702,7 +702,6 @@ const profile = async (req, res) => {
     // Fetch the user's recent orders and populate products
     const recentOrders = await order
       .find({ userId: userId })
-      .limit(5)
       .sort({ createdAt: -1 })
       .populate('products'); 
 
@@ -732,6 +731,25 @@ const profile = async (req, res) => {
   }
 };
 
+// view order details
+const vieworder = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    const orderitems = await order.findById(orderId).populate('products')
+    if (!orderitems) {
+      return res.status(404).send('Order not found');
+    }
+    const products = await Products.find({ _id: { $in: orderitems.products.map(item => item.product) } });
+    console.log("pro",products);
+    const user = await usermodel.findById(orderitems.userId);
+    console.log("log im user",user);
+    res.render('vieworderdetails', { orderitems , products , user });
+  } catch (error) {
+    // Handle errors appropriately
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
 
 
 // profile post
@@ -949,14 +967,14 @@ const checkout = async (req, res) => {
     const userCart = user.cart || [];
     if (userCart.length === 0) {
       // Redirect the user to a shopping cart page or display a message
-      return res.redirect('/cart/:userid'); // You can change this URL
+      return res.redirect('/cart/:userid'); 
     }
 
     const cartProducts = await Promise.all(userCart.map(async (cartItem) => {
       try {
         const product = await Products.findById(cartItem.productId);
         if (!product) {
-          throw new Error('Product not found'); // Handle the case where the product is not found
+          throw new Error('Product not found'); 
         }
         return {
           product,
@@ -1027,6 +1045,16 @@ const orderSuccess = async (req, res) => {
     const totalPrice = validCartProducts.reduce((total, cartItem) => {
       return total + (cartItem.product.price * cartItem.quantity);
     }, 0);
+
+    if (paymenttype === 'wallet-transfer') {
+      // Check if the user has enough balance in their wallet
+      if (user.wallet.amount < totalPrice) {
+        return res.status(400).send('Insufficient wallet balance');
+      }
+      user.wallet.amount -= totalPrice;
+
+      await user.save();
+    }
 
     // Create a new order document
     const newOrder = new order({
@@ -1405,6 +1433,7 @@ module.exports = {
   addToCart,
   remove,
   profile,
+  vieworder,
   profilepost,
   addAddresspost,
   addnewaddress,
