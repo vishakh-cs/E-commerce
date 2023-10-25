@@ -161,7 +161,20 @@
 
             if (selectedPaymentMethod) {
                 const paymentMethod = selectedPaymentMethod.value;
-                if (paymentMethod === 'cash-on-delivery') {
+              if (paymentMethod === 'cash-on-delivery') {
+               
+                $.ajax({
+                    url: '/createOrder',
+                    type: 'POST',
+                    data: { paymentMethod: paymentMethod },
+                    success: function (res) {
+                        if (res.success) {
+                            window.location.href = '/ordersuccess';
+                        } else {
+                            alert('Error creating order: ' + res.msg);
+                        }
+                    }
+                });
                     window.location.href = '/ordersuccess';
                 } else if (paymentMethod === 'credit-card') {
                     

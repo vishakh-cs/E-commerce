@@ -21,10 +21,13 @@
                         <p class="text-xl font-semibold text-blue-600">Product: {{this.name}}</p>
                         <img src="/uploads/{{this.images}}" alt="{{this.name}}"
                             class="w-1/3 mt-5 h-32 object-cover mb-2">
+                            {{/each}}
+                           {{#each orderitems.products}}
                         <p><strong>Quantity: {{this.quantity}}</strong></p>
-                        <p><strong>Price: ${{this.price}}</strong></p>
+                        {{/each}}
+                        <p><strong>Price: ${{orderitems.totalPrice}}</strong></p>
+                 
                     
-                    {{/each}}
                     <p><strong>Status: {{orderitems.status}}</strong></p>
                     </div>
                 </ul>
@@ -49,12 +52,36 @@
             class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-full inline-block self-start">
             Back to Profile
         </a>
-                    <!-- Return Button -->
-            <a href="#" class="bg-gray-300 hover:bg-gray-400 text-gray-600 py-2 px-4 rounded-full inline-block self-start">
-                Return
-            </a>
+ <!-- Return Button -->
+
+<a href="/users/{{user._id}}/orders/{{orderitems._id}}/return" id="returnOrderButton" class="bg-gray-300 hover:bg-gray-400 text-gray-600 py-2 px-4 rounded-full inline-block self-start">
+    Return
+</a>
+
+
         </div>
     </div>
+  
+<script>
+document.getElementById('returnOrderButton').addEventListener('click', function (event) {
+    event.preventDefault();
+    
+   
+    const status = "Delivered";
+
+    if (status === "Delivered") {
+        const confirmed = window.confirm('Are you sure you want to return this order?.');
+
+        if (confirmed) {
+            window.location.href = this.getAttribute('href');
+        }
+    } else {
+        alert('You can only return orders that have been delivered.');
+    }
+});
+</script>
+
+
 
 </body>
 

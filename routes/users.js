@@ -131,6 +131,8 @@ router.post('/createOrder',usercontroller.createOrder)
 
 router.get('/viewOrder/:orderId',usercontroller.vieworder)
 
+router.get('/users/:userId/orders/:orderId/return', usercontroller.returnOrder);
+
 
 
 

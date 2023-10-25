@@ -128,7 +128,7 @@
     </div>
 
     <!-- Display wallet transactions -->
-    <div class="mb-4">
+    <div class="mb-4 wallet-transactions" style="max-height: 200px; overflow-y: auto;">
         <h3 class="text-2xl font-semibold mb-2">Wallet Transactions</h3>
         <ul>
             {{#each walletTransactions}}
@@ -292,7 +292,7 @@ function viewOrderDetails(orderId) {
     });
 </script>
 
-    <script>
+     <script>
 function cancelOrder(orderId) {
     Swal.fire({
         title: 'Confirm Cancellation',
@@ -318,11 +318,9 @@ function cancelOrder(orderId) {
             .then((data) => {
                 // Handle success, e.g., display a success message
                 Swal.fire('Order Cancelled', 'The order has been successfully cancelled.', 'success');
-
             })
                             // Reload the page
                 location.reload();
-
         }
     });
 }
@@ -349,14 +347,11 @@ function cancelOrder(orderId) {
                 console.error('Error:', error);
             });
         }
-
         
         var addAddressButton = document.getElementById("addAddressButton");
-
         addAddressButton.addEventListener("click", function () {
             // Get the number of addresses
             var addressesCount = document.querySelectorAll(".address-item").length;
-
             
             if (addressesCount >= 2) {
                 alert("You already have two or more addresses. You cannot add more.");

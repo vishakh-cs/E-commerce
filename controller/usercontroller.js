@@ -752,6 +752,55 @@ const vieworder = async (req, res) => {
 };
 
 
+//return order
+const returnOrder = async (req, res) => {
+  console.log("im here");
+  try {
+    const userId = req.params.userId;
+    const orderId = req.params.orderId;
+    const updatedStatus = 'returned';
+
+    // Find the user by userId
+    const user = await usermodel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const orderprdt = await order.findById(orderId);
+
+    if (!orderprdt) {
+      return res.status(404).json({ status: 'Order not found' });
+    }
+    if (orderprdt.userId.toString() !== userId) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    if (orderprdt.status !== 'Delivered') {
+      return res.redirect('/profile')
+    }
+    const refundAmount = orderprdt.totalPrice;
+
+    // Log the current order status before updating
+    console.log('Current order status:', orderprdt.status);
+
+    orderprdt.status = updatedStatus;
+    await orderprdt.save();
+    user.wallet.amount += refundAmount;
+    user.wallet.transactions.push({
+      type: 'credit',
+      amount: refundAmount,
+      description: 'Order return refund',
+    });
+    await user.save();
+    res.status(200).redirect('/profile');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
+
 // profile post
 
 const profilepost = async (req, res) => {
@@ -973,7 +1022,7 @@ const checkout = async (req, res) => {
     const cartProducts = await Promise.all(userCart.map(async (cartItem) => {
       try {
         const product = await Products.findById(cartItem.productId);
-        if (!product) {
+        if (!product ) {
           throw new Error('Product not found'); 
         }
         return {
@@ -1196,17 +1245,27 @@ const cancelOrder = async (req, res) => {
       return res.status(404).send("Error fetching data, order not found");
     }
 
-    // Ensure case-insensitive comparison and trim spaces
     if (cancelOrder.status.trim().toLowerCase() === "pending") {
       console.log("Cancelling order...");
       cancelOrder.status = "cancelled";
+
+      // Increment the product quantities in the database
+      for (const productItem of cancelOrder.products) {
+        const product = await Products.findById(productItem.product._id);
+        console.log("Product", product);
+        if (product) {
+          product.quantity += productItem.quantity;
+          product.OutofStock = false;
+          await product.save();
+        }
+      }
 
       if (cancelOrder.payment.method === "credit-card") {
         const refundAmount = cancelOrder.totalPrice;
 
         // Create a refund wallet transaction
         const refundTransaction = {
-          type: "credit", // You may want to customize this
+          type: "credit",
           amount: refundAmount,
           description: "Refund for canceled order",
         };
@@ -1214,19 +1273,16 @@ const cancelOrder = async (req, res) => {
         // Add the refund transaction to the user's wallet transactions
         user.wallet.transactions.push(refundTransaction);
         user.wallet.amount += refundAmount;
-
-        // Save the changes to the user's wallet and the order
-        await user.save();
-        await cancelOrder.save();
-
-        console.log("Order Status After:", cancelOrder.status);
-
-        // Return a success message or redirect to a relevant page
-        return res.redirect('/profile');
-      } else {
-        console.log("Order cannot be canceled");
-        return res.status(400).send('Order cannot be canceled');
       }
+
+      // Save changes to the user's wallet and the order
+      await user.save();
+      await cancelOrder.save();
+
+      console.log("Order Status After:", cancelOrder.status);
+
+      // Return a success message or redirect to a relevant page
+      return res.redirect('/profile');
     } else {
       console.log("Order status is not pending");
       return res.status(400).send('Order status is not pending');
@@ -1236,6 +1292,7 @@ const cancelOrder = async (req, res) => {
     res.status(500).send('Internal server error');
   }
 };
+
 
 
 
@@ -1434,6 +1491,7 @@ module.exports = {
   remove,
   profile,
   vieworder,
+  returnOrder,
   profilepost,
   addAddresspost,
   addnewaddress,
