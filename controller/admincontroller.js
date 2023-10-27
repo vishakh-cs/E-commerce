@@ -148,7 +148,6 @@ const addproductspost = async (req, res) => {
   try {
     const { name, description, category, subcategory, price, quantity, rating, offers } = req.body;
     const images = req.files.map((file) => file.filename);
-    const croppedImage = req.body.croppedImage;
 
     // Calculate the discount amount
     const discountPercentage = parseFloat(offers); // Convert offers to a floating-point number

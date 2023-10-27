@@ -3,6 +3,7 @@ var router = express.Router();
 const admincontroller = require('../controller/admincontroller')
 const multer = require('multer');
 const isLoggedAdmin = require('../Middleware/isloggedAdmin')
+const CouponController = require ('../controller/coupenController.js')
 
 
 // Create a Multer storage configuration
@@ -64,5 +65,13 @@ router.get('/adminOrder',isLoggedAdmin,admincontroller.orderManagement)
 router.post('/updatestatus', admincontroller.updateOrderStatus);
 
 router.get('/sales-by-day',admincontroller.getSalesDataByDay);
+
+router.get('/adminCoupon',CouponController.coupon);
+
+router.post('/newcoupon',CouponController.newcoupon);
+
+router.delete('/deletecoupon',CouponController.deletecoupon);
+
+
 
 module.exports = router;

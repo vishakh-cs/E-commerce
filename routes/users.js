@@ -133,6 +133,8 @@ router.get('/viewOrder/:orderId',usercontroller.vieworder)
 
 router.get('/users/:userId/orders/:orderId/return', usercontroller.returnOrder);
 
+router.get('/generate-invoice/:userId/:orderId', usercontroller.generateInvoice);
+
 
 
 

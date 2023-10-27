@@ -6,6 +6,10 @@ const bcrypt = require('bcrypt');
 const order = require('../models/orderModel');
 const categorySchema = require('../models/categoryModel')
 const Razorpay = require('razorpay');
+require('dotenv').config();
+var easyinvoice = require('easyinvoice');
+const fs = require('fs');
+
 
 // signup get
 const signup = (req, res) => {
@@ -1145,7 +1149,9 @@ const orderSuccess = async (req, res) => {
       user,
       cartProducts: validCartProducts,
       orderDetails,
-      totalPrice 
+      totalPrice,
+      userId,
+      orderId: newOrder._id
     });
 
     // Clear the user's cart
@@ -1421,8 +1427,8 @@ const notfound = (req,res)=>{
 
 
 const razorpay = new Razorpay({
-  key_id: 'rzp_test_fCmEkNZsGOdLZx',
-  key_secret: 'lnuaRIvnBbWXS2amini5m1RA',
+  key_id: process.env.RAZORYPAY_KEY_ID,
+  key_secret: process.env.RAZORYPAY_KEY_SECRET,
 });
 
 const createOrder = async (req, res) => {
@@ -1449,7 +1455,7 @@ const createOrder = async (req, res) => {
                   msg: 'Order Created',
                   order_id: order.id,
                   amount: amount,
-                  key_id: 'rzp_test_fCmEkNZsGOdLZx',
+                  key_id: process.env.RAZORYPAY_KEY_ID,
                   product_name: productName,
                   description: `Payment for ${productName}`,
                   contact: '7907265303',
@@ -1467,7 +1473,78 @@ const createOrder = async (req, res) => {
 };
 
 
+// generate invoice
+const generateInvoice = async (req, res) => {
+  console.log("hii");
+  const userId = req.params.userId;
+  const orderId = req.params.orderId;
+  console.log("orderd", orderId);
+  console.log("userid", userId);
 
+  try {
+    const user = await usermodel.findById(userId);
+    const Order = await order.findById(orderId).populate('products.product');
+
+    if (!Order) {
+      return res.status(404).json({ message: 'Order not found.' });
+    }
+
+    // Prepare product data based on the order's products
+    const products = Order.products.map(productInfo => {
+      const product = productInfo.product;
+      const quantity = productInfo.quantity;
+      return {
+        quantity: quantity,
+        description: product.name, // Assuming the product model has a 'name' field
+        tax: 0, // Assuming no tax for now
+        price: product.price, // Assuming the product model has a 'price' field
+      };
+    });
+
+    const logoUrl = 'https://th.bing.com/th/id/R.92dc42fac85a64207ba0b4673ef1de10?rik=aZtbHeXpctUoJg&riu=http%3a%2f%2fwww.morcoblinds.co.uk%2fsites%2fall%2fthemes%2fmorco%2fimages%2fclassic_logo.png&ehk=qBU2cByT682xt50LHl2z5E6qsKZxHerPZLxd4Fu2Dco%3d&risl=&pid=ImgRaw&r=0';
+
+    const invoiceData = {
+      currency: 'INR',
+      marginTop: 25,
+      marginRight: 25,
+      marginLeft: 25,
+      marginBottom: 25,
+      logo: logoUrl,
+      sender: {
+        company: 'Classic Soul E-commerce',
+        address: '123 Main St, Trivandrum, Kerala, India',
+        zip: '695411',
+        city: 'Trivandrum',
+        country: 'India',
+      },
+      client: {
+        company: user.username,
+        address: user.addresses[0].address, // Assuming the first address is used for the invoice
+        city: user.addresses[0].city, // Assuming the first address is used for the invoice
+        country: user.addresses[0].country, // Assuming the first address is used for the invoice
+      },
+      information: {
+        date: new Date().toLocaleDateString(), // Add a valid date here
+        number: `INV-${orderId}`,
+      },
+      products: products,
+      bottomNotice: "Kindly pay your invoice within 15 days.",
+    };
+
+    // Create invoice
+    easyinvoice.createInvoice(invoiceData, function (result) {
+      // Send the PDF as a response for download
+      res.setHeader('Content-Disposition', `attachment; filename=invoice_${orderId}.pdf`);
+      res.setHeader('Content-Type', 'application/pdf');
+      res.send(Buffer.from(result.pdf, 'base64'));
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error generating the invoice.');
+  }
+};
+
+ 
 
 
 module.exports = {
@@ -1514,5 +1591,7 @@ module.exports = {
   buySuccess,
   searchprdt,
   createOrder,
+  generateInvoice,
+  
 
 };

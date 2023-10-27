@@ -10,14 +10,14 @@
 </head>
 <body class="bg-gray-100 font-sans">
     <!-- Sidebar -->
-    <nav class="bg-gray-800 text-white h-screen w-64 fixed top-0 left-0 overflow-y-auto">
+      <nav class="bg-gray-800 text-white h-screen w-64 fixed top-0 left-0 overflow-y-auto">
         <div class="p-4">
             <h1 class="text-2xl font-semibold">Admin Dashboard</h1>
         </div>
         <ul>
             <!-- Dashboard Link -->
             <li class="px-4 py-2 hover:bg-gray-700">
-                <a href="/admindashboard" class="block">
+                <a href="#" class="block">
                     <span class="text-gray-300">Dashboard</span>
                 </a>
             </li>
@@ -38,7 +38,7 @@
                     <span class="text-gray-300">Category Management</span>
                 </a>
             </li>
-            <!-- Product add Link -->
+            <!-- Product Add Link -->
             <li class="px-4 py-2 hover:bg-gray-700">
                 <a href="/addproducts" class="block">
                     <span class="text-gray-300">Add Product</span>
@@ -47,6 +47,11 @@
             <li class="px-4 py-2 hover:bg-gray-700">
                 <a href="/adminOrder" class="block">
                     <span class="text-gray-300">Order Management</span>
+                </a>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/adminCoupon" class="block">
+                    <span class="text-gray-300">Coupon Management</span>
                 </a>
             </li>
         </ul>
@@ -127,8 +132,7 @@
     <button type="button" id="save-button" class="bg-blue-500 hover-bg-blue-600 text-white font-semibold px-4 py-2 rounded transition duration-300 ease-in-out">Save</button>
 </div>
 
-<!-- Add an input element for uploading the cropped image to the server -->
-<input type="hidden" id="cropped-image" name="croppedImage" />
+
 
 
                 <div class="mb-4">
@@ -143,7 +147,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const imageInput = document.getElementById("images");
     const imagePreview = document.getElementById("image-preview");
-    const croppedImageInput = document.getElementById("cropped-image");
     let cropper;
 
     // Function to initialize Cropper with the image source
@@ -179,9 +182,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const croppedCanvas = cropper.getCroppedCanvas();
             const croppedDataUrl = croppedCanvas.toDataURL();
             initializeCropper(croppedDataUrl);
-
-            // Set the cropped image data in the hidden input field
-            croppedImageInput.value = croppedDataUrl;
         }
     });
 
@@ -192,24 +192,44 @@ document.addEventListener("DOMContentLoaded", function () {
             const croppedCanvas = cropper.getCroppedCanvas();
             const croppedDataUrl = croppedCanvas.toDataURL();
 
-            // Send the cropped image data to the server using XMLHttpRequest or fetch API
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/admin/add-product", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(JSON.stringify({ croppedImage: croppedDataUrl }));
+            // Set the cropped image data as the source for the image preview
+            imagePreview.src = croppedDataUrl;
 
-            // Handle the server response if needed
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    console.log("Image uploaded successfully.");
-                } else {
-                    console.error("Error in uploading the image.");
-                }
-            };
+            // Create a blob from the data URL
+            const blob = dataURLToBlob(croppedDataUrl);
+
+            // Create a new Blob URL and set it as the href for the download link
+            const blobURL = URL.createObjectURL(blob);
+
+            // Create a downloadable link
+            const downloadLink = document.createElement("a");
+            downloadLink.href = blobURL;
+            downloadLink.download = "cropped_image.png"; // Change the filename as needed
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+
+            // Clean up
+            URL.revokeObjectURL(blobURL);
+            document.body.removeChild(downloadLink);
         }
     });
+
+    // Function to convert a data URL to a Blob
+    function dataURLToBlob(dataURL) {
+        const parts = dataURL.split(",");
+        const contentType = parts[0].split(":")[1];
+        const byteCharacters = atob(parts[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: contentType });
+    }
 });
 </script>
+
 
 </body>
 </html>
