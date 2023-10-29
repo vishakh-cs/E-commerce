@@ -89,17 +89,20 @@
 
                     {{/each}}
                 </ul>
-                <hr class="my-2">
-                <div class="flex justify-between font-semibold">
-                    <span>Total:</span>
-                    <span id="totalPriceSummary" class="text-green-600">${{totalPrice}}</span>
-                    <input type="hidden" id="productPrice" value="{{totalPrice}}">
-
-                </div>
-            </div>
+                 <div class="mt-4">
+        <span>Coupon Discount:</span>
+        <span id="couponDiscount" class="text-red-600">Rs. {{discountAmount}}</span>
+    </div>
+    <hr class="my-2">
+    <div class="flex justify-between font-semibold">
+        <span>Total:</span>
+        <span id="totalPriceSummary" class="text-green-600">${{totalPrice}}</span>
+        <input type="hidden" id="productPrice" value="{{totalPrice}}">
+    </div>
+</div>
         </div>
 
-        <!-- Delivery Information (Half Size) -->
+        <!-- Delivery Information  -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
             <!-- Delivery Options -->
             <div class="bg-white rounded-lg p-4">
@@ -113,6 +116,23 @@
                     <input type="radio" id="express-shipping" name="delivery-option" value="express" class="mr-2">
                     <label for="express-shipping" class="text-blue-500 font-semibold">Express Shipping</label>
                 </div>
+<!-- Coupon Code Input Field -->
+<div class="mt-4">
+    <form id="coupon-form" action="/applyDiscount" method="post">
+            <input type="hidden" name="userID" value="{{user._id}}">
+                {{#each cartProducts}}
+        <input type="hidden" name="productID" value="{{this.product._id}}">
+                 {{/each}}
+        <div class="coupon-container flex items-center">
+            <input type="text" id="coupon-code" name="couponCode" placeholder="Enter Coupon Code" class="w-40 px-4 py-2 border rounded-l focus:outline-none focus:border-blue-500">
+            <button id="apply-coupon-button" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-r focus:outline-none" onclick="applyCoupon">
+                Apply Coupon
+            </button>
+        </div>
+    </form>
+</div>
+
+
             </div>
 
             <!-- User Addresses -->
@@ -135,6 +155,13 @@
                     {{/if}}
                     {{/each}}
                 </ul>
+         {{#if user.addresses.length}}
+        <button id="add-address-button"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full mt-4"
+            onclick="redirectToNewAddressCheckout()">Add New Address</button>
+        {{else}}
+        <p class="text-red-500 mt-4">No address found. Please add an address.</p>
+        {{/if}}
                 <button id="add-address-button"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full mt-4"
                     onclick="redirectToNewAddressCheckout()">Add New Address</button>
@@ -143,11 +170,34 @@
 
         <div class="text-center mt-8">
             <!-- Add a Razorpay payment button with the order details -->
-            <button id="checkout-button"
-                class="bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                onclick="completePurchase()">Complete Purchase</button>
+<div class="text-center mt-8">
+    <p id="address-message" class="text-red-600 mb-4">Please add an address to complete the purchase.</p>
+    <button id="complete-purchase-button"
+        class="bg-indigo-500 hover-bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        onclick="completePurchase()">Complete Purchase</button>
+</div>
+
         </div>
     </div>
+    <script>
+function updateCompletePurchaseButtonState() {
+    const completePurchaseButton = document.getElementById('complete-purchase-button');
+    const addressMessage = document.getElementById('address-message');
+    const hasAddresses = {{user.addresses.length}} > 0; // Replace this with the actual logic to check if the user has addresses
+
+    if (completePurchaseButton) {
+        completePurchaseButton.disabled = !hasAddresses;
+    }
+
+    if (addressMessage) {
+        addressMessage.style.display = hasAddresses ? 'none' : 'block';
+    }
+}
+
+   // Call the function initially to set the button and message state based on addresses
+   updateCompletePurchaseButtonState();
+  
+    </script>
 
     <script>
         function redirectToNewAddressCheckout() {

@@ -51,6 +51,51 @@ const deletecoupon = async (req, res) => {
     }
 };
 
+const applyDiscount = async (req, res) => {
+    try {
+        const userId = req.body.userID;
+        const productId = req.body.productID;
+        const enteredCoupon = req.body.couponCode;
+
+        // Check if the coupon exists
+        const coupon = await CouponModel.findOne({ couponCode: enteredCoupon });
+        
+        if (!coupon) {
+            return res.status(403).json({ message: "Invalid Code" });
+        }
+
+        // Check if the coupon has expired
+        const currentDate = Date.now();
+        if (currentDate > coupon.endDate) {
+            return res.status(403).json({ message: 'This coupon has expired.' });
+        }
+
+        // Calculate the total amount of the order
+        const product = await productmodel.findById(productId);
+        const productPrice = product.price;
+        console.log("produtprize",productPrice);
+
+        // Check the product price and the minPurchase
+        if (productPrice < coupon.minPurchase) {
+            return res.status(403).json({ message: `The minimum purchase for this coupon is ${coupon.minPurchase}` });
+        } else {
+            const discountAmount = productPrice - coupon.discountAmount;
+            console.log("discountedamount",discountAmount);
+            const Amount = coupon.discountAmount;
+            req.session.finalAmount =Amount;
+
+            req.session.PriceAfterCoupon = discountAmount;
+
+            req.session.enteredCoupon = enteredCoupon;
+
+            res.status(200).redirect('back')
+        }
+    } catch (error) {
+        console.error("Error applying discount:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 
 
 
@@ -58,4 +103,5 @@ module.exports = {
     coupon,
     newcoupon,
     deletecoupon,
+    applyDiscount,
 }

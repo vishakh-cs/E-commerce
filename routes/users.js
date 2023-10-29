@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const usercontroller = require('../controller/usercontroller')
+const CouponController = require ('../controller/coupenController.js')
 
 const wishlistController = require('../controller/wishlistcontroller')
 // const userAuthMiddleware = require('../Middleware/userAuth')
@@ -134,6 +135,8 @@ router.get('/viewOrder/:orderId',usercontroller.vieworder)
 router.get('/users/:userId/orders/:orderId/return', usercontroller.returnOrder);
 
 router.get('/generate-invoice/:userId/:orderId', usercontroller.generateInvoice);
+
+router.post('/applyDiscount',CouponController.applyDiscount)
 
 
 

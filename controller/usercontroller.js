@@ -362,7 +362,7 @@ const loginpost = async (req, res) => {
     const user = await usermodel.findOne({ email: loginemail });
 
     if (!user) {
-      return res.json({ status: "User not found" });
+      return res.redirect('/login?notRegistered=true')
     }
 
     if (user.isblocked) {
@@ -1009,6 +1009,7 @@ const checkout = async (req, res) => {
     if (!req.session.logedUser) {
       return res.redirect('/login');
     }
+    const applyedCoupon = req.session.PriceAfterCoupon
 
     const userId = req.session.logedUser._id;
     const user = await usermodel.findById(userId);
@@ -1043,10 +1044,18 @@ const checkout = async (req, res) => {
     const validCartProducts = cartProducts.filter((item) => item !== null);
 
     // Calculate the total price
-    const totalPrice = validCartProducts.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    let totalPrice = validCartProducts.reduce((total, item) => total + item.product.price * item.quantity, 0);
+
+        // Check if a coupon has been applied
+        const appliedCoupon = req.session.PriceAfterCoupon;
+        if (appliedCoupon) {
+          // Apply the coupon discount
+          totalPrice = appliedCoupon;
+        }
 
     res.render('checkout', {
       user,
+      discountAmount:applyedCoupon,
       primaryAddress,
       cartProducts: validCartProducts,
       totalPrice
@@ -1093,12 +1102,15 @@ const orderSuccess = async (req, res) => {
 
     // Filter out null products
     const validCartProducts = cartProducts.filter((cartItem) => cartItem !== null);
+    const discountprice = req.session.finalAmount
+    const applyedCoupon = req.session.PriceAfterCoupon
+    console.log("applyedcoupon",applyedCoupon);
 
     // Calculate the total price of the order
-    const totalPrice = validCartProducts.reduce((total, cartItem) => {
+    let totalPrice = validCartProducts.reduce((total, cartItem) => {
       return total + (cartItem.product.price * cartItem.quantity);
     }, 0);
-
+    totalPrice -= discountprice
     if (paymenttype === 'wallet-transfer') {
       // Check if the user has enough balance in their wallet
       if (user.wallet.amount < totalPrice) {
@@ -1118,7 +1130,8 @@ const orderSuccess = async (req, res) => {
         quantity: cartItem.quantity,
         productImage: cartItem.product.images.join(', ')
       })),
-      totalPrice: totalPrice,
+      discountAmount : discountprice,
+      totalPrice: totalPrice ,
       payment: {
         method: paymenttype
     }
@@ -1158,6 +1171,11 @@ const orderSuccess = async (req, res) => {
     user.cart = [];
     await user.save();
     req.session.logedUser.cart = [];
+// clear session
+req.session.PriceAfterCoupon = [];
+req.session.finalAmount = [];
+
+
   } catch (error) {
     console.error('Error rendering order success page:', error);
     res.status(500).send('Internal Server Error');
@@ -1497,7 +1515,7 @@ const generateInvoice = async (req, res) => {
         quantity: quantity,
         description: product.name, // Assuming the product model has a 'name' field
         tax: 0, // Assuming no tax for now
-        price: product.price, // Assuming the product model has a 'price' field
+        price: Order.totalPrice, // Assuming the product model has a 'price' field
       };
     });
 

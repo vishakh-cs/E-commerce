@@ -45,6 +45,12 @@ const orderSchema = new mongoose.Schema({
     totalPrice: {
         type: Number, 
         required: true 
+    },
+    coupon : {
+        type : String
+    },
+    discountAmount :{
+        type :Number 
     }
 });
 

@@ -32,6 +32,9 @@
                             <a href="/forgotpassword" class="text-blue-500 hover:underline">Forgot Password?</a>
                         </div>
                         <button class="mb-4 px-4 py-2 bg-green-500 hover:bg-blue-700 text-white font-bold rounded w-full" type="submit">Login</button>
+                  <div id="registration-message" class="text-red-500 ml-8 font-bold text-sm mb-2 hidden">
+                     User not registered. Please sign up.
+                   </div>
                     </form>
                     <p class="text-center text-black mt-4">Don't have an account? <a class="text-blue-500 hover:underline" href="/signup">Signup</a></p>
                 </div>
@@ -61,6 +64,14 @@
 
             return true;
         }
+        // Add this code to show the message if the user is not registered
+    const registrationMessage = document.getElementById("registration-message");
+    const urlParams = new URLSearchParams(window.location.search);
+    const notRegistered = urlParams.get("notRegistered");
+
+    if (notRegistered) {
+        registrationMessage.style.display = "block";
+    }
     </script>
 </body>
 </html>
