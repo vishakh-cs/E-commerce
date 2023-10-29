@@ -118,6 +118,43 @@ const getSalesDataByDay = async (req, res) => {
   }
 };
 
+// sales by week
+const getSalesDataByWeek = async (req, res) => {
+  try {
+    // Calculate the start and end of the current week
+    const startOfWeek = moment().startOf('week');
+    const endOfWeek = moment().endOf('week');
+
+    const salesData = await orderModel.aggregate([
+      {
+        $match: {
+          orderDate: {
+            $gte: startOfWeek.toDate(),
+            $lte: endOfWeek.toDate(),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$orderDate' },
+            month: { $month: '$orderDate' },
+            day: { $dayOfMonth: '$orderDate' },
+          },
+          totalAmount: { $sum: '$totalPrice' },
+        },
+      },
+    ]);
+
+    res.json(salesData);
+  } catch (error) {
+    console.error('Error fetching week sales data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
+
 
 
  // product management
@@ -560,5 +597,6 @@ module.exports ={
     orderManagement,
     updateOrderStatus,
     getSalesDataByDay,
+    getSalesDataByWeek,
 
 }

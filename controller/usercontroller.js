@@ -1111,7 +1111,9 @@ const orderSuccess = async (req, res) => {
     let totalPrice = validCartProducts.reduce((total, cartItem) => {
       return total + (cartItem.product.price * cartItem.quantity);
     }, 0);
+    if(discountprice){
     totalPrice -= discountprice
+    }
     if (paymenttype === 'wallet-transfer') {
       // Check if the user has enough balance in their wallet
       if (user.wallet.amount < totalPrice) {
