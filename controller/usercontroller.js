@@ -1076,6 +1076,7 @@ const orderSuccess = async (req, res) => {
     }
     const paymenttype = req.session.paymentMethod
     console.log("im payment",paymenttype);
+    const enteredCode = req.session.enteredCoupon
 
     const userId = req.session.logedUser._id;
     const user = await usermodel.findById(userId);
@@ -1130,6 +1131,7 @@ const orderSuccess = async (req, res) => {
         quantity: cartItem.quantity,
         productImage: cartItem.product.images.join(', ')
       })),
+      coupon : enteredCode,
       discountAmount : discountprice,
       totalPrice: totalPrice ,
       payment: {

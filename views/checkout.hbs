@@ -129,6 +129,7 @@
                 Apply Coupon
             </button>
         </div>
+        <p id="invalid-coupon-message" class="text-red-600">Invalid coupon</p>
     </form>
 </div>
 
@@ -177,8 +178,30 @@
         onclick="completePurchase()">Complete Purchase</button>
 </div>
 
-        </div>
     </div>
+    </div>
+    <script>
+function updateCouponMessage() {
+    const invalidCouponMessage = document.getElementById('invalid-coupon-message');
+    const urlParams = new URLSearchParams(window.location.search);
+    const isInvalidCoupon = urlParams.get('InvalidCode') === 'true';
+
+    // Remove the InvalidCode query parameter from the URL
+    if (isInvalidCoupon) {
+        urlParams.delete('InvalidCode');
+        const newUrl = window.location.pathname + '?' + urlParams.toString();
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+    if (invalidCouponMessage) {
+        invalidCouponMessage.style.display = isInvalidCoupon ? 'block' : 'none';
+    }
+}
+
+// Call the function initially to set the message state based on the query parameter
+updateCouponMessage();
+
+    </script>
     <script>
 function updateCompletePurchaseButtonState() {
     const completePurchaseButton = document.getElementById('complete-purchase-button');

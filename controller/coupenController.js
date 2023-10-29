@@ -61,7 +61,7 @@ const applyDiscount = async (req, res) => {
         const coupon = await CouponModel.findOne({ couponCode: enteredCoupon });
         
         if (!coupon) {
-            return res.status(403).json({ message: "Invalid Code" });
+            return res.redirect('/checkout?InvalidCode=true');
         }
 
         // Check if the coupon has expired
