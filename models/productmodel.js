@@ -38,6 +38,9 @@ const productSchema = new mongoose.Schema({
   offers: {
     type: String,
   },
+  offerPrice :{
+    type:Number,
+  },
   images: [
     {
       type: String, // Store the image URLs as strings

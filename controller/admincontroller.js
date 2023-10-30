@@ -186,10 +186,6 @@ const salesdatapiechart = async (req, res) => {
 
 
 
-
-
-
-
  // product management
  const productmanagement = async (req, res) => {
   try {
@@ -292,7 +288,7 @@ const editproducts = async (req, res) => {
 const editproductspost = async (req, res) => {
 
   const productId = req.params.id;
-  const { name, description, category, price, quantity, rating, offers } = req.body;
+  let { name, description, category, price, quantity, rating, offers , offer } = req.body;
   
     console.log('Received productId:', productId);
     console.log('Received name:', name);
@@ -315,6 +311,7 @@ const editproductspost = async (req, res) => {
         price: price,
         quantity: quantity,
         rating: rating,
+        offerPrice : offer,
         offers: offers,
         $push: { images: req.file.filename }, // Use $push to add the new image filename to the existing images array
       },
@@ -332,6 +329,7 @@ const editproductspost = async (req, res) => {
         category: category,
         price: price,
         quantity: quantity,
+        offerPrice : offer,
         rating: rating,
         offers: offers,
       },

@@ -73,33 +73,40 @@
 
 
             <!-- Order Summary (Right Side) -->
-            <div class="bg-white rounded-lg p-4 overflow-auto shadow-md">
-                <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
-                <ul>
-                    {{#each cartProducts}}
-                    <li class="flex justify-between mb-2 items-center">
-                        <div class="flex items-center">
-                            <img src="/uploads/{{this.product.images}}" alt="{{this.product.name}}"
-                                class="w-24 h-32 mr-4">
-                            <span class="font-semibold text-gray-800">{{this.product.name}}</span>
-                        </div>
-                        <span>{{this.quantity}} x ${{this.product.price}}</span>
-                    </li>
-                    <input type="hidden" id="productName" value="{{this.product.name}}">
-
-                    {{/each}}
-                </ul>
-                 <div class="mt-4">
-        <span>Coupon Discount:</span>
-        <span id="couponDiscount" class="text-red-600">Rs. {{discountAmount}}</span>
-    </div>
-    <hr class="my-2">
-    <div class="flex justify-between font-semibold">
-        <span>Total:</span>
-        <span id="totalPriceSummary" class="text-green-600">${{totalPrice}}</span>
-        <input type="hidden" id="productPrice" value="{{totalPrice}}">
-    </div>
+<div class="bg-white rounded-lg p-4 overflow-auto shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+    <ul>
+        {{#each cartProducts}}
+        <li class="flex justify-between mb-2 items-center">
+            <div class="flex items-center">
+                <img src="/uploads/{{this.product.images}}" alt="{{this.product.name}}" class="w-24 h-32 mr-4">
+                <span class="font-semibold text-gray-800">{{this.product.name}}</span>
+            </div>
+            {{#if this.product.offerPrice}}
+                <span>{{this.quantity}} x ${{this.product.offerPrice}} (Offer Price)</span>
+            {{else}}
+                <span>{{this.quantity}} x ${{this.product.price}}</span>
+            {{/if}}
+        </li>
+        <input type="hidden" id="productName" value="{{this.product.name}}">
+        {{/each}}
+    </ul>
+    <div class="mt-4">
+      <span>Coupon Discount:</span>
+    <span id="couponDiscount" class="text-red-600">Rs. {{discountAmount}}</span>
 </div>
+<hr class="my-2">
+<div class="flex justify-between font-semibold">
+    <span>Total:</span>
+    {{#if discountAmount}}
+        <span id="totalPriceSummary" class="text-green-600">${{discountAmount}}</span>
+    {{else}}
+        <span id="totalPriceSummary" class="text-green-600">${{totalPrice}}</span>
+    {{/if}}
+    <input type="hidden" id="productPrice" value="{{discountAmount}}">
+</div>
+</div>
+
         </div>
 
         <!-- Delivery Information  -->

@@ -70,31 +70,32 @@ const applyDiscount = async (req, res) => {
             return res.status(403).json({ message: 'This coupon has expired.' });
         }
 
-        // Calculate the total amount of the order
+        // Fetch the product and check if it has an offer price
         const product = await productmodel.findById(productId);
-        const productPrice = product.price;
-        console.log("produtprize",productPrice);
+        let productPrice = product.price;
+
+        // Check if the product has an offer price, use it as the product price
+        if (product.offerPrice && product.offerPrice < productPrice) {
+            productPrice = product.offerPrice;
+        }
 
         // Check the product price and the minPurchase
         if (productPrice < coupon.minPurchase) {
             return res.status(403).json({ message: `The minimum purchase for this coupon is ${coupon.minPurchase}` });
         } else {
             const discountAmount = productPrice - coupon.discountAmount;
-            console.log("discountedamount",discountAmount);
             const Amount = coupon.discountAmount;
-            req.session.finalAmount =Amount;
-
+            req.session.finalAmount = Amount;
             req.session.PriceAfterCoupon = discountAmount;
-
             req.session.enteredCoupon = enteredCoupon;
-
-            res.status(200).redirect('back')
+            res.status(200).redirect('back');
         }
     } catch (error) {
         console.error("Error applying discount:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
 
 
 

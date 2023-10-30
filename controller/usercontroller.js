@@ -443,6 +443,12 @@ const cart = async (req, res) => {
           console.error('Product not found for ID:', cartItem.productId);
           return null; // Handle the case where the product is not found
         }
+
+        // Check if the product has an offerPrice, if so, use that for total calculation
+        if (product.offerPrice) {
+          product.price = product.offerPrice;
+        }
+
         return {
           product,
           quantity: cartItem.quantity
@@ -467,6 +473,7 @@ const cart = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
 
 
 // add to cart 
@@ -1009,7 +1016,6 @@ const checkout = async (req, res) => {
     if (!req.session.logedUser) {
       return res.redirect('/login');
     }
-    const applyedCoupon = req.session.PriceAfterCoupon
 
     const userId = req.session.logedUser._id;
     const user = await usermodel.findById(userId);
@@ -1021,22 +1027,27 @@ const checkout = async (req, res) => {
     const userCart = user.cart || [];
     if (userCart.length === 0) {
       // Redirect the user to a shopping cart page or display a message
-      return res.redirect('/cart/:userid'); 
+      return res.redirect('/cart/:userid');
     }
 
     const cartProducts = await Promise.all(userCart.map(async (cartItem) => {
       try {
         const product = await Products.findById(cartItem.productId);
-        if (!product ) {
-          throw new Error('Product not found'); 
+        if (!product) {
+          throw new Error('Product not found');
         }
+
+        // Calculate the product price based on offer or regular price
+        const price = product.offerPrice ? product.offerPrice : product.price;
+
         return {
           product,
-          quantity: cartItem.quantity
+          quantity: cartItem.quantity,
+          price,
         };
       } catch (err) {
         console.error('Error fetching product:', err);
-        return null; // Return null for products that could not be found
+        return null;
       }
     }));
 
@@ -1044,27 +1055,32 @@ const checkout = async (req, res) => {
     const validCartProducts = cartProducts.filter((item) => item !== null);
 
     // Calculate the total price
-    let totalPrice = validCartProducts.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    let totalPrice = validCartProducts.reduce((total, item) => total + item.price * item.quantity, 0);
 
-        // Check if a coupon has been applied
-        const appliedCoupon = req.session.PriceAfterCoupon;
-        if (appliedCoupon) {
-          // Apply the coupon discount
-          totalPrice = appliedCoupon;
-        }
+    // Check if a coupon has been applied
+    const appliedCoupon = req.session.PriceAfterCoupon;
+    if (appliedCoupon) {
+      // Apply the coupon discount
+      totalPrice -= appliedCoupon;
+    }
 
     res.render('checkout', {
       user,
-      discountAmount:applyedCoupon,
+      discountAmount: appliedCoupon,
       primaryAddress,
       cartProducts: validCartProducts,
-      totalPrice
+      totalPrice,
     });
+    req.session.PriceAfterCoupon = [];
+    
   } catch (error) {
     console.error('Error rendering checkout page:', error);
     res.status(500).send('Internal Server Error');
   }
 };
+
+
+
 
 
 // order success page
@@ -1107,10 +1123,14 @@ const orderSuccess = async (req, res) => {
     const applyedCoupon = req.session.PriceAfterCoupon
     console.log("applyedcoupon",applyedCoupon);
 
-    // Calculate the total price of the order
-    let totalPrice = validCartProducts.reduce((total, cartItem) => {
-      return total + (cartItem.product.price * cartItem.quantity);
-    }, 0);
+   // Calculate the total price of the order
+   let totalPrice = validCartProducts.reduce((total, cartItem) => {
+    let productPrice = cartItem.product.price;
+    if (cartItem.product.offerPrice) {
+      productPrice = cartItem.product.offerPrice; // Use the offer price if available
+    }
+    return total + (productPrice * cartItem.quantity);
+  }, 0);
     if(discountprice){
     totalPrice -= discountprice
     }
