@@ -67,7 +67,7 @@ const applyDiscount = async (req, res) => {
         // Check if the coupon has expired
         const currentDate = Date.now();
         if (currentDate > coupon.endDate) {
-            return res.status(403).json({ message: 'This coupon has expired.' });
+            return res.redirect('/checkout?CouponhasExpired=true');
         }
 
         // Fetch the product and check if it has an offer price

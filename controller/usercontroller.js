@@ -1119,7 +1119,7 @@ const orderSuccess = async (req, res) => {
 
     // Filter out null products
     const validCartProducts = cartProducts.filter((cartItem) => cartItem !== null);
-    const discountprice = req.session.finalAmount
+    let discountprice = req.session.finalAmount
     const applyedCoupon = req.session.PriceAfterCoupon
     console.log("applyedcoupon",applyedCoupon);
 
@@ -1127,10 +1127,15 @@ const orderSuccess = async (req, res) => {
    let totalPrice = validCartProducts.reduce((total, cartItem) => {
     let productPrice = cartItem.product.price;
     if (cartItem.product.offerPrice) {
-      productPrice = cartItem.product.offerPrice; // Use the offer price if available
+        productPrice = cartItem.product.offerPrice; // Use the offer price if available
     }
     return total + (productPrice * cartItem.quantity);
-  }, 0);
+}, 0);
+
+if (Array.isArray(discountprice)) {
+    // Handle the case where discountprice is an array
+    discountprice = 0; // or set it to the desired default value
+}
     if(discountprice){
     totalPrice -= discountprice
     }
@@ -1443,14 +1448,26 @@ const buySuccess = async (req, res) => {
 const searchprdt = async (req, res) => {
   const searchQuery = req.body.searchQuery;
   try {
+    // Create a case-insensitive regex pattern
     const regexPattern = new RegExp(searchQuery, 'i');
-    const products = await Products.find({ name: { $regex: new RegExp(searchQuery, 'i') } });
-      res.render('searchprdt', { products });
+
+    // Search for products matching the search query and are not out of stock
+    const products = await Products.find({
+      name: regexPattern,
+      OutofStock: false, 
+    });
+
+    if (products.length === 0) {
+      return res.render('searchprdt', { message: 'No matching products found.' });
+    }
+
+    res.render('searchprdt', { products });
   } catch (error) {
-      console.error('Error searching for products:', error);
-      res.status(500).send('Error searching for products');
+    console.error('Error searching for products:', error);
+    res.status(500).send('Error searching for products');
   }
 };
+
 // logout
 
 const logout = async (req, res) => {
