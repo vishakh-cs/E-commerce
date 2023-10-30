@@ -142,7 +142,15 @@
 
             <!-- Chart Canvas -->
             <strong class="underline">Weekly Report</strong>
-            <canvas id="weekSalesChart" width="400" height="100"></canvas>
+           <div class="flex">
+    <div class="w-1/2">
+        <canvas id="weekSalesChart" width="400" height="200"></canvas>
+    </div>
+    <div class="w-1/2">
+        <canvas id="salesPieChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
              <strong class="underline">Daily Report</strong>
             <canvas id="salesChart" width="400" height="100"></canvas>
             <table class="min-w-full">
@@ -189,13 +197,52 @@
             </table>
         </main>
     </div>
+<script>
+async function fetchData() {
+  try {
+    const response = await fetch('/salesdatapiechart');
+    const data = await response.json();
+
+    // Extract data from the JSON response
+    const xValues = data.labels; 
+    const yValues = data.data;  
+    const barColors = [
+      "#b91d47", "#00aba9", "#2b5797", "#e8c3b9", "#1e7145",
+      "#ff5733", "#fddb2a", "#2763bb", "#ffda77", "#61c0bf",
+      "#e15f41", "#6e7f80"  
+    ];
+
+    new Chart("salesPieChart", {
+      type: "pie",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: barColors,
+          data: yValues
+        }]
+      },
+      options: {
+        title: {
+          display: true,
+          text: "Monthly Sales Data"
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+
+fetchData();
+</script>
+
     
 <script>
   document.addEventListener('DOMContentLoaded', async function () {
     const weekSalesChartCanvas = document.getElementById('weekSalesChart').getContext('2d');
 
     try {
-      // Fetch the weekly sales data from your server
+      // Fetch the weekly sales data from  server
       const response = await fetch('/getSalesDataByWeek');
       const salesData = await response.json();
       console.log('Fetched sales data:', salesData);
@@ -205,8 +252,7 @@
       const xValues = daysOfTheWeek;
       const yValues = [0, 0, 0, 0, 0, 0, 0]; // Initialize with zeros
 
-      // Populate the yValues array with actual sales data
-// Populate the yValues array with actual sales data
+// Populate the yValues array  sales data
 salesData.forEach((entry) => {
   const day = moment({ year: entry._id.year, month: entry._id.month - 1, day: entry._id.day }).format('ddd');
   const dayIndex = daysOfTheWeek.indexOf(day);

@@ -153,6 +153,39 @@ const getSalesDataByWeek = async (req, res) => {
   }
 };
 
+//monthly revenue pie chart 
+const salesdatapiechart = async (req, res) => {
+  try {
+    const salesData = await orderModel.aggregate([
+      {
+        $group: {
+          _id: {
+            month: { $month: '$orderDate' },
+          },
+          totalAmount: { $sum: '$totalPrice' },
+        },
+      },
+    ]);
+
+    const labels = []; 
+    const data = [];  
+
+    // Loop through the salesData and populate the labels and data arrays
+    for (let i = 1; i <= 12; i++) {
+      const monthData = salesData.find(item => item._id.month === i);
+      labels.push(moment().month(i - 1).format('MMMM')); 
+      data.push(monthData ? monthData.totalAmount : 0); 
+    }
+
+    res.json({ labels, data });
+  } catch (error) {
+    console.error('Error fetching monthly sales data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
+
 
 
 
@@ -598,5 +631,6 @@ module.exports ={
     updateOrderStatus,
     getSalesDataByDay,
     getSalesDataByWeek,
+    salesdatapiechart,
 
 }
