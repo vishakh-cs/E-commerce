@@ -232,8 +232,7 @@ const addproductspost = async (req, res) => {
       quantity,
       rating,
       offers,
-      images,
-      croppedImage, // Include the cropped image
+      images, // Include the cropped image
     });
 
     // Save the new product to the database

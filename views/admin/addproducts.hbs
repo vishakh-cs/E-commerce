@@ -144,7 +144,6 @@
     <a href="/admindashboard">dashboard</a>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
     const imageInput = document.getElementById("images");
     const imagePreview = document.getElementById("image-preview");
     let cropper;
@@ -176,58 +175,75 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Add a crop button event listener
-    const cropButton = document.getElementById("crop-button");
-    cropButton.addEventListener("click", function () {
-        if (cropper) {
-            const croppedCanvas = cropper.getCroppedCanvas();
-            const croppedDataUrl = croppedCanvas.toDataURL();
-            initializeCropper(croppedDataUrl);
-        }
-    });
+    //const cropButton = document.getElementById("crop-button");
+    // cropButton.addEventListener("click", function () {
+   //     if (cropper) {
+   //         const croppedCanvas = cropper.getCroppedCanvas();
+  //          const croppedDataUrl = croppedCanvas.toDataURL();
+ //           initializeCropper(croppedDataUrl);
+  //      }
+ //   }); 
 
     // Add a save button event listener
     const saveButton = document.getElementById("save-button");
-    saveButton.addEventListener("click", function () {
-        if (cropper) {
-            const croppedCanvas = cropper.getCroppedCanvas();
-            const croppedDataUrl = croppedCanvas.toDataURL();
+   // saveButton.addEventListener("click", function () {
+   //     if (cropper) {
+        //    const croppedCanvas = cropper.getCroppedCanvas();
+        //    const croppedDataUrl = croppedCanvas.toDataURL();
 
             // Set the cropped image data as the source for the image preview
-            imagePreview.src = croppedDataUrl;
+        //    imagePreview.src = croppedDataUrl;
 
             // Create a blob from the data URL
-            const blob = dataURLToBlob(croppedDataUrl);
+           // const blob = dataURLToBlob(croppedDataUrl);
 
             // Create a new Blob URL and set it as the href for the download link
-            const blobURL = URL.createObjectURL(blob);
+           // const blobURL = URL.createObjectURL(blob);
 
             // Create a downloadable link
-            const downloadLink = document.createElement("a");
-            downloadLink.href = blobURL;
-            downloadLink.download = "cropped_image.png"; // Change the filename as needed
-            downloadLink.style.display = "none";
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
+            //const downloadLink = document.createElement("a");
+           // downloadLink.href = blobURL;
+           // downloadLink.download = "cropped_image.png"; // Change the filename as needed
+          //  downloadLink.style.display = "none";
+          //  document.body.appendChild(downloadLink);
+          //  downloadLink.click();
+    let selectedFiles=[]
+     saveButton.onclick = function() {
+      // Loop through the croppers and save each cropped image
+        let canvas = cropper.getCroppedCanvas();
+        canvas.toBlob(function(blob) {
+          // Create a new blob URL for the cropped image
+          let croppedImageUrl = URL.createObjectURL(blob);
+          let fileName = `cropped_.jpeg`;
+
+          const file = new File([blob], fileName, {
+            type: 'image/jpeg'
+          });
+          selectedFiles.push(file)
+          // Create a new FormData object and append the Blob
+          let formData = new FormData();
+          formData.append(`croppedImage`, file);
+
+        }, 'image/jpeg');
+      const dataTransfer = new DataTransfer();
+      selectedFiles.forEach(file => {
+        dataTransfer.items.add(file);
+
+      });
+      imageInput.files = dataTransfer.files;
+    };
+
+
+
 
             // Clean up
-            URL.revokeObjectURL(blobURL);
-            document.body.removeChild(downloadLink);
-        }
-    });
+           // URL.revokeObjectURL(blobURL);
+           // document.body.removeChild(downloadLink);
+       /// }
+    //});
 
     // Function to convert a data URL to a Blob
-    function dataURLToBlob(dataURL) {
-        const parts = dataURL.split(",");
-        const contentType = parts[0].split(":")[1];
-        const byteCharacters = atob(parts[1]);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        return new Blob([byteArray], { type: contentType });
-    }
-});
+    
 </script>
 
 
