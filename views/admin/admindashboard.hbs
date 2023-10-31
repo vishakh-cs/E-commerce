@@ -139,7 +139,10 @@
         <main class="p-6">
 <div style="text-align: right;">
 <button id="downloadPdfButton" class="bg-red-700 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded focus:outline-none">
-    Download Yearly Sales Report
+    Download Sales Report
+</button>
+<button id="downloadExcel" class="bg-green-700 hover:bg-green-950 text-white font-bold py-2 px-4 rounded">
+  Download Excel
 </button>
 
 </div>
@@ -204,12 +207,33 @@
             </table>
         </main>
     </div>
-   <script>
-  // Add an event listener to the button
-  const downloadPdfButton = document.getElementById('downloadPdfButton');
+     <script>
+        document.getElementById('downloadExcel').addEventListener('click', () => {
+            const excelReportURL = '/generateExcelReport';
+            fetch(excelReportURL)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'yearly_sales_report.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error('Error downloading Excel report:', error);
+                });
+        });
+    </script>
 
+
+
+   <script>
+  const downloadPdfButton = document.getElementById('downloadPdfButton');
   downloadPdfButton.addEventListener('click', () => {
-    // Make an HTTP request to fetch the PDF from the server
+
     fetch('/salesreportpdf')
       .then((response) => {
         if (response.ok) {

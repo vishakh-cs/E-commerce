@@ -4,6 +4,7 @@ const categoryModel = require("../models/categoryModel")
 const orderModel = require('../models/orderModel')
 const moment = require('moment');
 const PDFDocument = require('pdfkit');
+const ExcelJS = require('exceljs');
 
 
 // admin login get
@@ -214,7 +215,7 @@ const salesreportpdf = async (req, res) => {
       },
       {
         $lookup: {
-          from: 'users', // Replace with the name of your users collection
+          from: 'users', 
           localField: 'userId',
           foreignField: '_id',
           as: 'userData',
@@ -246,7 +247,7 @@ const salesreportpdf = async (req, res) => {
     // Pipe the PDF document to the response stream
     doc.pipe(res);
 
-    // Add PDF content here
+    // Add PDF content
     doc.fontSize(18).text('Sales Report', { align: 'center' });
     doc.moveDown(1);
 
@@ -272,6 +273,100 @@ const salesreportpdf = async (req, res) => {
   }
 };
 
+// generate Excel Report
+const generateExcelReport = async (req, res) => {
+  try {
+    // Calculate the start and end of the current year
+    const startOfYear = moment().startOf('year');
+    const endOfYear = moment().endOf('year');
+
+    const salesData = await orderModel.aggregate([
+      {
+        $match: {
+          orderDate: {
+            $gte: startOfYear.toDate(),
+            $lte: endOfYear.toDate(),
+          },
+        },
+      },
+      {
+        $unwind: '$products',
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'products.product',
+          foreignField: '_id',
+          as: 'productData',
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userData',
+        },
+      },
+      {
+        $project: {
+          orderId: '$_id',
+          orderedAddress: {
+            address: { $arrayElemAt: ['$userData.addresses.address', 0] },
+            city: { $arrayElemAt: ['$userData.addresses.city', 0] },
+            state: { $arrayElemAt: ['$userData.addresses.state', 0] },
+            pincode: { $arrayElemAt: ['$userData.addresses.pin', 0] },
+            country: { $arrayElemAt: ['$userData.addresses.country', 0] },
+            phone: { $arrayElemAt: ['$userData.addresses.phone', 0] },
+          },
+          productName: { $arrayElemAt: ['$productData.name', 0] },
+          orderPrice: { $multiply: ['$products.quantity', { $arrayElemAt: ['$productData.price', 0] }] },
+        },
+      },
+    ]);
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Yearly Sales Report');
+
+    // Define columns and set headers
+    worksheet.columns = [
+      { header: 'Order ID', key: 'orderId' },
+      { header: 'Ordered Address', key: 'orderedAddress.address' },
+      { header: 'Ordered City', key: 'orderedAddress.city' },
+      { header: 'Ordered State', key: 'orderedAddress.state' },
+      { header: 'Ordered Pincode', key: 'orderedAddress.pincode' },
+      { header: 'Ordered Country', key: 'orderedAddress.country' },
+      { header: 'Ordered Phone', key: 'orderedAddress.phone' },
+      { header: 'Product Name', key: 'productName' },
+      { header: 'Order Price', key: 'orderPrice' },
+    ];
+
+    // Add data rows
+    for (const orderData of salesData) {
+      worksheet.addRow({
+        orderId: orderData.orderId,
+        'orderedAddress.address': orderData.orderedAddress.address,
+        'orderedAddress.city': orderData.orderedAddress.city,
+        'orderedAddress.state': orderData.orderedAddress.state,
+        'orderedAddress.pincode': orderData.orderedAddress.pincode,
+        'orderedAddress.country': orderData.orderedAddress.country,
+        'orderedAddress.phone': orderData.orderedAddress.phone,
+        productName: orderData.productName,
+        orderPrice: `Rs. ${orderData.orderPrice}`,
+      });
+    }
+
+    const excelBuffer = await workbook.xlsx.writeBuffer();
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=yearly_sales_report.xlsx');
+    res.send(excelBuffer);
+
+    console.log('Excel report generated successfully');
+  } catch (error) {
+    console.error('Error generating Excel report:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
 
 
 
@@ -722,5 +817,6 @@ module.exports ={
     getSalesDataByWeek,
     salesdatapiechart,
     salesreportpdf,
+    generateExcelReport,
 
 }
