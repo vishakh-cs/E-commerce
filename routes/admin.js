@@ -70,6 +70,8 @@ router.get('/getSalesDataByWeek',admincontroller.getSalesDataByWeek)
 
 router.get('/salesdatapiechart',admincontroller.salesdatapiechart)
 
+router.get('/salesreportpdf',admincontroller.salesreportpdf)
+
 router.get('/adminCoupon',CouponController.coupon);
 
 router.post('/newcoupon',CouponController.newcoupon);

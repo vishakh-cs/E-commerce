@@ -3,6 +3,7 @@ const usermodel = require('../models/usermodel')
 const categoryModel = require("../models/categoryModel")
 const orderModel = require('../models/orderModel')
 const moment = require('moment');
+const PDFDocument = require('pdfkit');
 
 
 // admin login get
@@ -183,6 +184,97 @@ const salesdatapiechart = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
+// pdf saes report
+const salesreportpdf = async (req, res) => {
+  try {
+    // Calculate the start and end of the current year
+    const startOfYear = moment().startOf('year');
+    const endOfYear = moment().endOf('year');
+
+    const salesData = await orderModel.aggregate([
+      {
+        $match: {
+          orderDate: {
+            $gte: startOfYear.toDate(),
+            $lte: endOfYear.toDate(),
+          },
+        },
+      },
+      {
+        $unwind: '$products',
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'products.product',
+          foreignField: '_id',
+          as: 'productData',
+        },
+      },
+      {
+        $lookup: {
+          from: 'users', // Replace with the name of your users collection
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userData',
+        },
+      },
+      {
+        $project: {
+          orderId: '$_id',
+          orderedAddress: {
+            address: { $arrayElemAt: ['$userData.addresses.address', 0] },
+            city: { $arrayElemAt: ['$userData.addresses.city', 0] },
+            state: { $arrayElemAt: ['$userData.addresses.state', 0] },
+            pincode: { $arrayElemAt: ['$userData.addresses.pin', 0] },
+            country: { $arrayElemAt: ['$userData.addresses.country', 0] },
+            phone: { $arrayElemAt: ['$userData.addresses.phone', 0] },
+          },
+          productName: { $arrayElemAt: ['$productData.name', 0] },
+          orderPrice: { $multiply: ['$products.quantity', { $arrayElemAt: ['$productData.price', 0] }],
+        },
+      },
+  }]);
+
+    const doc = new PDFDocument();
+
+    // Set response headers to specify PDF content type and attachment
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename="sales_report.pdf"');
+
+    // Pipe the PDF document to the response stream
+    doc.pipe(res);
+
+    // Add PDF content here
+    doc.fontSize(18).text('Sales Report', { align: 'center' });
+    doc.moveDown(1);
+
+    // Loop through the sales data and add it to the PDF document
+    for (const orderData of salesData) {
+      doc.text(`Order ID: ${orderData.orderId}`);
+      doc.text(`Ordered Address: ${orderData.orderedAddress.address}`);
+      doc.text(`Ordered City: ${orderData.orderedAddress.city}`);
+      doc.text(`Ordered State: ${orderData.orderedAddress.state}`);
+      doc.text(`Ordered Pincode: ${orderData.orderedAddress.pincode}`);
+      doc.text(`Ordered Country: ${orderData.orderedAddress.country}`);
+      doc.text(`Ordered Phone: ${orderData.orderedAddress.phone}`);
+      doc.text(`Product Name: ${orderData.productName}`);
+      doc.text(`Order Price: Rs. ${orderData.orderPrice}`);
+      doc.moveDown(1); // Add some space between entries
+    }
+
+    // Finalize the PDF document
+    doc.end();
+  } catch (error) {
+    console.error('Error generating yearly sales report PDF:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
+
+
 
 
 
@@ -629,5 +721,6 @@ module.exports ={
     getSalesDataByDay,
     getSalesDataByWeek,
     salesdatapiechart,
+    salesreportpdf,
 
 }

@@ -137,6 +137,13 @@
 
          <!-- Main Content -->
         <main class="p-6">
+<div style="text-align: right;">
+<button id="downloadPdfButton" class="bg-red-700 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded focus:outline-none">
+    Download Yearly Sales Report
+</button>
+
+</div>
+
             <!-- Sales Report -->
             <h2 class="text-xl font-semibold mb-4 text-center" style="text-decoration: underline;"> Sales Report</h2>
 
@@ -197,6 +204,47 @@
             </table>
         </main>
     </div>
+   <script>
+  // Add an event listener to the button
+  const downloadPdfButton = document.getElementById('downloadPdfButton');
+
+  downloadPdfButton.addEventListener('click', () => {
+    // Make an HTTP request to fetch the PDF from the server
+    fetch('/salesreportpdf')
+      .then((response) => {
+        if (response.ok) {
+          // Convert the response to a blob
+          return response.blob();
+        } else {
+          // Handle any errors here
+          console.error('Error fetching PDF:', response.status, response.statusText);
+          alert('Failed to fetch PDF. Please try again later.');
+          throw new Error('Failed to fetch PDF');
+        }
+      })
+      .then((blob) => {
+        // Create a download link for the PDF
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'yearly_sales_report.pdf';
+
+        // Trigger a click event to download the PDF
+        document.body.appendChild(a);
+        a.click();
+
+        // Cleanup
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      })
+      .catch((error) => {
+        // Handle any errors from the fetch request
+        console.error('Error:', error);
+      });
+  });
+</script>
+
 <script>
 async function fetchData() {
   try {
