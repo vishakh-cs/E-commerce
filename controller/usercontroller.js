@@ -1173,8 +1173,11 @@ if (Array.isArray(discountprice)) {
         for (const cartItem of validCartProducts) {
           const product = cartItem.product;
           const updatedQuantity = product.quantity - cartItem.quantity;
-          if (updatedQuantity < 0) {
-            throw new Error(`Not enough quantity available for ${product.name}`);
+          if (updatedQuantity < 1) {
+            req.session.logedUser.cart = []; 
+            await user.save();
+          
+            return res.redirect('/cart/:userid?notEnoughQuantity=true');
           }
     
           // Update the product's quantity in the database
