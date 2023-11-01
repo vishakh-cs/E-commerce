@@ -1268,7 +1268,7 @@ if (Array.isArray(discountprice)) {
         for (const cartItem of validCartProducts) {
           const product = cartItem.product;
           const updatedQuantity = product.quantity - cartItem.quantity;
-          if (updatedQuantity < 1) {
+          if (updatedQuantity < 0) {
             req.session.logedUser.cart = []; 
             await user.save();
           

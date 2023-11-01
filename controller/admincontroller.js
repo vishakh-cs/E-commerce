@@ -16,23 +16,15 @@ const adminlogin = (req,res)=>{
 }
 
 // admin login post
-
 const adminloginpost = (req, res) => {
   const adminname = req.body.username
   const adminpassword = req.body.password
   const predefinedAdminName = 'admin';
   const predefinedAdminPassword = 'admin';
-
-  console.log("Received adminname:", adminname);
-  console.log("Received adminpassword:", adminpassword);
-
   if (adminname == predefinedAdminName && adminpassword == predefinedAdminPassword) {
-    // Create a session to authenticate the admin
     req.session.admin = adminname;
-
     res.redirect('/admindashboard');
   } else {
-    // Invalid credentials, display an error message
     res.send("Invalid admin credentials");
   }
 }
@@ -42,10 +34,8 @@ const admindashboard = async (req, res) => {
   if (!req.session.admin) {
     return res.redirect('/adminlogin');
   }
-
   try {
     const orders = await orderModel.find({}).populate('products.product'); // Populate product information
-
     const salesData = [];
     for (const order of orders) {
       const user = await usermodel.findById(order.userId);
@@ -64,7 +54,7 @@ const admindashboard = async (req, res) => {
           if (product) {
             products.push({
               name: product.name,
-              image: product.images, // Update this to match your actual property name
+              image: product.images,
             });
           }
         }
@@ -91,7 +81,6 @@ const getSalesDataByDay = async (req, res) => {
   try {
     const today = moment().startOf('day');
     const endDate = moment().endOf('day');
-
     const salesData = await orderModel.aggregate([
       {
         $match: {
@@ -189,7 +178,6 @@ const salesdatapiechart = async (req, res) => {
 // pdf saes report
 const salesreportpdf = async (req, res) => {
   try {
-    // Calculate the start and end of the current year
     const startOfYear = moment().startOf('year');
     const endOfYear = moment().endOf('year');
 
@@ -239,8 +227,6 @@ const salesreportpdf = async (req, res) => {
   }]);
 
     const doc = new PDFDocument();
-
-    // Set response headers to specify PDF content type and attachment
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename="sales_report.pdf"');
 
@@ -264,7 +250,6 @@ const salesreportpdf = async (req, res) => {
       doc.text(`Order Price: Rs. ${orderData.orderPrice}`);
       doc.moveDown(1); // Add some space between entries
     }
-
     // Finalize the PDF document
     doc.end();
   } catch (error) {
@@ -272,7 +257,6 @@ const salesreportpdf = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
-
 // generate Excel Report
 const generateExcelReport = async (req, res) => {
   try {
@@ -324,10 +308,8 @@ const generateExcelReport = async (req, res) => {
         },
       },
     ]);
-
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Yearly Sales Report');
-
     // Define columns and set headers
     worksheet.columns = [
       { header: 'Order ID', key: 'orderId' },
@@ -340,7 +322,6 @@ const generateExcelReport = async (req, res) => {
       { header: 'Product Name', key: 'productName' },
       { header: 'Order Price', key: 'orderPrice' },
     ];
-
     // Add data rows
     for (const orderData of salesData) {
       worksheet.addRow({
@@ -367,10 +348,6 @@ const generateExcelReport = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
-
-
-
-
 
 
  // product management
@@ -401,15 +378,10 @@ const addproductspost = async (req, res) => {
   try {
     const { name, description, category, subcategory, price, quantity, rating, offers } = req.body;
     const images = req.files.map((file) => file.filename);
-
     // Calculate the discount amount
     const discountPercentage = parseFloat(offers); // Convert offers to a floating-point number
     const discountAmount = (discountPercentage / 100) * price;
-
-    // Calculate the final price after discount
     const discountedPrice = price - discountAmount;
-
-    // Create a new Product document based on the schema
     const newProduct = new productmodel({
       name,
       description,
@@ -433,9 +405,7 @@ const addproductspost = async (req, res) => {
 };
 
 
-
-
-
+// add products
 const addproducts = async (req, res) => {
   try {
     // Fetch categories and subcategories to populate the dropdowns
@@ -450,8 +420,7 @@ const addproducts = async (req, res) => {
 
 
 
-// update product 
-// Route to display the edit form for a specific product
+//  edit form for a specific product (render page)
 const editproducts = async (req, res) => {
   try {
       const productId = req.params.id;
@@ -469,22 +438,10 @@ const editproducts = async (req, res) => {
   }
 };
 
-// Route to handle the form submission and update the product
-// Route to handle the form submission and update the product
+//  update the product
 const editproductspost = async (req, res) => {
-
   const productId = req.params.id;
   let { name, description, category, price, quantity, rating, offers , offer } = req.body;
-  
-    console.log('Received productId:', productId);
-    console.log('Received name:', name);
-    console.log('Received description:', description);
-    console.log('Received category:', category);
-    console.log('Received price:', price);
-    console.log('Received quantity:', quantity);
-    console.log('Received rating:', rating);
-    console.log('Received offers:', offers);
-  
   try {
     
     // Check if a new image file was uploaded
@@ -499,7 +456,7 @@ const editproductspost = async (req, res) => {
         rating: rating,
         offerPrice : offer,
         offers: offers,
-        $push: { images: req.file.filename }, // Use $push to add the new image filename to the existing images array
+        $push: { images: req.file.filename }, 
       },
       { new: true }
       );
@@ -538,14 +495,10 @@ const editproductspost = async (req, res) => {
 const deleteProduct = async (req, res) => {
   const productId = req.params.id;
   try {
-    // Find the product by ID and remove it from the database
     const deletedProduct = await productmodel.findByIdAndRemove(productId);
-
     if (!deletedProduct) {
       return res.status(404).send('Product not found');
     }
-
-    // Redirect to the admin dashboard or any other page after successful deletion
     res.redirect('/productmanagement');
   } catch (error) {
     console.error('Error deleting product:', error);
@@ -566,27 +519,19 @@ const category = async (req,res)=>{
 }
 
 // category management
-
 const categoryManagement = async (req, res) => {
   try {
     const { categoryName, categoryDescription, subcategoryName } = req.body;
     console.log("sub",subcategoryName);
-
-    // Check if the category already exists
     const existingCategory = await categoryModel.findOne({ name: categoryName });
-
     if (existingCategory) {
-      // If the category already exists, show a popup message
       res.send('<script>alert("Category already exists!"); window.location.href = "/categories";</script>');
     } else {
-     
       const newCategory = new categoryModel({
         name: categoryName,
         description: categoryDescription,
         subcategory: subcategoryName, 
       });
-
-      // Save the new category to the database
       await newCategory.save();
       res.redirect('/categories');
     }
@@ -596,17 +541,12 @@ const categoryManagement = async (req, res) => {
   }
 };
 
-
 // delete category 
-
 const removeCategory = async (req,res)=>{
   try {
     const categoryId = req.params.id;
-
     await categoryModel.findByIdAndDelete(categoryId);
-
-    // Redirect or send a response as needed
-    res.redirect('/categories'); // Redirect to the category management page
+    res.redirect('/categories'); 
 } catch (error) {
     console.error('Error deleting category:', error);
     res.status(500).send('Error deleting category');
@@ -614,24 +554,17 @@ const removeCategory = async (req,res)=>{
 }
 
 // add subcategory
-
 const addSubcategory = async (req, res) => {
   try {
       const categoryId = req.params.id;
       const { subcategory } = req.body;
-
-      // Find the category by ID
       const category = await categoryModel.findById(categoryId);
 
       if (!category) {
           return res.status(404).json({ error: 'Category not found' });
       }
       category.subcategories.push(subcategory);
-
-      // Save the updated category
       await category.save();
-
-      // Return a success response
       res.status(200).json({ message: 'Subcategory added successfully' });
   } catch (error) {
       console.error('Error adding subcategory:', error);
@@ -643,7 +576,6 @@ const addSubcategory = async (req, res) => {
 
 //user controll
 const usermangement = async (req,res)=>{
- 
     try {
       const users = await usermodel.find({ username: { $ne: req.session.admin } });
       res.render("admin/usermanagement", { users });
@@ -679,11 +611,7 @@ const usermangement = async (req,res)=>{
   const deleteUser = async (req, res) => {
     try {
       const userId = req.params.id;
-  
-      // Find the user by ID and delete it from the database
       await usermodel.findByIdAndDelete(userId);
-  
-      // Redirect back to the User Management page after successful deletion
       res.redirect('/user'); 
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -694,12 +622,8 @@ const usermangement = async (req,res)=>{
   const blockUser = async (req, res) => {
     try {
       const userId = req.params.id;
-  
-      // Update the user's status to blocked in the database
       await usermodel.findByIdAndUpdate(userId, { isblocked: true });
-  
-      // Redirect back to the User Management page after successful blocking
-      res.redirect('/user'); // Update the URL as needed
+      res.redirect('/user'); 
     } catch (error) {
       console.error('Error blocking user:', error);
       res.status(500).send('Error blocking user');
@@ -709,7 +633,6 @@ const usermangement = async (req,res)=>{
   const unblockUser = async (req, res) => {
     try {
       const userId = req.params.id;
-  
       await usermodel.findByIdAndUpdate(userId, { isblocked: false });
       res.redirect('/user');
     } catch (error) { // Add a catch block for error handling
@@ -722,16 +645,9 @@ const usermangement = async (req,res)=>{
 // search user
 const searchUsers = async (req, res) => {
   try {
-    // Get the search query from the form
     const searchQuery = req.body.search;
-
-    //  regular expression to perform a case-insensitive search
     const regex = new RegExp(searchQuery, 'i');
-
-    // Find users whose username matches the search query
     const users = await usermodel.find({ username: regex });
-
-    // Render the user management page with the search results
     res.render('admin/usermanagement', { users });
   } catch (error) {
     console.error('Error searching users:', error);
@@ -771,13 +687,8 @@ const orderManagement = async (req, res) => {
 // update the order status
 const updateOrderStatus = async (req, res) => {
   const { orderId, status } = req.body;
-  console.log('Received orderId:', orderId);
-    console.log('Received status:', status);
-
-  try {
-      
+  try {  
       const updatedOrder = await orderModel.findByIdAndUpdate(orderId, { status }, { new: true });
-
       if (updatedOrder) {
           res.redirect('/adminOrder') 
       } else {

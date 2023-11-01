@@ -7,7 +7,7 @@ const usercontroller = require('../controller/usercontroller')
 const CouponController = require ('../controller/coupenController.js')
 
 const wishlistController = require('../controller/wishlistcontroller')
-// const userAuthMiddleware = require('../Middleware/userAuth')
+const userAuthMiddleware = require('../Middleware/userAuth')
 const isLoggedAuth = require('../Middleware/isLogged')
 
 
@@ -39,7 +39,7 @@ router.post('/loginpost',usercontroller.loginpost)
 
 router.get('/signup',usercontroller.signup)
 
-router.get('/',usercontroller.home)
+router.get('/',userAuthMiddleware,usercontroller.home)
 
 router.get('/products/:productId',usercontroller.productview)
 

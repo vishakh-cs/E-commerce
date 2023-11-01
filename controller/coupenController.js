@@ -81,7 +81,7 @@ const applyDiscount = async (req, res) => {
 
         // Check the product price and the minPurchase
         if (productPrice < coupon.minPurchase) {
-            return res.status(403).json({ message: `The minimum purchase for this coupon is ${coupon.minPurchase}` });
+            return res.redirect('/checkout?CouponMinPurchaseNotMet=true');
         } else {
             const discountAmount = productPrice - coupon.discountAmount;
             const Amount = coupon.discountAmount;

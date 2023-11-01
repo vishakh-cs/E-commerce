@@ -6,11 +6,6 @@ const isUserBlocked = async (req, res, next) => {
   
       const user = await usermodel.findById(userId);
   
-      if (!user) {
-        // Handle the case where the user doesn't exist
-        return res.status(404).send('User not found');
-      }
-  
       if (user.isblocked) {
         // User is blocked, deny access
         return res.send('Your account is blocked. Please contact support.');
