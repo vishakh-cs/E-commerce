@@ -9,6 +9,23 @@ const Razorpay = require('razorpay');
 require('dotenv').config();
 var easyinvoice = require('easyinvoice');
 const fs = require('fs');
+const refferalModel = require('../models/refferalModel');
+
+
+// generate random string
+function generateRandomString(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+// Generate a random 6-letter string
+const referralCode = generateRandomString(6);
+
 
 
 // signup get
@@ -60,6 +77,9 @@ const signupPost = async (req, res) => {
       }
     });
 
+    // Generate a random 6-letter string for the referral code
+      const referralCode = generateRandomString(6);
+
     // Create a new user object to the database
     const newUser = new usermodel({
       username: req.body.name,
@@ -70,6 +90,14 @@ const signupPost = async (req, res) => {
 
     // Save the user data to the database
     await newUser.save();
+
+      // Store the referral code in the referral model
+      const newReferral = new refferalModel({ // Corrected model name to "referralmodel"
+        referralCode: referralCode,
+        userId: newUser._id, // Reference to the newly created user
+      });
+  
+      await newReferral.save();
 
     // Set user data in the session
     req.session.user = {
@@ -379,7 +407,7 @@ const loginpost = async (req, res) => {
       console.log("i am loged ", req.session.logedUser);
       res.redirect('/');
     } else {
-      res.send("Invalid username or password");
+      return res.redirect("/login?InvalidPassword=true");
     }
   } catch (error) {
     console.error("Error during login:", error);
@@ -735,12 +763,79 @@ const profile = async (req, res) => {
 
     const walletTransactions = user.wallet.transactions
 
-    res.render('profile', { user, walletAmount: user.wallet.amount ,walletTransactions});
+      // Fetch the referral code associated with the user
+      const referral = await refferalModel.findOne({ userId: userId });
+       // Pass the referral code to the template
+
+    res.render('profile', { user, walletAmount: user.wallet.amount ,walletTransactions, referral});
   } catch (error) {
     console.error('Error rendering user profile:', error);
     res.redirect('/login');
   }
 };
+
+
+// inputRefferalCode
+const inputRefferalCode = async (req, res) => {
+  try {
+    const referralCode = req.body.referralCode;
+    const userId = req.session.logedUser._id;
+    const referral = await refferalModel.findOne({ referralCode: referralCode });
+    const userreffered = await usermodel.findById(userId)
+    // user reffered is user owner of the refferal code
+    const referralToUpdate = await refferalModel.findOne({ userId });
+    
+    if(referralCode == referralToUpdate.referralCode ){
+      return res.redirect('/profile?cantEnterSameReferralCode=true')
+    }
+
+
+    if (!referral) {
+      return res.redirect('/profile?InvalidRefferal=true')
+    }
+
+    // Find the user associated with the referral code
+    const referredUser = await usermodel.findById(referral.userId);
+
+    if (!referredUser) {
+      return res.send("Error: Referred user not found");
+    }
+    referredUser.wallet.amount += 100;
+    const creditTransaction = {
+      type: "credit",
+      amount: 100,
+      description: "Referral bonus",
+      date: new Date(),
+    };
+
+    referredUser.wallet.transactions.push(creditTransaction);
+    await referredUser.save();
+
+
+    if (referralToUpdate) {
+
+      userreffered.wallet.amount += 50;
+      const creditTransaction = {
+        type: "credit",
+        amount: 50,
+        description: "Reffered bonus",
+        date: new Date(),
+      };
+      userreffered.wallet.transactions.push(creditTransaction);
+      referralToUpdate.isRefferalVerified = true;
+      await referralToUpdate.save();
+      await userreffered.save();
+    } else {
+      return res.status(404).send("Referral not found for the user.");
+    }
+
+    res.redirect("/profile");
+  } catch (error) {
+    console.error("Error processing referral code:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 
 // view order details
 const vieworder = async (req, res) => {
@@ -1654,6 +1749,7 @@ module.exports = {
   searchprdt,
   createOrder,
   generateInvoice,
+  inputRefferalCode,
   
 
 };

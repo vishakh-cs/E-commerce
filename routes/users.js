@@ -138,6 +138,8 @@ router.get('/generate-invoice/:userId/:orderId', usercontroller.generateInvoice)
 
 router.post('/applyDiscount',CouponController.applyDiscount)
 
+router.post('/profile/updateReferral',usercontroller.inputRefferalCode);
+
 
 
 

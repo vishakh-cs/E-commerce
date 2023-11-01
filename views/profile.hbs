@@ -179,6 +179,27 @@
 
        <strong class="bg-red-500 text-white py-3 px-5 rounded-xl" id="changePasswordLink">Change Password</strong>
        </div>
+       <br>
+       <div class="mt-7 bg-gray-400 w-1/3 h-7 rounded-md" >
+           
+        <p><strong class=" rounded-md ">Referral Code  :</strong> <span class="ml-4" id="referralCode"><strong>{{referral.referralCode}}</strong></span></p>
+          <br>
+<!-- profile.hbs -->
+{{#if referral.isRefferalVerified}}
+  <p class="text-slate-700 font-serif">Your already Entered referral Code.</p>
+{{else}}
+  <form action="/profile/updateReferral" method="POST" class="flex items-center">
+    <div class="flex-1 mr-4">
+      <label for="referralCode" class="block text-gray-700 font-bold mb-2">Enter Referral Code:</label>
+      <input type="text" name="referralCode" id="referralCode" class="w-64 py-2 px-3 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Enter your referral code" required>
+    </div>
+    <button type="submit" class="bg-blue-500 mt-8 text-white py-2 px-4 rounded-md hover:bg-blue-700">Submit</button>
+  </form>
+{{/if}}
+
+    </div>
+</div>
+
     </div>
 {{!-- recent order section --}}
 
@@ -265,6 +286,49 @@
             <!-- Your footer content here -->
         </div>
     </footer>
+
+    <script>
+const urlParam = new URLSearchParams(window.location.search);
+const SameReferralCode = urlParam.get('cantEnterSameReferralCode');
+function displayMessage1() {
+    if (SameReferralCode === 'true') {
+        Swal.fire({
+            title: 'Cant enter Same Referral Code',
+            text: 'The referral code you are try to use is Your Referral Code try Other.',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+        });
+        }
+       }
+displayMessage1();
+
+
+    </script>
+
+    <script>
+ // Check if the URL contains the query parameter 'alreadyExitedRefferal'
+const urlParams = new URLSearchParams(window.location.search);
+const alreadyExitedRefferal = urlParams.get('InvalidRefferal');
+
+// Function to display a message based on the query parameter
+function displayMessage() {
+    if (alreadyExitedRefferal === 'true') {
+        // Show a message to the user
+        Swal.fire({
+            title: 'Invalid Refferal Code',
+            text: 'The referral code you are try to use is invalid please try Other.',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+        });
+    }
+}
+
+// Call the function to display the message
+displayMessage();
+
+    </script>
     <script>
 function viewOrderDetails(orderId) {
     // Navigate to the order details page
