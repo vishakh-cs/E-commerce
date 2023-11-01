@@ -112,7 +112,7 @@ router.post('/buynow/:productId',isLoggedAuth,usercontroller.buynow)
 
 router.get('/buynowcheckoutpage',isLoggedAuth,usercontroller.buynowcheckoutpage)
 
-router.get('/buynowSuccess',usercontroller.buySuccess)
+router.get('/buynowSuccess',isLoggedAuth,usercontroller.buySuccess)
 
 router.post('/searchprdt',usercontroller.searchprdt)
 
