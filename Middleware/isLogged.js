@@ -5,11 +5,8 @@ const isLogged = async (req, res, next) => {
     const user = req.session.logedUser;
 
     if (!user) {
-      // Redirect or handle the case where the user is not authenticated
-      return res.status(401).send('User not authenticated');
+      return res.redirect('/login');
     }
-
-    // If the user is authenticated,  continue to the next middleware 
     next();
   } catch (error) {
     console.error('Error during user logged-in check:', error);

@@ -39,7 +39,7 @@ router.post('/loginpost',usercontroller.loginpost)
 
 router.get('/signup',usercontroller.signup)
 
-router.get('/',userAuthMiddleware,usercontroller.home)
+router.get('/',usercontroller.home)
 
 router.get('/products/:productId',usercontroller.productview)
 
@@ -64,21 +64,21 @@ router.post('/signup',usercontroller.signupPost)
 router.post('/resendOTP', usercontroller.resendOTP);
 
 // <-------cart---------->
-router.get('/cart/:userid',usercontroller.cart);
+router.get('/cart/:userid',isLoggedAuth,usercontroller.cart);
 
-router.post('/cart/add/:productId', usercontroller.addToCart);
+router.post('/cart/add/:productId',isLoggedAuth, usercontroller.addToCart);
 
-router.post('/cart/remove/:productId',usercontroller.remove);
+router.post('/cart/remove/:productId',isLoggedAuth,usercontroller.remove);
 
-router.post('/cartinc/add/:productId',usercontroller.incrementQuantity);
+router.post('/cartinc/add/:productId',isLoggedAuth,usercontroller.incrementQuantity);
 
-router.get('/profile',usercontroller.profile);
+router.get('/profile',isLoggedAuth,usercontroller.profile);
 
 router.post('/profile/upload', upload.single('profileImage'), usercontroller.profilepost);
 
-router.post('/profile/addAddress', usercontroller.addAddresspost);
+router.post('/profile/addAddress',isLoggedAuth, usercontroller.addAddresspost);
 
-router.get('/addnewaddress',usercontroller.addnewaddress);
+router.get('/addnewaddress',isLoggedAuth,usercontroller.addnewaddress);
 
 router.post('/profile/deleteAddress/:addressId',usercontroller.deleteAddressPost)
 
@@ -108,9 +108,9 @@ router.post('/changepasswordPost',usercontroller.changePasswordPost)
 
 router.get('/notfound',usercontroller.notfound)
 
-router.post('/buynow/:productId',usercontroller.buynow)
+router.post('/buynow/:productId',isLoggedAuth,usercontroller.buynow)
 
-router.get('/buynowcheckoutpage',usercontroller.buynowcheckoutpage)
+router.get('/buynowcheckoutpage',isLoggedAuth,usercontroller.buynowcheckoutpage)
 
 router.get('/buynowSuccess',usercontroller.buySuccess)
 
@@ -118,7 +118,7 @@ router.post('/searchprdt',usercontroller.searchprdt)
 
 // whislist ----------------------------------------------->
 
-router.get('/wishlist', wishlistController.whislist)
+router.get('/wishlist',isLoggedAuth, wishlistController.whislist)
 
 router.get('/wishlistadd/:productId',isLoggedAuth, wishlistController.addToWishlist)
 

@@ -730,10 +730,6 @@ const profile = async (req, res) => {
     const userId = req.session.logedUser._id;
     const user = await usermodel.findById(userId);
 
-    if (!user) {
-      return res.redirect('/login')
-    }
-
     if (user.isblocked) {
       return res.json({ status: "Your account is blocked by admin" });
     }
@@ -1040,10 +1036,6 @@ const addAddresspost = async (req, res) => {
 
     // Find the user by ID
     const user = await usermodel.findById(userId);
-
-    if (!user) {
-      return res.status(404).send('User not found');
-    }
 
     // Create a new address object
     const newAddress = {
@@ -1456,11 +1448,6 @@ const buynow = async (req, res) => {
   
     const user = await usermodel.findById(userId);
 
-    if (!user) {
-    
-      return res.redirect('/login');
-    }
-
     const primaryAddress = user.addresses.find((address) => address.primary === true);
 
     if (!primaryAddress) {
@@ -1487,9 +1474,6 @@ const  buynowcheckoutpage = async (req,res)=>{
   const product = await Products.findById(productId)
 
   const user = await usermodel.findById(userId);
-if(!user){
-  return res.redirect("/login");
-}
 
   const totalPrice = product.price *1;
   const primaryAddress = user.addresses.find((address) => address.primary === true);
