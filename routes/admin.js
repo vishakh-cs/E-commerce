@@ -4,6 +4,7 @@ const admincontroller = require('../controller/admincontroller')
 const multer = require('multer');
 const isLoggedAdmin = require('../Middleware/isloggedAdmin')
 const CouponController = require ('../controller/coupenController.js')
+const bannerController = require('../controller/bannerController')
 
 
 // Create a Multer storage configuration
@@ -79,6 +80,12 @@ router.get('/adminCoupon',CouponController.coupon);
 router.post('/newcoupon',CouponController.newcoupon);
 
 router.delete('/deletecoupon',CouponController.deletecoupon);
+
+router.get('/bannerManagement',bannerController.bannerManagement)
+
+router.post('/AdminAddbanner', upload.array('Bannerimages'), bannerController.addBannerData);
+
+router.delete('/removeBanner',bannerController.removeBannerImage)
 
 
 

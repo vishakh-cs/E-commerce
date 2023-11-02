@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Management</title>
+    <link href="/dist/output.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        /* Add any additional custom styles here */
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Sidebar -->
+    <nav class="bg-gray-800 text-white h-screen w-64 fixed top-0 left-0 overflow-y-auto">
+        <div class="p-4">
+            <h1 class="text-2xl font-semibold">Admin Dashboard</h1>
+        </div>
+        <ul>
+            <!-- Sidebar links here -->
+            <!-- Dashboard Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/admindashboard" class="block">
+                    <span class="text-gray-300">Dashboard</span>
+                </a>
+            </li>
+            <!-- User Management Link -->
+            <li class="px-4 py-2 hover-bg-gray-700">
+                <a href="/user" class="block">
+                    <span class="text-gray-300">User Management</span>
+                </a>
+            </li>
+            <!-- Product Management Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="productmanagement" class="block">
+                    <span class="text-gray-300">Product Management</span>
+                </a>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/categories" class="block">
+                    <span class="text-gray-300">Category Management</span>
+                </a>
+            </li>
+            <!-- Product Add Link -->
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/addproducts" class="block">
+                    <span class="text-gray-300">Add Product</span>
+                </a>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/adminOrder" class="block">
+                    <span class="text-gray-300">Order Management</span>
+                </a>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700">
+                <a href="/adminCoupon" class="block">
+                    <span class="text-gray-300">Coupon Management</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Content Container -->
+    <div class="container mx-auto p-4 ml-64"> <!-- Add ml-64 to create space for the sidebar -->
+        <h1 class="text-3xl font-semibold text-indigo-800 mb-8">Banner Management</h1>
+
+        <!-- Add New Banner Form -->
+        <form action="/AdminAddbanner" method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded-lg shadow-md mb-8 w-4/5">
+            <h2 class="text-xl font-semibold mb-4">Add New Banner</h2>
+            <div class="mb-4">
+                 <label for="bannerName" class="block text-gray-700 font-medium">Banner Name :</label>
+                <input type="text" name="BannerName" class="block w-3/6 bg-white border border-gray-300 py-2 px-3 rounded-md focus:outline-none focus:border-indigo-500">
+                <label for="bannerImage" class="block text-gray-700 font-medium">Upload New Banner Image:</label>
+              <input type="file" name="Bannerimages" id="bannerImage" accept="image/*" required
+                    class="block w-3/6 bg-white border border-gray-300 py-2 px-3 rounded-md focus:outline-none focus:border-indigo-500">
+            </div>
+            <button type="submit" class="bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Add Banner</button>
+        </form>
+
+  <!-- Existing Banners List -->
+        <h2 class="text-2xl font-semibold text-indigo-800 mb-4">Existing Banners</h2>
+        <div class="grid grid-cols-1 gap-6 w-4/5">
+            {{#each bannerDb}}
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <img src="{{this.imageUrl}}" alt="{{this.imageName}}" class="w-full h-48 object-cover mb-4">
+               <button class="text-red-500 hover:text-red-700" onclick="removeBanner('{{this._id}}')">Remove</button>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+<script>
+    function removeBanner(bannerId) {
+        fetch('/removeBanner', {
+            method: 'delete',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ _id: bannerId }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success === true) {
+                Swal.fire('Deleted!', 'Your banner has been deleted.', 'success').then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire('Error!', data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+
+</body>
+</html>
