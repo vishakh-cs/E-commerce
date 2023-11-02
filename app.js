@@ -19,7 +19,7 @@ var app = express();
 app.use(nocache());
 
 
-mongoose.connect("mongodb://localhost:27017/Ecommerce-Users",{
+mongoose.connect("mongodb+srv://vishakhcs51:vishakhkumarapuram@cluster0.qh7zjgt.mongodb.net/ClassicSoul?retryWrites=true&w=majority",{
     useNewUrlParser: true,
   useUnifiedTopology: true,
 })
