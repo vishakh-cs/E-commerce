@@ -2,6 +2,8 @@ const usermodel = require("../models/usermodel");
 const Products = require("../models/productmodel")
 const order = require('../models/orderModel');
 const BannerModel = require('../models/BannerModel')
+const sharp = require('sharp');
+const fs = require('fs');
 
 
 const bannerManagement = async (req, res) => {
@@ -16,24 +18,41 @@ const bannerManagement = async (req, res) => {
 };
 
 
- const addBannerData = async (req, res) => {
-   const AddBannerImages = req.files;
-   const BannerName = req.body.BannerName;
+const addBannerData = async (req, res) => {
+    const AddBannerImages = req.files;
+    const BannerName = req.body.BannerName;
 
-   const imageUrl = AddBannerImages[0].path.substring(7); 
+    const uploadedImage = AddBannerImages[0];
+    const imageUrl = uploadedImage.path.substring(7); // Remove 'public' from the path
 
-   const banner = new BannerModel({
-       imageName: BannerName,
-       imageUrl: imageUrl,
-   });
-
-   try {
-       await banner.save();
-       res.redirect('back');
-   } catch (error) {
-       console.error('Error adding banner:', error);
-       res.status(500).send('Error adding banner');
-   }
+    // Resize the image to 1360 x 600
+    const resizedImagePath = `public/uploads/resized_${uploadedImage.filename}`;
+    sharp(uploadedImage.path)
+        .resize(1360, 600)
+        .toFile(resizedImagePath, (err, info) => {
+            if (err) {
+                console.error('Error resizing image:', err);
+                return res.status(500).send('Error resizing image');
+            }
+            const banner = new BannerModel({
+                imageName: BannerName,
+                imageUrl: `uploads/resized_${uploadedImage.filename}`,
+            });
+            banner.save()
+                .then(() => {
+                    // Remove the original image
+                    fs.unlink(uploadedImage.path, (unlinkError) => {
+                        if (unlinkError) {
+                            console.error('Error deleting original image:', unlinkError);
+                        }
+                        res.redirect('back');
+                    });
+                })
+                .catch((saveError) => {
+                    console.error('Error adding banner:', saveError);
+                    res.status(500).send('Error adding banner');
+                });
+        });
 };
 
 

@@ -170,12 +170,20 @@
             padding: 10px 20px;
         }
 
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            /* Header - Make navigation responsive */
-            header {
-                flex-direction: column;
+         @media (max-width: 768px) {
+            /* User Information Section Styles for smaller devices */
+            .section {
+                margin-bottom: 20px;
+                /* Add spacing between sections */
             }
+        }
+
+        @media (max-width: 480px) {
+            /* Additional responsive styles for even smaller devices */
+            .section {
+                /* Add specific styles for smaller devices */
+            }
+        }
 
             nav ul {
                 flex-direction: column;
@@ -338,10 +346,13 @@
         Logout
     </a>
 </div>
+  <!-- User profile section -->
+    <section class="container mx-auto py-8 flex grow-0">
+        <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4 fixed-size-div" style="height: 60vh;">
+    <div class="section">
 
-<section class="container mx-auto py-8 flex grow-0">
-    <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4 fixed-size-div">
         <h2 class="text-xl font-semibold mb-4">User Information</h2>
+        
         <div class="bg-gray-800 text-white  w-72 h-8 flex justify-center items-center mt-4">
                   <a href="/cart/{{ user._id}}"><strong>  Go to Cart</strong></a>
                   <img class="w-10 h-8 ml-24 rounded-2xl" src="/images/shopping-cart.gif" >
@@ -374,10 +385,10 @@
 
     </div>
 </div>
-
+</div>
     </div>
 {{!-- recent order section --}}
-
+<div class="section">
 <div class="w-1/2 bg-white p-6 shadow-md rounded-lg ml-4 recent-orders-container">
     <h2 class="text-xl font-semibold mb-4">Recent Order</h2>
 <table class="w-full border-collapse border border-gray-300">
@@ -421,10 +432,12 @@
 </table>
 
 </div>
+</div>
 
 
         </div>
     </section>
+     <div class="section">
 <section class="container mx-auto py-8 flex">
     <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4 fixed-size-div">
         <h2 class="text-xl font-semibold mb-4">Addresses</h2>
@@ -455,9 +468,11 @@
             </div>
         </div>
     </section>
+    
   <button id="addAddressButton" class="bg-blue-500 text-white py-2 px-4 ml-24 rounded-lg">Add New Address</button>
     <footer class="bg-blue-500 p-4 mt-8">
         <div class="container mx-auto text-white">
+            </div>
             <!-- Your footer content here -->
         </div>
     </footer>
