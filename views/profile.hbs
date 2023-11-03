@@ -8,31 +8,206 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.all.min.js"></script>
-<style>
-.fixed-size-div {
-    width: 50vw; 
-    height: 20vh; 
-}
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
-.fixed-size-div {
-       width: 40vw; 
-    height: 55vh; 
-}
+        /* Header */
+        header {
+            background-color: #d9534f;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+        }
 
+        header a {
+            color: white;
+            text-decoration: none;
+        }
 
-.recent-orders-container {
- background-color: #f5f5f5;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    height: 55vh; 
-    overflow-y: auto;
-}
+        /* Navigation */
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
 
+        nav li {
+            margin-right: 20px;
+        }
 
-</style>
+        /* User Profile Image */
+        .profile-image-container {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
 
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Main Content Container */
+        .main-container {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        /* User Information Section */
+        .user-info {
+            flex: 1;
+            margin: 10px;
+            background-color: #f5f5f5;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info h2 {
+            font-size: 1.5rem;
+        }
+
+        .user-info p {
+            margin: 5px 0;
+        }
+
+        /* Change Password Button */
+        .change-password-btn {
+            background-color: #d9534f;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Wallet Button */
+        .wallet-btn {
+            background-color: #ffa500;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Wallet Modal */
+        .wallet-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffa500;
+            color: white;
+            border-radius: 5px;
+            padding: 20px;
+            z-index: 999;
+        }
+
+        /* Recent Order Section */
+        .recent-orders {
+            flex: 1;
+            margin: 10px;
+            background-color: #f5f5f5;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .recent-orders h2 {
+            font-size: 1.5rem;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .order-table th, .order-table td {
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+        }
+
+        /* Address Section */
+        .addresses {
+            flex: 1;
+            margin: 10px;
+        }
+
+        .address-item {
+            background-color: #f5f5f5;
+            margin: 10px 0;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Add Address Button */
+        .add-address-btn {
+            background-color: #428bca;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #428bca;
+            color: white;
+            padding: 10px 20px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            /* Header - Make navigation responsive */
+            header {
+                flex-direction: column;
+            }
+
+            nav ul {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav li {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            /* Main Content Container - Stack user info and recent orders on small screens */
+            .main-container {
+                flex-direction: column;
+            }
+
+            /* User Information Section - Center align on small screens */
+            .user-info {
+                text-align: center;
+            }
+
+            /* Recent Order Section - Center align on small screens */
+            .recent-orders {
+                text-align: center;
+            }
+
+            /* Wallet Modal - Increase padding on small screens */
+            .wallet-modal {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body class="overflow-x-hidden">
      <!-- Header -->
