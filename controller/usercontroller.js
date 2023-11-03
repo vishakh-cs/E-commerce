@@ -10,6 +10,8 @@ require('dotenv').config();
 var easyinvoice = require('easyinvoice');
 const fs = require('fs');
 const refferalModel = require('../models/refferalModel');
+const BannerModel = require('../models/BannerModel');
+
 
 
 // generate random string
@@ -393,8 +395,9 @@ const home = async (req, res) => {
   try {
     const products = await Products.find();
     const userID = req.session.logedUser
+    const showBanner = await BannerModel.find();
     const user = await usermodel.findById(userID);
-    res.render('home', { products, user });
+    res.render('home', { products, user ,showBanner });
   } catch (err) {
     console.error(err);
     res.status(500).send('Internal Server Error');
