@@ -30,16 +30,6 @@
             text-decoration: none;
         }
 
-        /* Navigation */
-        nav ul {
-            list-style: none;
-            display: flex;
-        }
-
-        nav li {
-            margin-right: 20px;
-        }
-
         /* User Profile Image */
         .profile-image-container {
             width: 100px;
@@ -129,16 +119,6 @@
             }
         }
 
-            nav ul {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            nav li {
-                margin-right: 0;
-                margin-bottom: 10px;
-            }
-
             /* Main Content Container - Stack user info and recent orders on small screens */
             .main-container {
                 flex-direction: column;
@@ -208,64 +188,21 @@ th, td {
     }
 }
 
-@media (max-width: 767px) {
-  .navicon {
-    width: 1.125em;
-    height: .125em;
-  }
-
-  .navicon::before,
-  .navicon::after {
-    display: block;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transition: all .2s ease-out;
-    content: '';
-    background: #3D4852;
-  }
-
-  .navicon::before {
-    top: 5px;
-  }
-
-  .navicon::after {
-    top: -5px;
-  }
-
-  .menu-btn:not(:checked) ~ .menu {
-    display: none;
-  }
-
-  .menu-btn:checked ~ .menu {
-    display: block;
-  }
-
-  .menu-btn:checked ~ .menu-icon .navicon {
-    background: transparent;
-  }
-
-  .menu-btn:checked ~ .menu-icon .navicon::before {
-    transform: rotate(-45deg);
-  }
-
-  .menu-btn:checked ~ .menu-icon .navicon::after {
-    transform: rotate(45deg);
-  }
-
-  .menu-btn:checked ~ .menu-icon .navicon::before,
-  .menu-btn:checked ~ .menu-icon .navicon::after {
-    top: 0;
-  }
-}
 
 
+ </style>
+<script>
+    // JavaScript code to handle responsive navigation
+    const mobileMenuButton = document.getElementById("mobileMenuButton");
+    const mobileNav = document.getElementById("mobileNav");
 
-
-    </style>
+    mobileMenuButton.addEventListener("click", () => {
+        mobileNav.classList.toggle("hidden");
+    });
+</script>
 </head>
 <body class="overflow-x-hidden">
-   <!-- Header -->
+ 
 <nav class="nav flex flex-wrap items-center justify-between px-4">
   <div class="flex flex-no-shrink items-center mr-6 py-3 text-grey-darkest">
     <svg class="fill-current h-8 mr-2 w-8" xmlns="http://www.w3.org/2000/svg" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="1.5" clip-rule="evenodd" viewBox="0 0 716 895">
@@ -299,10 +236,6 @@ th, td {
        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg> Cart
-        <span class="flex absolute -mt-5 ml-4">
-          <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500"></span>
-        </span>
       </a>
     </li>
   </ul>
@@ -361,9 +294,6 @@ th, td {
 </div>
 
 
-
-
-
 </header>
 
 
@@ -382,43 +312,46 @@ th, td {
 
 
 
-<!-- User Information Section -->
-<div class="user-info section w-full bg-white rounded-lg shadow-md p-6 mb-5">
-    <h2 class="text-xl font-semibold mb-4">User Information</h2>
-
-    <!-- Change Password Link on the Left -->
-    <div class="mb-4">
-        <label for="password" class="text-black" style="float: left;"><strong>Change Your Password</strong></label><br>
-        <strong class="bg-red-500 text-white py-3 px-5 rounded-xl" id="changePasswordLink" style="float: left;">Change Password</strong>
-    </div><br>
-    <br>
-
-    <!-- Email -->
-    <div class="mb-4" style="float: left;">
-        <p><strong>Email:</strong> <span class="ml-4" id="userEmail">{{ user.email }}</span></p>
-    </div>
-<br>
-<!-- Referral Code Section -->
-<div class="mt-7 w-1/3 rounded-md flex">
-    <p><strong>Referral Code:</strong> <span class="ml-4" id="referralCode"><strong>{{ referral.referralCode }}</strong></span></p>
+    <div class="container mx-auto p-4">
+        <!-- Main Container with Centered Heading -->
+        <div class="text-center mb-4">
+            <h1 class="text-2xl font-semibold">User Information</h1>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+<!-- User Email Section -->
+<div class="bg-white p-4 shadow-md">
+    <h2 class="text-xl font-semibold mb-4">User Email</h2>
+    <p><strong>Email:</strong> <span class="ml-4" id="userEmail">{{ user.email }}</span></p>
 </div>
 
-<!-- Enter Referral Code Section -->
-    <div class="mt-4 w-1/3 rounded-md flex">
-        <p><strong>Enter Referral Code:</strong></p>
-        <!-- Check if referral is verified -->
-        {{#if referral.isReferralVerified}}
-            <p class="text-slate-700 font-serif">You have already entered a referral code.</p>
-        {{else}}
-            <!-- Referral Code Entry Form -->
-            <form action="/profile/updateReferral" method="POST" class="flex items-center">
-                <div class="flex-1 mr-4">
-                    <input type="text" name="referralCode" id="referralCode" class="w-64 py-2 px-3 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Enter your referral code" required>
-                </div>
-                <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700">Submit</button>
-            </form>
-        {{/if}}
+<!-- Your Referral Code Section -->
+<div class="bg-white p-4 shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Your Referral Code</h2>
+    <p><strong>Referral Code:</strong> <span class="ml-4" id="referralCode"><strong>{{ referral.referralCode }}</strong></span></p>
+    <p><strong>Enter Referral Code:</strong></p>
+
+    {{#if referral.isReferralVerified}}
+        <p class="text-slate-700 font-serif">You have already entered a referral code.</p>
+    {{else}}
+        <!-- Referral Code Entry Form -->
+        <form action="/profile/updateReferral" method="POST" class="flex items-center">
+            <div class="mr-4">
+                <input type="text" name="referralCode" id="referralCodeInput" class="w-64 py-2 px-3 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Enter your referral code" required>
+            </div>
+            <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700">Submit</button>
+        </form>
+    {{/if}}
+</div>
+<!-- Change Password Section -->
+<div class="bg-white p-4 shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Change Your Password</h2>
+    <label for="password" class="text-black" style="float: left;"><strong>Change Your Password</strong></label><br>
+    <strong class="bg-red-500 text-white py-3 px-5 rounded-xl" id="changePasswordLink" style="float: left;">Change Password</strong>
+</div>
+
+        </div>
     </div>
+
 
 
 

@@ -132,3 +132,53 @@ const saveAddress = async (req, res) => {
     </form>
               <button id="add-address-button" class="bg-blue-500 hover-bg-blue-700 text-white font-semibold py-2 px-4 rounded-full mt-4" onclick="toggleNewAddressForm()">Add New Address</button>
     end --->
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- User Information Section -->
+<div class="user-info section w-full bg-white rounded-lg shadow-md p-6 mb-5">
+    <h2 class="text-xl font-semibold mb-4">User Information</h2>
+
+    <!-- Change Password Link on the Left -->
+    <div class="mb-4">
+        <label for="password" class="text-black" style="float: left;"><strong>Change Your Password</strong></label><br>
+        <strong class="bg-red-500 text-white py-3 px-5 rounded-xl" id="changePasswordLink" style="float: left;">Change Password</strong>
+    </div><br>
+    <br>
+
+    <!-- Email -->
+    <div class="mb-4" style="float: left;">
+        <p><strong>Email:</strong> <span class="ml-4" id="userEmail">{{ user.email }}</span></p>
+    </div>
+<br>
+<!-- Referral Code Section -->
+<div class="mt-7 w-1/3 rounded-md flex">
+    <p><strong>Referral Code:</strong> <span class="ml-4" id="referralCode"><strong>{{ referral.referralCode }}</strong></span></p>
+</div>
+
+<!-- Enter Referral Code Section -->
+    <div class="mt-4 w-1/3 rounded-md flex">
+        <p><strong>Enter Referral Code:</strong></p>
+        <!-- Check if referral is verified -->
+        {{#if referral.isReferralVerified}}
+            <p class="text-slate-700 font-serif">You have already entered a referral code.</p>
+        {{else}}
+            <!-- Referral Code Entry Form -->
+            <form action="/profile/updateReferral" method="POST" class="flex items-center">
+                <div class="flex-1 mr-4">
+                    <input type="text" name="referralCode" id="referralCode" class="w-64 py-2 px-3 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Enter your referral code" required>
+                </div>
+                <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700">Submit</button>
+            </form>
+        {{/if}}
+    </div>
