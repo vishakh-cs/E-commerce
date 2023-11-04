@@ -1,58 +1,130 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Payment Page</title>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body>
-<div>
-    <p>Shirt</p>
-    <p>Amount: $500</p>
-    <form class="pay-form">
-        <input type="hidden" name="name" value="Shirt">
-        <input type="hidden" name="amount" value="500">
-        <input type="hidden" name="description" value="Shirt Buying">
-        <input type="submit" value="Pay Now">
-    </form>
+  <!-- User profile section -->
+    <section class="container mx-auto py-8 flex grow-0">
+        <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4 fixed-size-div" style="height: 60vh;">
+    <div class="section">
+
+        <h2 class="text-xl font-semibold mb-4">User Information</h2>
+        
+        <div class="bg-gray-800 text-white  w-72 h-8 flex justify-center items-center mt-4">
+                  <a href="/cart/{{ user._id}}"><strong>  Go to Cart</strong></a>
+                  <img class="w-10 h-8 ml-24 rounded-2xl" src="/images/shopping-cart.gif" >
+        </div>  
+        <div class="mt-7">
+           <p><strong>Email:</strong> <span class="ml-4" id="userEmail">{{ user.email }}</span> <button class="ml-9" onclick="editEmail()"><strong>Edit</strong> </button></p>
+        </div><br>
+       <label ><strong>Change Password</strong></label><br>
+       <div class="mt-5">
+
+       <strong class="bg-red-500 text-white py-3 px-5 rounded-xl" id="changePasswordLink">Change Password</strong>
+       </div>
+       <br>
+       <div class="mt-7 bg-gray-400 w-1/3 h-7 rounded-md" >
+           
+        <p><strong class=" rounded-md ">Referral Code  :</strong> <span class="ml-4" id="referralCode"><strong>{{referral.referralCode}}</strong></span></p>
+          <br>
+<!-- profile.hbs -->
+{{#if referral.isRefferalVerified}}
+  <p class="text-slate-700 font-serif">Your already Entered referral Code.</p>
+{{else}}
+  <form action="/profile/updateReferral" method="POST" class="flex items-center">
+    <div class="flex-1 mr-4">
+      <label for="referralCode" class="block text-gray-700 font-bold mb-2">Enter Referral Code:</label>
+      <input type="text" name="referralCode" id="referralCode" class="w-64 py-2 px-3 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Enter your referral code" required>
+    </div>
+    <button type="submit" class="bg-blue-500 mt-8 text-white py-2 px-4 rounded-md hover:bg-blue-700">Submit</button>
+  </form>
+{{/if}}
+
+    </div>
 </div>
-<script>
-    $(document).ready(function(){
-        $('.pay-form').submit(function(e){
-            e.preventDefault();
-            var formData = $(this).serialize();
-            $.ajax({
-                url: '/createOrder',
-                type: 'POST',
-                data: formData,
-                success: function(res) {
-                    if (res.success) {
-                        var options = {
-                            key: res.key_id,  // Replace with your Razorpay Key
-                            amount: res.amount,
-                            currency: "INR",
-                            name: res.product_name,
-                            description: res.description,
-                            image: 'https://yourcompany.com/logo.png', // Replace with your logo URL
-                            order_id: res.order_id,
-                            handler: function (response) {
-                                alert('Payment successful');
-                            },
-                            prefill: {
-                                name: res.name,
-                                email: res.email,
-                                contact: res.contact
-                            }
-                        };
-                        var rzp = new Razorpay(options);
-                        rzp.open();
-                    } else {
-                        alert('Error creating order: ' + res.msg);
-                    }
-                }
-            });
-        });
-    });
-</script>
-</body>
-</html>
+</div>
+    </div>
+{{!-- recent order section --}}
+<div class="section">
+<div class="w-1/2 bg-white p-6 shadow-md rounded-lg ml-4 recent-orders-container">
+    <h2 class="text-xl font-semibold mb-4">Recent Order</h2>
+<table class="w-full border-collapse border border-gray-300">
+    <thead>
+        <tr>
+            <th class="border border-gray-300 py-2 px-4">Order ID</th>
+            <th class="border border-gray-300 py-2 px-4">Status</th>
+            <th class="border border-gray-300 py-2 px-4">Total Price</th>
+            <th class="border border-gray-300 py-2 px-4">Product Image</th>
+            <th class="border border-gray-300 py-2 px-4">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each user.recentOrders}}
+            {{#each products}}
+                <tr class="text-center order-row" data-order-id="{{ ../orderId }}">
+                    <td class="border border-gray-300 py-2 px-4">{{ ../orderId }}</td>
+                    <td class="border border-gray-300 py-2 px-4">{{ ../status }}</td>
+                    <td class="border border-gray-300 py-2 px-4">${{ ../totalPrice }}</td>
+                    <td class="border border-gray-300 py-2 px-4">
+                        <img src="/uploads/{{ productImage }}" alt="Product Image" class="w-16 h-16 object-cover">
+                    </td>
+                    <td class="border border-gray-300 py-2 px-4">
+                        
+                        <!-- Cancel Order Button -->
+                        <form action="/cancelOrder/{{ ../orderId }}" method="POST">
+                            <button type="button" class="text-red-500 hover:underline" onclick="cancelOrder('{{ ../orderId }}')">Cancel Order</button>
+                        </form>
+                    </td>
+                  <td class="border border-gray-300 py-2 px-4">
+    <form action="/viewOrder/{{ ../orderId }}" method="POST">
+        <button type="button" class="text-blue-500 hover:underline view-order-button" onclick="viewOrderDetails('{{ ../orderId }}')">View Details</button>
+    </form>
+</td>
+
+                    
+                </tr>
+            {{/each}}
+        {{/each}}
+    </tbody>
+</table>
+
+</div>
+</div>
+
+
+        </div>
+    </section>
+     <div class="section">
+<section class="container mx-auto py-8 flex">
+    <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4 fixed-size-div">
+        <h2 class="text-xl font-semibold mb-4">Addresses</h2>
+        <div>
+            <ul>
+                {{#each user.addresses}}
+                    <li class="address-item flex justify-between items-center mb-4" data-address-id="{{this._id}}">
+                        <div>
+                            <p><strong>{{this.tag}} Saved Address:</strong></p>
+                            <p>Address: {{this.address}}</p>
+                            <p>City: {{this.city}}</p>
+                            <p>Pin: {{this.pin}}</p>
+                            <p>Phone: {{this.phone}}</p>
+                            <p>State: {{this.state}}</p>
+                            <p>Country: {{this.country}}</p>
+                        </div>
+                        <div class="mb-2">
+                            <input type="radio" id="primary-address-{{this._id}}" name="primary-address" value="{{this._id}}" class="mr-2">
+                            <label for="primary-address-{{this._id}}" class="text-blue-500 font-semibold">Primary Address</label>
+                            <button onclick="setPrimaryAddress('{{this._id}}')" class="ml-2">Set Primary</button>
+                        </div>
+                        <form action="/profile/deleteAddress/{{this._id}}" method="post">
+                            <button class="text-red-500 hover:underline" type="submit">Delete</button>
+                        </form>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+  <button id="addAddressButton" class="bg-blue-500 text-white py-2 px-4 ml-24 rounded-lg">Add New Address</button>
+    <footer class="bg-blue-500 p-4 mt-8">
+        <div class="container mx-auto text-white">
+            </div>
+            <!-- Your footer content here -->
+        </div>
+    </footer>

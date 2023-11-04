@@ -113,62 +113,6 @@
             z-index: 999;
         }
 
-        /* Recent Order Section */
-        .recent-orders {
-            flex: 1;
-            margin: 10px;
-            background-color: #f5f5f5;
-            padding: 20px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .recent-orders h2 {
-            font-size: 1.5rem;
-        }
-
-        .order-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .order-table th, .order-table td {
-            border: 1px solid #e0e0e0;
-            padding: 10px;
-        }
-
-        /* Address Section */
-        .addresses {
-            flex: 1;
-            margin: 10px;
-        }
-
-        .address-item {
-            background-color: #f5f5f5;
-            margin: 10px 0;
-            padding: 20px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Add Address Button */
-        .add-address-btn {
-            background-color: #428bca;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #428bca;
-            color: white;
-            padding: 10px 20px;
-        }
 
          @media (max-width: 768px) {
             /* User Information Section Styles for smaller devices */
@@ -214,68 +158,148 @@
             .wallet-modal {
                 padding: 20px;
             }
-        }
+
+/* Recent Order Section */
+.recent-orders {
+    /* Add a fixed height and enable vertical scrolling (Y-axis) */
+    max-height: 400px; /* Adjust the height as needed */
+    overflow-y: auto;
+}
+
+table {
+    
+    table-layout: fixed;
+    width: 100%; 
+}
+
+th, td {
+    padding: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}
+
+.recent-orders::-webkit-scrollbar {
+    width: 10px;
+}
+
+.recent-orders::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+.recent-orders::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+.recent-orders::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+
+
+@media (max-width: 768px) {
+    .recent-orders {
+        max-height: 300px;
+    }
+
+    table {
+        width: 100%; 
+    }
+}
+
+@media (max-width: 767px) {
+  .navicon {
+    width: 1.125em;
+    height: .125em;
+  }
+
+  .navicon::before,
+  .navicon::after {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: all .2s ease-out;
+    content: '';
+    background: #3D4852;
+  }
+
+  .navicon::before {
+    top: 5px;
+  }
+
+  .navicon::after {
+    top: -5px;
+  }
+
+  .menu-btn:not(:checked) ~ .menu {
+    display: none;
+  }
+
+  .menu-btn:checked ~ .menu {
+    display: block;
+  }
+
+  .menu-btn:checked ~ .menu-icon .navicon {
+    background: transparent;
+  }
+
+  .menu-btn:checked ~ .menu-icon .navicon::before {
+    transform: rotate(-45deg);
+  }
+
+  .menu-btn:checked ~ .menu-icon .navicon::after {
+    transform: rotate(45deg);
+  }
+
+  .menu-btn:checked ~ .menu-icon .navicon::before,
+  .menu-btn:checked ~ .menu-icon .navicon::after {
+    top: 0;
+  }
+}
+
+
     </style>
+
+ <script>
+        document.getElementById('menu-button').addEventListener('click', function() {
+            var mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+
 </head>
 <body class="overflow-x-hidden">
-     <!-- Header -->
-    <header class="bg-nav-bar-red text-white py-4 xl:py-5">
+    <nav class="bg-blue-500 p-4">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="font-display text-xl"><strong> <a href="/"> Classic Soul</a></strong> </h1>
-            <!-- Navigation menu with Men and Women links -->
-            <nav class="hidden md:block">
-                <ul class="flex px-4 font-semibold font-heading space-x-12">
-                    <li><a class="hover:text-gray-200" href="/category">Category</a></li>
-                </ul>
-            </nav>
-            <div class="hidden xl:flex items-center space-x-5">
-                <a class="hover:text-gray-200 flex items-center" href="/wishlist">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    <span class="ml-2">Wishlist</span>
-                </a>
-                <a class="flex items-center hover:text-gray-200" href="/cart/{{user._id}}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    <span class="ml-2">Cart</span>
-                    <span class="flex absolute -mt-5 ml-4">
-                        <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500"></span>
-                    </span>
-                </a>
-                <!-- Sign In / Register -->
-                <a class="flex items-center hover:text-gray-200" href="/profile">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span class="ml-2">Profile</span>
-                </a>
+            <div class="text-white font-bold text-xl">ClassicSoul</div>
+            <div class="hidden md:flex space-x-4">
+                <a href="#" class="text-white hover:text-gray-200">Category</a>
+                <a href="#" class="text-white hover:text-gray-200">Wishlist</a>
+                <a href="#" class="text-white hover:text-gray-200">Cart</a>
+                <a href="#" class="text-white hover:text-gray-200">Profile</a>
             </div>
-            <!-- Responsive navbar -->
-            <a class="xl:hidden flex mr-6 items-center" href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1000 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <span class="flex absolute -mt-5 ml-4">
-                    <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500"></span>
-                </span>
-            </a>
-            <a class="navbar-burger self-center mr-12 xl:hidden" href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </a>
-        </div>
-    </header>
-
-    <nav class="bg-nav-bar-red p-4">
-        <div class="container mx-auto text-white">
-            <!-- Your navigation content here -->
+            <div class="md:hidden">
+                <button id="menu-button" class="text-white hover:text-gray-200 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
     </nav>
+
+    <!-- Mobile Menu (Hidden by default) -->
+    <div id="mobile-menu" class="hidden md:hidden">
+        <div class="bg-blue-500 text-white p-4 space-y-2">
+            <a href="#" class="block hover:text-gray-200">Category</a>
+            <a href="#" class="block hover:text-gray-200">Wishlist</a>
+            <a href="#" class="block hover:text-gray-200">Cart</a>
+            <a href="#" class="block hover:text-gray-200">Profile</a>
+        </div>
+    </div>
+
 
 <header class="bg-white shadow-md py-8">
     <div class="container mx-auto flex items-center">
@@ -299,12 +323,12 @@
 </button>
 
 <!-- Wallet Modal -->
-<div class="w-2/5 bg-amber-950 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white rounded-lg shadow-lg p-8 z-50 hidden" id="walletModal">
+<div class="w-full sm:w-2/5 bg-amber-950 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white rounded-lg shadow-lg p-4 sm:p-8 z-50 hidden" id="walletModal">
     <div class="mb-4 text-center"></div>
-    <h2 class="text-2xl font-semibold text-center mb-4">My Wallet</h2>
+    <h2 class="text-2xl sm:text-3xl font-semibold text-center mb-4">My Wallet</h2>
     <div class="mb-4">
-        <div class="w-3/4 ml-8">
-            <h1 class="text-3xl font-semibold">{{ user.username }}</h1>
+        <div class="w-full sm:w-3/4 mx-auto sm:ml-8">
+            <h1 class="text-xl sm:text-3xl font-semibold">{{ user.username }}</h1>
             <p class="text-white">{{ user.email }}</p>
             <p class="text-white">Wallet Amount: ${{ walletAmount }}</p>
         </div>
@@ -312,7 +336,7 @@
 
     <!-- Display wallet transactions -->
     <div class="mb-4 wallet-transactions" style="max-height: 200px; overflow-y: auto;">
-        <h3 class="text-2xl font-semibold mb-2">Wallet Transactions</h3>
+        <h3 class="text-2xl sm:text-3xl font-semibold mb-2">Wallet Transactions</h3>
         <ul>
             {{#each walletTransactions}}
             <li>
@@ -325,8 +349,9 @@
         </ul>
     </div>
 
-    <button class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700 w-full" id="closeWalletModal">Close</button>
+    <button class="bg-red-500 text-white py-2 px-4 sm:px-6 rounded-md hover:bg-red-700 w-full" id="closeWalletModal">Close</button>
 </div>
+
 
 
 
@@ -346,136 +371,129 @@
         Logout
     </a>
 </div>
-  <!-- User profile section -->
-    <section class="container mx-auto py-8 flex grow-0">
-        <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4 fixed-size-div" style="height: 60vh;">
-    <div class="section">
 
-        <h2 class="text-xl font-semibold mb-4">User Information</h2>
-        
-        <div class="bg-gray-800 text-white  w-72 h-8 flex justify-center items-center mt-4">
-                  <a href="/cart/{{ user._id}}"><strong>  Go to Cart</strong></a>
-                  <img class="w-10 h-8 ml-24 rounded-2xl" src="/images/shopping-cart.gif" >
-        </div>  
-        <div class="mt-7">
-           <p><strong>Email:</strong> <span class="ml-4" id="userEmail">{{ user.email }}</span> <button class="ml-9" onclick="editEmail()"><strong>Edit</strong> </button></p>
-        </div><br>
-       <label ><strong>Change Password</strong></label><br>
-       <div class="mt-5">
 
-       <strong class="bg-red-500 text-white py-3 px-5 rounded-xl" id="changePasswordLink">Change Password</strong>
-       </div>
-       <br>
-       <div class="mt-7 bg-gray-400 w-1/3 h-7 rounded-md" >
-           
-        <p><strong class=" rounded-md ">Referral Code  :</strong> <span class="ml-4" id="referralCode"><strong>{{referral.referralCode}}</strong></span></p>
-          <br>
-<!-- profile.hbs -->
-{{#if referral.isRefferalVerified}}
-  <p class="text-slate-700 font-serif">Your already Entered referral Code.</p>
-{{else}}
-  <form action="/profile/updateReferral" method="POST" class="flex items-center">
-    <div class="flex-1 mr-4">
-      <label for="referralCode" class="block text-gray-700 font-bold mb-2">Enter Referral Code:</label>
-      <input type="text" name="referralCode" id="referralCode" class="w-64 py-2 px-3 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Enter your referral code" required>
+
+<!-- User Information Section -->
+<div class="user-info section w-full bg-white rounded-lg shadow-md p-6 mb-5">
+    <h2 class="text-xl font-semibold mb-4">User Information</h2>
+
+    <!-- Change Password Link on the Left -->
+    <div class="mb-4">
+        <label for="password" class="text-black" style="float: left;"><strong>Change Your Password</strong></label><br>
+        <strong class="bg-red-500 text-white py-3 px-5 rounded-xl" id="changePasswordLink" style="float: left;">Change Password</strong>
+    </div><br>
+    <br>
+
+    <!-- Email -->
+    <div class="mb-4" style="float: left;">
+        <p><strong>Email:</strong> <span class="ml-4" id="userEmail">{{ user.email }}</span></p>
     </div>
-    <button type="submit" class="bg-blue-500 mt-8 text-white py-2 px-4 rounded-md hover:bg-blue-700">Submit</button>
-  </form>
-{{/if}}
-
-    </div>
+<br>
+<!-- Referral Code Section -->
+<div class="mt-7 w-1/3 rounded-md flex">
+    <p><strong>Referral Code:</strong> <span class="ml-4" id="referralCode"><strong>{{ referral.referralCode }}</strong></span></p>
 </div>
-</div>
+
+<!-- Enter Referral Code Section -->
+    <div class="mt-4 w-1/3 rounded-md flex">
+        <p><strong>Enter Referral Code:</strong></p>
+        <!-- Check if referral is verified -->
+        {{#if referral.isReferralVerified}}
+            <p class="text-slate-700 font-serif">You have already entered a referral code.</p>
+        {{else}}
+            <!-- Referral Code Entry Form -->
+            <form action="/profile/updateReferral" method="POST" class="flex items-center">
+                <div class="flex-1 mr-4">
+                    <input type="text" name="referralCode" id="referralCode" class="w-64 py-2 px-3 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Enter your referral code" required>
+                </div>
+                <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700">Submit</button>
+            </form>
+        {{/if}}
     </div>
-{{!-- recent order section --}}
-<div class="section">
-<div class="w-1/2 bg-white p-6 shadow-md rounded-lg ml-4 recent-orders-container">
+
+
+
+
+<!-- Recent Order Section -->
+<div class="recent-orders section w-full bg-white rounded-lg shadow-md p-6 mb-5">
     <h2 class="text-xl font-semibold mb-4">Recent Order</h2>
-<table class="w-full border-collapse border border-gray-300">
-    <thead>
-        <tr>
-            <th class="border border-gray-300 py-2 px-4">Order ID</th>
-            <th class="border border-gray-300 py-2 px-4">Status</th>
-            <th class="border border-gray-300 py-2 px-4">Total Price</th>
-            <th class="border border-gray-300 py-2 px-4">Product Image</th>
-            <th class="border border-gray-300 py-2 px-4">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#each user.recentOrders}}
-            {{#each products}}
-                <tr class="text-center order-row" data-order-id="{{ ../orderId }}">
-                    <td class="border border-gray-300 py-2 px-4">{{ ../orderId }}</td>
-                    <td class="border border-gray-300 py-2 px-4">{{ ../status }}</td>
-                    <td class="border border-gray-300 py-2 px-4">${{ ../totalPrice }}</td>
-                    <td class="border border-gray-300 py-2 px-4">
-                        <img src="/uploads/{{ productImage }}" alt="Product Image" class="w-16 h-16 object-cover">
-                    </td>
-                    <td class="border border-gray-300 py-2 px-4">
-                        
-                        <!-- Cancel Order Button -->
-                        <form action="/cancelOrder/{{ ../orderId }}" method="POST">
-                            <button type="button" class="text-red-500 hover:underline" onclick="cancelOrder('{{ ../orderId }}')">Cancel Order</button>
-                        </form>
-                    </td>
-                  <td class="border border-gray-300 py-2 px-4">
-    <form action="/viewOrder/{{ ../orderId }}" method="POST">
-        <button type="button" class="text-blue-500 hover:underline view-order-button" onclick="viewOrderDetails('{{ ../orderId }}')">View Details</button>
-    </form>
-</td>
 
-                    
+    <!-- Recent order content goes here -->
+    <div class="max-h-72 overflow-y-auto overflow-x-auto">
+        <table class="w-full border-collapse border border-gray-300">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="border border-gray-300 py-2 px-4">Order ID</th>
+                    <th class="border border-gray-300 py-2 px-4">Status</th>
+                    <th class="border border-gray-300 py-2 px-4 hidden md:table-cell">Total Price</th>
+                    <th class="border border-gray-300 py-2 px-4">Product Image</th>
+                    <th class="border border-gray-300 py-2 px-4">Actions</th>
                 </tr>
-            {{/each}}
-        {{/each}}
-    </tbody>
-</table>
-
-</div>
-</div>
-
-
-        </div>
-    </section>
-     <div class="section">
-<section class="container mx-auto py-8 flex">
-    <div class="w-1/2 bg-white p-6 shadow-md rounded-lg mr-4 fixed-size-div">
-        <h2 class="text-xl font-semibold mb-4">Addresses</h2>
-        <div>
-            <ul>
-                {{#each user.addresses}}
-                    <li class="address-item flex justify-between items-center mb-4" data-address-id="{{this._id}}">
-                        <div>
-                            <p><strong>{{this.tag}} Saved Address:</strong></p>
-                            <p>Address: {{this.address}}</p>
-                            <p>City: {{this.city}}</p>
-                            <p>Pin: {{this.pin}}</p>
-                            <p>Phone: {{this.phone}}</p>
-                            <p>State: {{this.state}}</p>
-                            <p>Country: {{this.country}}</p>
-                        </div>
-                        <div class="mb-2">
-                            <input type="radio" id="primary-address-{{this._id}}" name="primary-address" value="{{this._id}}" class="mr-2">
-                            <label for="primary-address-{{this._id}}" class="text-blue-500 font-semibold">Primary Address</label>
-                            <button onclick="setPrimaryAddress('{{this._id}}')" class="ml-2">Set Primary</button>
-                        </div>
-                        <form action="/profile/deleteAddress/{{this._id}}" method="post">
-                            <button class="text-red-500 hover:underline" type="submit">Delete</button>
-                        </form>
-                    </li>
+            </thead>
+            <tbody>
+                {{#each user.recentOrders}}
+                    {{#each products}}
+                        <tr class="text-center order-row" data-order-id="{{ ../orderId }}">
+                            <td class="border border-gray-300 py-2 px-4">{{ ../orderId }}</td>
+                            <td class="border border-gray-300 py-2 px-4">{{ ../status }}</td>
+                            <td class="border border-gray-300 py-2 px-4 hidden md:table-cell">${{ ../totalPrice }}</td>
+                            <td class="border border-gray-300 py-2 px-4">
+                                <img src="/uploads/{{ productImage }}" alt="Product Image" class="w-12 h-12 md:w-16 md:h-16 object-cover mx-auto">
+                            </td>
+                            <td class="border border-gray-300 py-2 px-4">
+                                <!-- Cancel Order Button -->
+                                <form action="/cancelOrder/{{ ../orderId }}" method="POST">
+                                    <button type="button" class="text-red-500 hover:underline" onclick="cancelOrder('{{ ../orderId }}')">Cancel Order</button>
+                                </form>
+                            </td>
+                            <td class="border border-gray-300 py-2 px-4">
+                                <form action="/viewOrder/{{ ../orderId }}" method="POST">
+                                    <button type="button" class="text-blue-500 hover:underline view-order-button" onclick="viewOrderDetails('{{ ../orderId }}')">View Details</button>
+                                </form>
+                            </td>
+                        </tr>
                     {{/each}}
-                </ul>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<!-- Address Section -->
+<div class="address section w-full bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Addresses</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {{#each user.addresses}}
+            <div class="bg-gray-100 rounded-lg p-4 hover:shadow-lg transition duration-300">
+                <p class="text-lg font-semibold text-gray-800">{{this.tag}} Address:</p>
+                <p class="text-gray-600">{{this.address}}</p>
+                <p class="text-gray-600">{{this.city}}, {{this.state}}, {{this.pin}}</p>
+                <p class="text-gray-600">Phone: {{this.phone}}</p>
+                <p class="text-gray-600">Country: {{this.country}}</p>
+
+                <div class="mt-4 flex items-center space-x-4">
+                    <input type="radio" id="primary-address-{{this._id}}" name="primary-address" value="{{this._id}}" class="text-blue-500">
+                    <label for="primary-address-{{this._id}}" class="text-gray-800 font-semibold">Primary Address</label>
+                    <button onclick="setPrimaryAddress('{{this._id}}')" class="ml-2 bg-zinc-400 rounded-xl text-center w-1/6">Set Primary</button>
+                </div>
+
+                <div class="mt-4 flex space-x-2">
+                    <button class="text-blue-500 hover:underline" onclick="editAddress('{{this._id}}')">Edit</button>
+                    <form action="/profile/deleteAddress/{{this._id}}" method="post">
+                        <button class="text-red-500 hover:underline" type="submit">Delete</button>
+                    </form>
+                </div>
             </div>
-        </div>
-    </section>
-    
-  <button id="addAddressButton" class="bg-blue-500 text-white py-2 px-4 ml-24 rounded-lg">Add New Address</button>
-    <footer class="bg-blue-500 p-4 mt-8">
-        <div class="container mx-auto text-white">
-            </div>
-            <!-- Your footer content here -->
-        </div>
-    </footer>
+        {{/each}}
+    </div>
+</div>
+
+<button id="addAddressButton" class="bg-blue-500 text-white py-2 px-4 mt-4 rounded-lg">Add New Address</button>
+</section>
 
     <script>
 const urlParam = new URLSearchParams(window.location.search);
