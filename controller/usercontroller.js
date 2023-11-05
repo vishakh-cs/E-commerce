@@ -1463,8 +1463,17 @@ const createOrder = async (req, res) => {
     //  console.log("jjjjjjay",paymenttype);
      req.session.paymentMethod = paymenttype
 
+     const productcheck = await Products.findOne({ name: productName });
       // Ensure productPrice is in paise (multiply by 100)
-      const amount = productPrice * 100;
+      const amount = productcheck.price * 100;
+
+      if (paymenttype === 'credit-card') {
+        // Check if the product has enough quantity
+        const product = await Products.findOne({ name: productName });
+        if (!product || product.quantity < 1) {
+            return res.status(400).send({ success: false, msg: 'Product out of stock' });
+        }
+      }
 
       const options = {
           amount: amount,
