@@ -8,237 +8,108 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.all.min.js"></script>
+
+
     <style>
-        /* General Styles */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
+    @media (max-width: 767px) {
+        .navicon {
+          width: 1.125em;
+          height: .125em;
         }
-
-        /* Header */
-        header {
-            background-color: #d9534f;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
+      
+        .navicon::before,
+        .navicon::after {
+          display: block;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          transition: all .2s ease-out;
+          content: '';
+          background: #3D4852;
         }
-
-        header a {
-            color: white;
-            text-decoration: none;
+      
+        .navicon::before {
+          top: 5px;
         }
-
-        /* User Profile Image */
-        .profile-image-container {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            overflow: hidden;
+      
+        .navicon::after {
+          top: -5px;
         }
-
-        .profile-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+      
+        .menu-btn:not(:checked) ~ .menu {
+          display: none;
         }
-
-        /* Main Content Container */
-        .main-container {
-            padding: 20px;
-            display: flex;
-            flex-wrap: wrap;
+      
+        .menu-btn:checked ~ .menu {
+          display: block;
         }
-
-        /* User Information Section */
-        .user-info {
-            flex: 1;
-            margin: 10px;
-            background-color: #f5f5f5;
-            padding: 20px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      
+        .menu-btn:checked ~ .menu-icon .navicon {
+          background: transparent;
         }
-
-        .user-info h2 {
-            font-size: 1.5rem;
+      
+        .menu-btn:checked ~ .menu-icon .navicon::before {
+          transform: rotate(-45deg);
         }
-
-        .user-info p {
-            margin: 5px 0;
+      
+        .menu-btn:checked ~ .menu-icon .navicon::after {
+          transform: rotate(45deg);
         }
-
-        /* Change Password Button */
-        .change-password-btn {
-            background-color: #d9534f;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+      
+        .menu-btn:checked ~ .menu-icon .navicon::before,
+        .menu-btn:checked ~ .menu-icon .navicon::after {
+          top: 0;
         }
-
-        /* Wallet Button */
-        .wallet-btn {
-            background-color: #ffa500;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        /* Wallet Modal */
-        .wallet-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #ffa500;
-            color: white;
-            border-radius: 5px;
-            padding: 20px;
-            z-index: 999;
-        }
+      }
+      </style>
 
 
-         @media (max-width: 768px) {
-            /* User Information Section Styles for smaller devices */
-            .section {
-                margin-bottom: 20px;
-                /* Add spacing between sections */
-            }
-        }
-
-        @media (max-width: 480px) {
-            /* Additional responsive styles for even smaller devices */
-            .section {
-                /* Add specific styles for smaller devices */
-            }
-        }
-
-            /* Main Content Container - Stack user info and recent orders on small screens */
-            .main-container {
-                flex-direction: column;
-            }
-
-            /* User Information Section - Center align on small screens */
-            .user-info {
-                text-align: center;
-            }
-
-            /* Recent Order Section - Center align on small screens */
-            .recent-orders {
-                text-align: center;
-            }
-
-            /* Wallet Modal - Increase padding on small screens */
-            .wallet-modal {
-                padding: 20px;
-            }
-
-/* Recent Order Section */
-.recent-orders {
-    /* Add a fixed height and enable vertical scrolling (Y-axis) */
-    max-height: 400px; /* Adjust the height as needed */
-    overflow-y: auto;
-}
-
-table {
-    
-    table-layout: fixed;
-    width: 100%; 
-}
-
-th, td {
-    padding: 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100px;
-}
-
-.recent-orders::-webkit-scrollbar {
-    width: 10px;
-}
-
-.recent-orders::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-}
-
-.recent-orders::-webkit-scrollbar-thumb {
-    background: #888; 
-}
-
-.recent-orders::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-
-
-@media (max-width: 768px) {
-    .recent-orders {
-        max-height: 300px;
-    }
-
-    table {
-        width: 100%; 
-    }
-}
-
-
-
- </style>
-<script>
-    // JavaScript code to handle responsive navigation
-    const mobileMenuButton = document.getElementById("mobileMenuButton");
-    const mobileNav = document.getElementById("mobileNav");
-
-    mobileMenuButton.addEventListener("click", () => {
-        mobileNav.classList.toggle("hidden");
-    });
-</script>
 </head>
-<body class="overflow-x-hidden">
- 
-<nav class="nav flex flex-wrap items-center justify-between px-4">
-  <div class="flex flex-no-shrink items-center mr-6 py-3 text-grey-darkest">
-    <svg class="fill-current h-8 mr-2 w-8" xmlns="http://www.w3.org/2000/svg" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="1.5" clip-rule="evenodd" viewBox="0 0 716 895">
-      <path d="M357.776 0l357.77 178.885v536.657l-357.77 178.89L0 715.542V178.885"></path>
-      <path class="text-white fill-current" d="M357.776 804.982l268.32-134.16v-178.89l-89.44-44.72 89.44-44.72V223.606L357.776 89.442v626.1l-178.89-89.44V178.885l-89.443 44.721v447.216l268.333 134.16z"></path>
-      <path d="M447.216 670.822l89.44-44.72v-89.45l-89.44-44.72v178.89zM447.216 402.492l89.44-44.721v-89.443l-89.44-44.722"></path>
-    </svg>
-    <span class="font-semibold text-xl tracking-tight"><a href="/"></a>Classic Soul</span>
-  </div>
 
-  <input class="menu-btn hidden" type="checkbox" id="menu-btn">
-  <label class="menu-icon block cursor-pointer md:hidden px-2 py-4 relative select-none" for="menu-btn">
-    <span class="navicon bg-grey-darkest flex items-center relative"></span>
-  </label>
+<body>
 
-  <ul class="menu border-b md:border-none flex justify-end list-reset m-0 w-full md:w-auto">
-    <li class="border-t md:border-none">
-      <a href="/" class="block md:inline-block px-4 py-3 no-underline text-grey-darkest hover:text-grey-darker font-bold">Home</a>
-    </li>
-    
-    <li class="border-t md:border-none">
-      <a href="/category" class="block md:inline-block px-4 py-3 no-underline text-grey-darkest hover:text-grey-darker">Category</a>
-    </li>
-    
-    <li class="border-t md:border-none">
-      <a href="/wishlist" class="block md:inline-block px-4 py-3 no-underline text-grey-darkest hover:text-grey-darker">Wishlist</a>
-    </li>
-    
-    <li class="border-t md:border-none">
-      <a href="/cart/{{user._id}}" class="block md:inline-block px-4 py-3 no-underline text-grey-darkest hover:text-grey-darker">
-       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg> Cart
-      </a>
-    </li>
-  </ul>
+
+<nav class="nav flex flex-wrap items-center justify-between px-8 py-3 bg-red-600 text-white">
+    <div class="flex flex-no-shrink items-center mr-6 py-3 text-grey-darkest">
+
+        <span class="font-semibold text-xl tracking-tight"><img class="h-9 w-44" src="/images/Picsart_23-11-05_13-08-46-441.png" alt="ClassicSoul"></span>
+    </div>
+
+    <input class="menu-btn hidden" type="checkbox" id="menu-btn">
+    <label class="menu-icon block cursor-pointer md:hidden px-2 py-4 relative select-none" for="menu-btn">
+        <span class="navicon bg-grey-darkest flex items-center relative"></span>
+    </label>
+
+    <ul class="menu border-b md:border-none flex justify-end list-reset m-0 w-full md:w-auto">
+               <li class="border-t md:border-none mt-4 mr-11 font-bold">
+            <a class="hover:text-gray-200" href="/category">Category</a>
+        </li>
+        <li class="border-t md:border-none mt-4 mr-3 font-bold"> 
+            <a href="/wishlist" class="hover:text-gray-200 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                <span>Wishlist</span>
+            </a>
+        </li>
+        <li class="border-t md:border-none mt-1 flex items-center"> <!-- Use flex container to align items in the same line -->
+    <a href="/cart/{{user._id}}" class="flex items-center px-4 py-3 no-underline text-grey-darkest hover:text-grey-darker font-bold">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        Cart
+    </a>
+</li>
+
+        <li class="border-t md:border-none mt-4"> <!-- Increased margin-top for the Profile item -->
+            <a class="flex items-center hover:text-gray-200" href="/profile">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="ml-2">Profile</span>
+            </a>
+        </li>
+    </ul>
 </nav>
 
 
@@ -404,7 +275,7 @@ th, td {
 
 
 <!-- Address Section -->
-<div class="address section w-full bg-white rounded-lg shadow-md p-6">
+<div class="address section w-full bg-white rounded-lg shadow-md p-10">
     <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Addresses</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -432,8 +303,9 @@ th, td {
         {{/each}}
     </div>
 </div>
-
-<button id="addAddressButton" class="bg-blue-500 text-white py-2 px-4 mt-4 rounded-lg">Add New Address</button>
+<div class="flex justify-center">
+<button id="addAddressButton" class="bg-blue-500 text-white py-2 px-4 mt-4 rounded-lg ml-10">Add New Address</button>
+</div>
 </section>
 
     <script>
