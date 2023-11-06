@@ -9,150 +9,185 @@
     <link href="/dist/output.css" rel="stylesheet">
      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+ <style>
+    @media (max-width: 767px) {
+        .navicon {
+          width: 1.125em;
+          height: .125em;
+        }
+      
+        .navicon::before,
+        .navicon::after {
+          display: block;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          transition: all .2s ease-out;
+          content: '';
+          background: #3D4852;
+        }
+      
+        .navicon::before {
+          top: 5px;
+        }
+      
+        .navicon::after {
+          top: -5px;
+        }
+      
+        .menu-btn:not(:checked) ~ .menu {
+          display: none;
+        }
+      
+        .menu-btn:checked ~ .menu {
+          display: block;
+        }
+      
+        .menu-btn:checked ~ .menu-icon .navicon {
+          background: transparent;
+        }
+      
+        .menu-btn:checked ~ .menu-icon .navicon::before {
+          transform: rotate(-45deg);
+        }
+      
+        .menu-btn:checked ~ .menu-icon .navicon::after {
+          transform: rotate(45deg);
+        }
+      
+        .menu-btn:checked ~ .menu-icon .navicon::before,
+        .menu-btn:checked ~ .menu-icon .navicon::after {
+          top: 0;
+        }
+      }
+      </style>
+
+
+</head>
 
 <body>
- <header class="bg-nav-bar-red text-white py-4 xl:py-5">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="font-display text-xl"><strong><a href="/">Classic Soul</a></strong> </h1>
-            <!-- Navigation menu with Men and Women links -->
-            <nav class="hidden md:block">
-            </nav>
-            <div class="hidden xl:flex items-center space-x-5">
-                <a class="hover:text-gray-200 flex items-center" href="/wishlist">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    <span class="ml-2">Wishlist</span>
-                </a>
-                <!-- Sign In / Register -->
-                <a class="flex items-center hover:text-gray-200" href="/profile">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span class="ml-2">Profile</span>
-                </a>
-            </div>
-            <!-- Responsive navbar -->
-            <a class="xl:hidden flex mr-6 items-center" href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1000 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <span class="flex absolute -mt-5 ml-4">
-                    <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500"></span>
-                </span>
-            </a>
-            <a class="navbar-burger self-center mr-12 xl:hidden" href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </a>
-        </div>
-    </header>
-
-    <div class="container mx-auto mt-8">
-        <div class="flex">
-            <!-- Your Cart -->
-            <div class="flex-1">
-                <h1 class="text-3xl font-semibold mb-4">Your Cart</h1>
-                <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                    <table class="min-w-full">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th class="py-2 px-4 text-left">Product</th>
-                                <th class="py-2 px-4 text-left">Quantity</th>
-                                <th class="py-2 px-4 text-left">Price</th>
-                                <th class="py-2 px-4 text-left">Total</th>
-                                <th class="py-2 px-4"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each cartProducts}}
-                            <tr>
-                                <td class="px-6 py-4 whitespace-no-wrap">
-                                    <!-- Loop through the images array and display each image -->
-                                    {{#each this.product.images}}
-                                    <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
-                                        <!-- Update the src attribute to use the current image filename -->
-                                        <img src="/uploads/{{this}}" alt="{{../../product.name}}"
-                                            class="w-full h-full object-cover">
-                                    </div>
-                                    {{/each}}
-                                    <div>
-                                        <h2 class="text-lg font-semibold">{{this.product.name}}</h2>
-                                        <p class="text-gray-600">{{this.product.description}}</p>
-                                    </div>
-                                </td>
 
 
-                                <td class="py-4 px-4">
-                                    <div class="mx-auto  flex h-8 items-stretch text-gray-600">
-                                        <a href="/decreaseCount/{{this.product._id}}"
-                                            class="flex items-center justify-center rounded-l-md bg-gray-200 px-4 transition hover:bg-black hover:text-white minus-cart"
-                                           >-</a>
-                                        <div
-                                            class="flex w-3 items-center justify-center bg-gray-100 px-4 text-xs uppercase transition quantity-display">
-                                            {{this.quantity}}
-                                        </div>
-                                        <a href="/increaseCount/{{this.product._id}}"
-                                            class="flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:bg-black hover:text-white Add-cart"
-                                           >+</a>
-                                    </div>
-                                </td>
+<nav class="nav flex flex-wrap items-center justify-between px-8 py-3 bg-red-600 text-white">
+    <div class="flex flex-no-shrink items-center mr-6 py-3 text-grey-darkest">
 
-                                <td class="py-4 px-4">${{this.product.price}}</td>
-                                <td class="py-4 px-4 total-amount">$<span class="total">{{this.quantity}} *
-                                        {{this.product.price}}</span></td>
-                                <td class="py-4 px-4">
-                                    <button class="text-red-500 hover:text-red-700 remove-item"
-                                        data-productid="{{this.product._id}}">Remove</button>
-                                </td>
-                            </tr>
-                            {{/each}}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-8">
-                    <div class="flex justify-between">
-                        <span class="text-xl font-semibold">Total:</span>
-                        <span id="totalPrice" class="text-xl font-semibold">${{totalPrice}}</span>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Order Summary -->
-            <div class="w-1/4 p-4 mt-10">
-                <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                    <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
-                    <ul>
-                        {{#each cartProducts}}
-                        <li class="flex justify-between mb-2">
-                            <span>{{this.product.name}}</span>
-                            <span>{{this.quantity}} x ${{this.product.price}}</span>
-                        </li>
-                        {{/each}}
-                    </ul>
-                    <hr class="my-2">
-                    <div class="flex justify-between font-semibold">
-                        <span>Total:</span>
-                        <span id="totalPriceSummary">${{totalPrice}}</span>
-                    </div>
-                </div>
-                <a href="/checkout">
-                    <button id="checkoutButton"
-                        class="mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Checkout</button>
-                </a>
-            </div>
-        </div>
+        <span class="font-semibold text-xl tracking-tight"><a href="/"><img class="h-9 w-44" src="/images/Picsart_23-11-05_13-08-46-441.png" alt="ClassicSoul"></span></a>
     </div>
+
+    <input class="menu-btn hidden" type="checkbox" id="menu-btn">
+    <label class="menu-icon block cursor-pointer md:hidden px-2 py-4 relative select-none" for="menu-btn">
+        <span class="navicon bg-grey-darkest flex items-center relative"></span>
+    </label>
+
+    <ul class="menu border-b md:border-none flex justify-end list-reset m-0 w-full md:w-auto">
+               <li class="border-t md:border-none mt-4 mr-11 font-bold">
+            <a class="hover:text-gray-200" href="/category">Category</a>
+        </li>
+        <li class="border-t md:border-none mt-4 mr-3 font-bold"> 
+            <a href="/wishlist" class="hover:text-gray-200 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                <span>Wishlist</span>
+            </a>
+        </li>
+
+        <li class="border-t md:border-none mt-4"> <!-- Increased margin-top for the Profile item -->
+            <a class="flex items-center hover:text-gray-200" href="/profile">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="ml-2">Profile</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+  <div class="container mx-auto mt-8">
+  <div class="flex flex-col md:flex-row">
+    <!-- Your Cart -->
+    <div class="flex-1">
+      <h1 class="text-3xl font-semibold mb-4">Your Cart</h1>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <table class="min-w-full">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="py-2 px-4 text-left">Product</th>
+              <th class="py-2 px-4 text-left">Quantity</th>
+              <th class="py-2 px-4 text-left">Price</th>
+              <th class="py-2 px-4 text-left">Total</th>
+              <th class="py-2 px-4"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each cartProducts}}
+            <tr>
+              <td class="px-6 py-4 whitespace-no-wrap">
+                <!-- Loop through the images array and display each image -->
+                {{#each this.product.images}}
+                <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                  <!-- Update the src attribute to use the current image filename -->
+                  <img src="/uploads/{{this}}" alt="{{../../product.name}}"
+                    class="w-full h-full object-cover">
+                </div>
+                {{/each}}
+                <div>
+                  <h2 class="text-lg font-semibold">{{this.product.name}}</h2>
+                  <p class="text-gray-600">{{this.product.description}}</p>
+                </div>
+              </td>
+              <td class="py-4 px-4">
+                <div class="flex items-center text-gray-600">
+                  <a href="/decreaseCount/{{this.product._id}}"
+                    class="rounded-l-md bg-gray-200 px-4 hover:bg-black hover:text-white minus-cart">-</a>
+                  <div class="w-12 text-center text-xs uppercase quantity-display">{{this.quantity}}</div>
+                  <a href="/increaseCount/{{this.product._id}}"
+                    class="rounded-r-md bg-gray-200 px-4 hover:bg-black hover:text-white Add-cart">+</a>
+                </div>
+              </td>
+              <td class="py-4 px-4">${{this.product.price}}</td>
+              <td class="py-4 px-4 total-amount">$<span class="total">{{this.quantity}} * {{this.product.price}}</span></td>
+              <td class="py-4 px-4">
+                <button class="text-red-500 hover:text-red-700 remove-item" data-productid="{{this.product._id}}">Remove</button>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-8">
+        <div class="flex justify-between">
+          <span class="text-xl font-semibold">Total:</span>
+          <span id="totalPrice" class="text-xl font-semibold">${{totalPrice}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="w-full md:w-1/4 p-4 mt-10 md:mt-9">
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+        <ul>
+          {{#each cartProducts}}
+          <li class="flex justify-between mb-2">
+            <span>{{this.product.name}}</span>
+            <span>{{this.quantity}} x ${{this.product.price}}</span>
+          </li>
+          {{/each}}
+        </ul>
+        <hr class="my-2">
+        <div class="flex justify-between font-semibold">
+          <span>Total:</span>
+          <span id="totalPriceSummary">${{totalPrice}}</span>
+        </div>
+      </div>
+      <a href="/checkout">
+        <button id="checkoutButton"
+          class="mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">Checkout</button>
+      </a>
+    </div>
+  </div>
+</div>
+
         <script>
   // Check if the URL has a query parameter 'notEnoughQuantity' with the value 'true'
   const urlParams = new URLSearchParams(window.location.search);

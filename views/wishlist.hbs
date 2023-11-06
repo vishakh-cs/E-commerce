@@ -31,8 +31,72 @@
             font-size: 5 px;
         }
     </style>
+        <style>
+    @media (max-width: 767px) {
+        .navicon {
+          width: 1.125em;
+          height: .125em;
+        }
+      
+        .navicon::before,
+        .navicon::after {
+          display: block;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          transition: all .2s ease-out;
+          content: '';
+          background: #3D4852;
+        }
+      
+        .navicon::before {
+          top: 5px;
+        }
+      
+        .navicon::after {
+          top: -5px;
+        }
+      
+        .menu-btn:not(:checked) ~ .menu {
+          display: none;
+        }
+      
+        .menu-btn:checked ~ .menu {
+          display: block;
+        }
+      
+        .menu-btn:checked ~ .menu-icon .navicon {
+          background: transparent;
+        }
+      
+        .menu-btn:checked ~ .menu-icon .navicon::before {
+          transform: rotate(-45deg);
+        }
+      
+        .menu-btn:checked ~ .menu-icon .navicon::after {
+          transform: rotate(45deg);
+        }
+      
+        .menu-btn:checked ~ .menu-icon .navicon::before,
+        .menu-btn:checked ~ .menu-icon .navicon::after {
+          top: 0;
+        }
+      }
+      </style>
+
+
 </head>
-<body class="bg-gray-100">
+
+<body>
+
+
+<nav class="nav flex flex-wrap items-center justify-between px-8 py-3 bg-red-600 text-white">
+    <div class="flex flex-no-shrink items-center mr-6 py-3 text-grey-darkest">
+
+        <span class="font-semibold text-xl tracking-tight"><a href="/"><img class="h-9 w-44" src="/images/Picsart_23-11-05_13-08-46-441.png" alt="ClassicSoul"></span></a>
+    </div>
+</nav>
+
     <div class="container mx-auto p-4">
         <h1 class="text-3xl font-semibold mb-6">My Wishlist</h1>
         <div class="grid grid-cols-1 gap-4">
@@ -63,11 +127,10 @@
             {{/each}}
         </div>
     </div>
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-8">
+   <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 fixed bottom-0 w-full">
         <div class="container mx-auto text-center">
             <p>&copy; 2023 Classic Soul eCommerce Store</p>
-            <!-- Social media links, contact information, etc. can be added here -->
         </div>
     </footer>
 </body>

@@ -713,7 +713,6 @@ const profile = async (req, res) => {
 
       // Fetch the referral code associated with the user
       const referral = await refferalModel.findOne({ userId: userId });
-       // Pass the referral code to the template
 
     res.render('profile', { user, walletAmount: user.wallet.amount ,walletTransactions, referral});
   } catch (error) {
@@ -1130,7 +1129,6 @@ const orderSuccess = async (req, res) => {
     const validCartProducts = cartProducts.filter((cartItem) => cartItem !== null);
     let discountprice = req.session.finalAmount
     const applyedCoupon = req.session.PriceAfterCoupon
-    console.log("applyedcoupon",applyedCoupon);
 
    // Calculate the total price of the order
    let totalPrice = validCartProducts.reduce((total, cartItem) => {
@@ -1463,9 +1461,20 @@ const createOrder = async (req, res) => {
     //  console.log("jjjjjjay",paymenttype);
      req.session.paymentMethod = paymenttype
 
+     //coupon amount
+     const couponAmount = req.session.finalAmount || 0;
      const productcheck = await Products.findOne({ name: productName });
-      // Ensure productPrice is in paise (multiply by 100)
-      const amount = productcheck.price * 100;
+
+      // Calculate the product price based on offer or regular price
+      const price = productcheck.offerPrice ? productcheck.offerPrice : productcheck.price;
+
+    // Ensure productPrice is in paise (multiply by 100)
+    let amount = price * 100; // Use the calculated price with offer if available
+
+    // If a coupon is applied, subtract the coupon amount from the product price
+    if (couponAmount > 0) {
+      amount -= couponAmount * 100; 
+    }
 
       if (paymenttype === 'credit-card') {
         // Check if the product has enough quantity
