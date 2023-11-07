@@ -81,7 +81,7 @@ const wishlistAddtoCart = async (req, res) => {
         user.cart.push(updateduser);
         await user.save();
         console.log("helloooo");
-        res.status(200).json("success") // Redirect to the cart page or any other appropriate destination
+        res.status(200).json("success") 
     } catch (error) {
         console.error("Error adding item to cart from wishlist:", error);
         return res.status(500).json("Internal Server Error");

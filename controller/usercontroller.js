@@ -1036,7 +1036,14 @@ const checkout = async (req, res) => {
     const user = await usermodel.findById(userId);
 
     // Find the primary address in the user's addresses array
-    const primaryAddress = user.addresses.find((address) => address.primary === true);
+    let primaryAddress = user.addresses.find((address) => address.primary === true);
+
+    // If no primary address is found, set the first address as primary
+    if (!primaryAddress && user.addresses.length > 0) {
+      primaryAddress = user.addresses[0]; 
+      primaryAddress.primary = true;
+    }
+    await user.save();
 
     // Fetch user's cart products and calculate the total price
     const userCart = user.cart || [];

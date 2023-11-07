@@ -6,6 +6,9 @@
     <title>Wishlist</title>
     <link href="/dist/output.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
     <style>
         .product-container {
             display: flex;
@@ -135,33 +138,44 @@
     </footer>
 </body>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-        const removeFromWishlistButtons = document.querySelectorAll('.remove-from-wishlist');
+document.addEventListener('DOMContentLoaded', () => {
 
-        addToCartButtons.forEach((button) => {
-            // Add to Cart button click event
-            button.addEventListener('click', (event) => {
-                event.preventDefault();
-                const productId = button.getAttribute('data-productid');
-                console.log(productId)
-                fetch(`/cart/add/${productId}`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ productId }),
-})
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    // Show the cart message (if needed)
-                })
-                .catch((error) => {
-                    console.error('Error adding product to cart:', error);
-                });
+     toastr.options = {
+        positionClass: 'toast-top-center',
+    };
+    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+    const removeFromWishlistButtons = document.querySelectorAll('.remove-from-wishlist');
+
+    addToCartButtons.forEach((button) => {
+        // Add to Cart button click event
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const productId = button.getAttribute('data-productid');
+            console.log(productId)
+            fetch(`/cart/add/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId }),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+
+                if (data.message === 'Product added to cart') {
+                    // Show a success toaster message
+                    toastr.success('Product added to the cart successfully');
+                } else {
+                    // Show an error toaster message if needed
+                    toastr.error('Failed to add the product to the cart');
+                }
+            })
+            .catch((error) => {
+                console.error('Error adding product to cart:', error);
             });
         });
+    });
 
         removeFromWishlistButtons.forEach((button) => {
             // Remove from Wishlist button click event
