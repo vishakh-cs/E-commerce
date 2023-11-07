@@ -445,6 +445,20 @@ function cancelOrder(orderId) {
             }
         });
     </script>
+    <script>
+  const urlParamsforAddress = new URLSearchParams(window.location.search);
+  const maxAddressesReached = urlParamsforAddress.get('maxAddressesReached');
+
+  if (maxAddressesReached === 'true') {
+    Swal.fire({
+      title: 'Maximum Addresses Reached',
+      text: 'You can only have up to 2 addresses.',
+      icon: 'error',
+      confirmButtonColor: '#d33',
+    });
+  }
+</script>
+
 <script>
     function editEmail() {
     const userEmailElement = document.getElementById("userEmail");

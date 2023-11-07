@@ -972,6 +972,11 @@ const addAddresspost = async (req, res) => {
 
     // Find the user by ID
     const user = await usermodel.findById(userId);
+    if (user.addresses.length >= 2) {
+      // If the user already has 2 addresses, prevent adding more
+      return res.redirect('/profile?maxAddressesReached=true');
+    }
+
 
     // Create a new address object
     const newAddress = {
