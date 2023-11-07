@@ -1364,26 +1364,53 @@ const buynow = async (req, res) => {
 
 // buynow checkout page 
 
-const  buynowcheckoutpage = async (req,res)=>{
+const buynowcheckoutpage = async (req, res) => {
+  try {
+    if (!req.session.logedUser) {
+      return res.redirect('/login');
+    }
 
-  const userId = req.session.logedUser._id;
-  const productId = req.session.buynowprdt;
-  const product = await Products.findById(productId)
+    const userId = req.session.logedUser._id;
+    const productId = req.session.buynowprdt;
+    const product = await Products.findById(productId);
 
-  const user = await usermodel.findById(userId);
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
 
-  const totalPrice = product.price *1;
-  const primaryAddress = user.addresses.find((address) => address.primary === true);
-  if (!primaryAddress) {
-   
-    return res.status(404).json({ error: "Primary address not found" });
+    const user = await usermodel.findById(userId);
+
+    let primaryAddress = user.addresses.find((address) => address.primary === true);
+
+    if (!primaryAddress && user.addresses.length > 0) {
+      primaryAddress = user.addresses[0];
+      primaryAddress.primary = true;
+      await user.save();
+    }
+
+    // Check if the product has an offer and adjust the total price
+    let totalPrice = product.offerPrice ? product.offerPrice * 1 : product.price * 1;
+
+    // Check if a coupon has been applied
+    const appliedCoupon = req.session.PriceAfterCoupon;
+    if (appliedCoupon) {
+      // Apply the coupon discount
+      totalPrice -= appliedCoupon;
+    }
+
+    res.render('buyCheckout', {
+      user,
+      primaryAddress,
+      product,
+      totalPrice,
+      discountAmount: appliedCoupon,
+    });
+    req.session.PriceAfterCoupon = []
+  } catch (error) {
+    console.error('Error rendering buyCheckout page:', error);
+    res.status(500).send('Internal Server Error');
   }
-
-res.render('buyCheckout',{user,
- primaryAddress,
-product,
-totalPrice})
-}
+};
 
  
 // buysuccess page 
@@ -1398,28 +1425,49 @@ const buySuccess = async (req, res) => {
     if (!user || !product) {
       return res.status(404).json({ error: "User or product not found" });
     }
-    // single product is ordered
+
+        // Decrease the product quantity by 1
+        if (product.quantity > 0) {
+          product.quantity -= 1;
+        } else {
+           return res.redirect('/cart/:userid?notEnoughQuantity=true')
+        }
+        await product.save();
+    let totalPrice = product.price;
+    // Check if a discount is applied
+    const appliedDiscount = req.session.finalAmount 
+    if (appliedDiscount) {
+      totalPrice -= appliedDiscount;
+    }
+
     const newOrder = new order({
       userId: userId,
       address: user.addresses[0]._id,
       products: [
         {
           product: product._id,
-          quantity: 1, 
-          productImage: product.images[0], 
+          quantity: 1,
+          productImage: product.images[0],
         }
       ],
-      totalPrice: product.price, 
+      totalPrice: totalPrice,
     });
+    
+
     await newOrder.save();
-    // Clear the session data for buynowprdt
+
+    // Clear the session data for buynowprdt and finalAmount
     delete req.session.buynowprdt;
-    res.render('bynowSuccess', { user,product});
+    delete req.session.finalAmount;
+
+    res.render('bynowSuccess', { user, product, totalPrice });
   } catch (error) {
     console.error("Error:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
 
 
 // search product 
@@ -1495,7 +1543,6 @@ const createOrder = async (req, res) => {
             return res.status(400).send({ success: false, msg: 'Product out of stock' });
         }
       }
-
       const options = {
           amount: amount,
           currency: 'INR',
@@ -1514,6 +1561,67 @@ const createOrder = async (req, res) => {
                   description: `Payment for ${productName}`,
                   contact: '7907265303',
                   name: 'vishakh',
+                  email: 'vishakhcs51@gmail.com',
+              });
+          } else {
+              res.status(400).send({ success: false, msg: 'Something went wrong' });
+          }
+      });
+  } catch (error) {
+      console.error('Error creating Razorpay order:', error);
+      res.status(500).send({ success: false, msg: 'Internal Server Error' });
+  }
+};
+
+const buynowcreateOrder = async (req, res) => {
+  try {
+      const { productName, productPrice } = req.body;
+      console.log("prdt",productName, productPrice);
+     const paymenttype = req.body.paymentMethod;
+    //  console.log("jjjjjjay",paymenttype);
+     req.session.paymentMethod = paymenttype
+
+     //coupon amount
+     const couponAmount = req.session.finalAmount || 0;
+     const productcheck = await Products.findOne({ name: productName });
+
+      // Calculate the product price based on offer or regular price
+      const price = productcheck.offerPrice ? productcheck.offerPrice : productcheck.price;
+
+    // Ensure productPrice is in paise (multiply by 100)
+    let amount = price * 100; // Use the calculated price with offer if available
+
+    // If a coupon is applied, subtract the coupon amount from the product price
+    if (couponAmount > 0) {
+      amount -= couponAmount * 100; 
+    }
+
+      if (paymenttype === 'credit-card') {
+        // Check if the product has enough quantity
+        const product = await Products.findOne({ name: productName });
+        if (!product || product.quantity < 1) {
+            return res.status(400).send({ success: false, msg: 'Product out of stock' });
+        }
+      }
+
+      const options = {
+          amount: amount,
+          currency: 'INR',
+          receipt: 'razoruser@gmail.com',
+      };
+
+      razorpay.orders.create(options, (err, order) => {
+          if (!err) {
+              res.status(200).send({
+                  success: true,
+                  msg: 'Order Created',
+                  order_id: order.id,
+                  amount: amount,
+                  key_id: process.env.RAZORYPAY_KEY_ID,
+                  product_name: productName,
+                  description: `Payment for ${productName}`,
+                  contact: '7907265303',
+                  name: 'ClasscSoul',
                   email: 'vishakhcs51@gmail.com',
               });
           } else {
@@ -1646,6 +1754,7 @@ module.exports = {
   createOrder,
   generateInvoice,
   inputRefferalCode,
+  buynowcreateOrder,
   
 
 };

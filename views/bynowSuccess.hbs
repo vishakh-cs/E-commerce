@@ -20,17 +20,19 @@
             <h2 class="text-xl font-semibold mb-2">Product Details</h2>
             <div class="flex items-center mb-4">
                 <div class="w-24 h-24 mr-4">
-                    <img src="/uploads/{{product.images}}" alt="{{product.name}}" class="w-full h-full rounded-lg object-cover">
+                    {{#each product.images}}
+                        <img src="/uploads/{{this}}" alt="{{product.name}}" class="w-full h-full rounded-lg object-cover mb-2">
+                    {{/each}}
                 </div>
                 <div>
                     <p><strong>Name:</strong> {{product.name}}</p>
-                    <p><strong>Price:</strong> ${{product.price}}</p>
+                    <p><strong>Price:</strong> ${{totalPrice}}</p>
                     <!-- ... (other product details) -->
                 </div>
             </div>
         </div>
         <div class="mt-8 text-center">
-            <a href="/" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full inline-block transition duration-300 ease-in-out">Continue Shopping</a>
+            <a href="/" class="bg-blue-500 hover-bg-blue-700 text-white font-semibold py-2 px-4 rounded-full inline-block transition duration-300 ease-in-out">Continue Shopping</a>
         </div>
     </div>
 </body>

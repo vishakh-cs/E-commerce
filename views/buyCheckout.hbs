@@ -75,17 +75,29 @@
             <img src="/uploads/{{product.images}}" alt="{{product.name}}" class="w-24 h-32 mr-4">
             <span class="font-semibold text-gray-800">{{product.name}}</span>
         </div>
-        <span>{{product.quantity}} x ${{product.price}}</span>
-    </li>
-     <input type="hidden" id="productName" value="{{this.product.name}}">
-</ul>
-                <hr class="my-2">
-                <div class="flex justify-between font-semibold">
-                    <span>Total:</span>
-                    <span id="totalPriceSummary" class="text-green-600">${{totalPrice}}</span>
-                    <input type="hidden" id="productPrice" value="{{totalPrice}}">
-                </div>
-            </div>
+         {{#if this.product.offerPrice}}
+                <span>{{this.quantity}} x ${{this.product.offerPrice}} (Offer Price)</span>
+            {{else}}
+                <span>{{this.quantity}} x ${{this.product.price}}</span>
+            {{/if}}
+        </li>
+        <input type="hidden" id="productName" value="{{product.name}}">
+    </ul>
+    <div class="mt-4">
+      <span>Coupon Discount:</span>
+    <span id="couponDiscount" class="text-red-600">Rs. {{discountAmount}}</span>
+</div>
+<hr class="my-2">
+<div class="flex justify-between font-semibold">
+    <span>Total:</span>
+    {{#if discountAmount}}
+        <span id="totalPriceSummary" class="text-green-600">${{discountAmount}}</span>
+    {{else}}
+        <span id="totalPriceSummary" class="text-green-600">${{totalPrice}}</span>
+    {{/if}}
+<input type="hidden" id="productPrice" value="{{#if discountAmount}}{{discountAmount}}{{else}}{{totalPrice}}{{/if}}">
+</div>
+</div>
         </div>
 
 
@@ -103,6 +115,24 @@
                     <input type="radio" id="express-shipping" name="delivery-option" value="express" class="mr-2">
                     <label for="express-shipping" class="text-blue-500 font-semibold">Express Shipping</label>
                 </div>
+                <!-- Coupon Code Input Field -->
+<div class="mt-4">
+    <form id="coupon-form" action="/buyapplyDiscount" method="post">
+            <input type="hidden" name="userID" value="{{user._id}}">
+               
+        <input type="hidden" name="productID" value="{{product._id}}">
+            
+        <div class="coupon-container flex items-center">
+            <input type="text" id="coupon-code" name="couponCode" placeholder="Enter Coupon Code" class="w-40 px-4 py-2 border rounded-l focus:outline-none focus:border-blue-500">
+            <button id="apply-coupon-button" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-r focus:outline-none" onclick="applyCoupon">
+                Apply Coupon
+            </button>
+        </div>
+        <p id="invalid-coupon-message" class="text-red-600">Invalid coupon</p>
+        <p id="expired-coupon-message" class="text-red-600">Coupon has expired</p>
+        <p id="Coupon-MinPurchase-NotMet" class="text-red-600">Mnimum Purchase Required</p>
+    </form>
+</div>
             </div>
 
             <!-- User Addresses -->
@@ -138,6 +168,61 @@
                 onclick="completePurchase()">Complete Purchase</button>
         </div>
     </div>
+   <script>
+function updateCouponMessage() {
+    const invalidCouponMessage = document.getElementById('invalid-coupon-message');
+    const expiredCouponMessage = document.getElementById('expired-coupon-message'); 
+    const NotMinAmountouponMessage = document.getElementById('Coupon-MinPurchase-NotMet');
+    const urlParams = new URLSearchParams(window.location.search);
+    const isInvalidCoupon = urlParams.get('InvalidCode') === 'true';
+    const hasExpiredCoupon = urlParams.get('CouponhasExpired') === 'true'; 
+    const NotMinAmount = urlParams.get('CouponMinPurchaseNotMet') === 'true'; 
+
+    // Remove the InvalidCode and CouponhasExpired query parameters from the URL
+    if (isInvalidCoupon || hasExpiredCoupon || NotMinAmount ) {
+        urlParams.delete('InvalidCode');
+        urlParams.delete('CouponhasExpired');
+        urlParams.delete('CouponMinPurchaseNotMet');
+
+        const newUrl = window.location.pathname + '?' + urlParams.toString();
+        window.history.replaceState({}, document.title, newUrl);
+    }
+    if (invalidCouponMessage) {
+        invalidCouponMessage.style.display = isInvalidCoupon ? 'block' : 'none';
+    }
+
+    if (expiredCouponMessage) {
+        expiredCouponMessage.style.display = hasExpiredCoupon ? 'block' : 'none';
+    }
+    if (NotMinAmountouponMessage){
+        NotMinAmountouponMessage.style.display = NotMinAmount ?"block":"none";
+    }
+}
+
+// Call the function initially to set the message state based on the query parameters
+updateCouponMessage();
+
+</script>
+
+    <script>
+function updateCompletePurchaseButtonState() {
+    const completePurchaseButton = document.getElementById('complete-purchase-button');
+    const addressMessage = document.getElementById('address-message');
+    const hasAddresses = {{user.addresses.length}} > 0; 
+
+    if (completePurchaseButton) {
+        completePurchaseButton.disabled = !hasAddresses;
+    }
+
+    if (addressMessage) {
+        addressMessage.style.display = hasAddresses ? 'none' : 'block';
+    }
+}
+
+   // Call the function initially to set the button and message state based on addresses
+   updateCompletePurchaseButtonState();
+  
+    </script>
 
     <script>
         function redirectToNewAddressCheckout() {
@@ -151,9 +236,23 @@
 
             if (selectedPaymentMethod) {
                 const paymentMethod = selectedPaymentMethod.value;
-                if (paymentMethod === 'cash-on-delivery') {
-                    window.location.href = '/ordersuccess';
+              if (paymentMethod === 'cash-on-delivery') {
+               
+                $.ajax({
+                    url: '/buynowcreateOrder',
+                    type: 'POST',
+                    data: { paymentMethod: paymentMethod },
+                    success: function (res) {
+                        if (res.success) {
+                            window.location.href = '/buynowSuccess';
+                        } else {
+                            alert('Error creating order: ' + res.msg);
+                        }
+                    }
+                });
+                    window.location.href = '/buynowSuccess';
                 } else if (paymentMethod === 'credit-card') {
+                    
 
                     // Get product details from hidden input fields
                     const productName = document.getElementById('productName').value;
@@ -162,9 +261,9 @@
 
                     // Create a Razorpay order
                     $.ajax({
-                        url: '/createOrder',
+                        url: '/buynowcreateOrder',
                         type: 'POST',
-                        data: { productName, productPrice }, // Send your data here
+                        data: { productName, productPrice , paymentMethod: paymentMethod },
                         success: function (res) {
                             if (res.success) {
                                 var options = {
@@ -173,7 +272,7 @@
                                     currency: "INR",
                                     name: res.name,
                                     description: res.description,
-                                    image: 'https://yourcompany.com/logo.png',
+                                    image: 'https://classicsoul.shop/images/Picsart_23-11-05_13-08-46-441.png',
                                     order_id: res.order_id,
                                     handler: function (response) {
                                         // Check if the payment was successful
@@ -197,12 +296,29 @@
                             }
                         }
                     });
-                }
-            } else {
-                alert('Please select a payment method.');
+                } else if (paymentMethod === 'wallet-transfer') {
+                const productName = document.getElementById('productName').value;
+                const productPrice = parseInt(document.getElementById('productPrice').value);
+
+                $.ajax({
+                    url: '/buynowcreateOrder',
+                    type: 'POST',
+                    data: { productName, productPrice, paymentMethod: paymentMethod },
+                    success: function (res) {
+                        if (res.success) {
+                            alert('Payment from wallet successful');
+                            window.location.href = '/buynowSuccess';
+                        } else {
+                            alert('Error creating wallet order: ' + res.msg);
+                        }
+                    }
+                });
             }
+        } else {
+            alert('Please select a payment method.');
         }
-    </script>
+    }
+</script>
 </body>
 
 </html>

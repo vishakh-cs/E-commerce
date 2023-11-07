@@ -240,6 +240,20 @@
             <!-- Social media links, contact information, etc. can be added here -->
         </div>
     </footer>
+            <script>
+  // Check if the URL has a query parameter 'notEnoughQuantity' with the value 'true'
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('notEnoughQuantity') === 'true') {
+    // Display the SweetAlert2 popup
+    Swal.fire({
+      icon: 'error', 
+      title: 'Product out of Stock',
+      text: 'Sorry, there is not enough quantity available for this product.',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'OK',
+    });
+  }
+</script>
 
     <!-- Include Swiper JS for the carousel -->
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>

@@ -195,24 +195,24 @@
     <p><strong>Email:</strong> <span class="ml-4" id="userEmail">{{ user.email }}</span></p>
 </div>
 
-            <!-- Your Referral Code Section -->
-            <div class="bg-white p-4 shadow-md">
-                <h2 class="text-xl font-semibold mb-4">Your Referral Code</h2>
-                <p><strong>Referral Code:</strong> <span class="ml-4" id="referralCode"><strong>{{ referral.referralCode }}</strong></span></p>
-                <p><strong>Enter Referral Code:</strong></p>
+<div class="bg-white p-4 shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Your Referral Code</h2>
+    <p><strong>Referral Code:</strong> <span class="ml-4" id="referralCode"><strong>{{ referral.referralCode }}</strong></span></p>
+    <p><strong>Enter Referral Code:</strong></p>
 
-                {{#if referral.isReferralVerified}}
-                    <p class="text-slate-700 font-serif">You have already entered a referral code.</p>
-                {{else}}
-                    <!-- Referral Code Entry Form -->
-                    <form action="/profile/updateReferral" method="POST" class="flex flex-col md:flex-row items-center">
-                        <div class="md:mr-4 mb-4 md:mb-0">
-                            <input type="text" name="referralCode" id="referralCodeInput" class="w-full md:w-64 py-2 px-3 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Enter your referral code" required>
-                        </div>
-                        <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700">Submit</button>
-                    </form>
-                {{/if}}
+    {{#if referral.isRefferalVerified}}
+        <p class="text-slate-700 font-serif">You have already entered a referral code.</p>
+    {{else}}
+        <!-- Referral Code Entry Form -->
+        <form action="/profile/updateReferral" method="POST" class="flex flex-col md:flex-row items-center">
+            <div class="md:mr-4 mb-4 md:mb-0">
+                <input type="text" name="referralCode" id="referralCodeInput" class="w-full md:w-64 py-2 px-3 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Enter your referral code" required>
             </div>
+            <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700">Submit</button>
+        </form>
+    {{/if}}
+</div>
+
 <!-- Change Password Section -->
 <div class="bg-white p-4 shadow-md">
     <h2 class="text-xl font-semibold mb-4">Change Your Password</h2>

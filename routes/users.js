@@ -112,6 +112,8 @@ router.post('/buynow/:productId',isLoggedAuth,usercontroller.buynow)
 
 router.get('/buynowcheckoutpage',isLoggedAuth,usercontroller.buynowcheckoutpage)
 
+router.post('/buyapplyDiscount',CouponController.buyapplyDiscount)
+
 router.get('/buynowSuccess',isLoggedAuth,usercontroller.buySuccess)
 
 router.post('/searchprdt',usercontroller.searchprdt)
@@ -129,6 +131,8 @@ router.post('/removeFromWishlist',isLoggedAuth,wishlistController.removeFromWish
 // router.get('/razorpay',usercontroller.renderProductPage);
 
 router.post('/createOrder',usercontroller.createOrder)
+
+router.post('/buynowcreateOrder',usercontroller.buynowcreateOrder)
 
 router.get('/viewOrder/:orderId',usercontroller.vieworder)
 
