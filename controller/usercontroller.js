@@ -1347,10 +1347,10 @@ const buynow = async (req, res) => {
 
     const primaryAddress = user.addresses.find((address) => address.primary === true);
 
-    if (!primaryAddress) {
+    // if (!primaryAddress) {
      
-      return res.status(404).json({ error: "Primary address not found" });
-    }
+    //   return res.status(404).json({ error: "Primary address not found" });
+    // }
     req.session.buynowprdt =  productId
    
     res.redirect('/buynowcheckoutpage');
@@ -1418,6 +1418,7 @@ const buySuccess = async (req, res) => {
   try {
     const userId = req.session.logedUser._id;
     const productId = req.session.buynowprdt;
+    const paymenttype = req.session.paymentMethod
 
     const user = await usermodel.findById(userId);
     const product = await Products.findById(productId);
@@ -1451,9 +1452,10 @@ const buySuccess = async (req, res) => {
         }
       ],
       totalPrice: totalPrice,
+      payment: {
+        method: paymenttype
+    }
     });
-    
-
     await newOrder.save();
 
     // Clear the session data for buynowprdt and finalAmount

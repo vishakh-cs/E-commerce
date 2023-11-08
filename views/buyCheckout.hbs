@@ -155,7 +155,14 @@
                     {{/if}}
                     {{/each}}
                 </ul>
-                <button id="add-address-button"
+         {{#if user.addresses.length}}
+        <button id="add-address-button"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full mt-4"
+            onclick="redirectToNewAddressCheckout()">Add New Address</button>
+        {{else}}
+        <p class="text-red-500 mt-4">No address found. Please add an address.</p>
+        {{/if}}
+ <button id="add-address-button"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full mt-4"
                     onclick="redirectToNewAddressCheckout()">Add New Address</button>
             </div>
@@ -163,11 +170,13 @@
 
         <div class="text-center mt-8">
             <!-- Add a Razorpay payment button with the order details -->
-            <button id="checkout-button"
-                class="bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                onclick="completePurchase()">Complete Purchase</button>
-        </div>
-    </div>
+<div class="text-center mt-8">
+    <p id="address-message" class="text-red-600 mb-4">Please add an address to complete the purchase.</p>
+    <button id="complete-purchase-button"
+        class="bg-indigo-500 hover-bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        onclick="completePurchase()">Complete Purchase</button>
+</div>
+
    <script>
 function updateCouponMessage() {
     const invalidCouponMessage = document.getElementById('invalid-coupon-message');
