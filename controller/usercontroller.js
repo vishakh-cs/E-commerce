@@ -1660,7 +1660,7 @@ const generateInvoice = async (req, res) => {
       return {
         quantity: quantity,
         description: product.name, // Assuming the product model has a 'name' field
-        tax: 0, // Assuming no tax for now
+        "tax-rate": 0, // Assuming no tax for now
         price: Order.totalPrice, // Assuming the product model has a 'price' field
       };
     });
@@ -1692,7 +1692,7 @@ const generateInvoice = async (req, res) => {
         number: `INV-${orderId}`,
       },
       products: products,
-      bottomNotice: "Kindly pay your invoice within 15 days.",
+      "bottom-notice": "Thank you choosing ClassicSoul...Hope See you again",
     };
 
     // Create invoice
