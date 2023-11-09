@@ -66,7 +66,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  // res.render('404');
+  res.render('404');
 }).listen(PORT,()=>{
   console.log(`Server is running on port http://localhost:${PORT}`);
 })

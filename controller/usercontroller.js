@@ -78,14 +78,12 @@ const signupPost = async (req, res) => {
     const newUser = new usermodel({
       username: req.body.name,
       email: req.body.email,
-      password: hashedPassword, // Store the hashed password
+      password: hashedPassword, 
       otp: OTP,
     });
 
     // Save the user data to the database
     await newUser.save();
-
-      // Store the referral code in the referral model
       const newReferral = new refferalModel({ 
         referralCode: referralCode,
         userId: newUser._id, 
@@ -1394,7 +1392,7 @@ const buynowcheckoutpage = async (req, res) => {
     // Check if a coupon has been applied
     const appliedCoupon = req.session.PriceAfterCoupon;
     if (appliedCoupon) {
-      // Apply the coupon discount
+      
       totalPrice -= appliedCoupon;
     }
 
@@ -1531,9 +1529,8 @@ const createOrder = async (req, res) => {
       const price = productcheck.offerPrice ? productcheck.offerPrice : productcheck.price;
 
     // Ensure productPrice is in paise (multiply by 100)
-    let amount = price * 100; // Use the calculated price with offer if available
+    let amount = price * 100;
 
-    // If a coupon is applied, subtract the coupon amount from the product price
     if (couponAmount > 0) {
       amount -= couponAmount * 100; 
     }
@@ -1580,7 +1577,6 @@ const buynowcreateOrder = async (req, res) => {
       const { productName, productPrice } = req.body;
       console.log("prdt",productName, productPrice);
      const paymenttype = req.body.paymentMethod;
-    //  console.log("jjjjjjay",paymenttype);
      req.session.paymentMethod = paymenttype
 
      //coupon amount
@@ -1591,7 +1587,7 @@ const buynowcreateOrder = async (req, res) => {
       const price = productcheck.offerPrice ? productcheck.offerPrice : productcheck.price;
 
     // Ensure productPrice is in paise (multiply by 100)
-    let amount = price * 100; // Use the calculated price with offer if available
+    let amount = price * 100; 
 
     // If a coupon is applied, subtract the coupon amount from the product price
     if (couponAmount > 0) {
@@ -1654,46 +1650,52 @@ const generateInvoice = async (req, res) => {
     }
 
     // Prepare product data based on the order's products
-    const products = Order.products.map(productInfo => {
-      const product = productInfo.product;
-      const quantity = productInfo.quantity;
-      return {
-        quantity: quantity,
-        description: product.name, // Assuming the product model has a 'name' field
-        "tax-rate": 0, // Assuming no tax for now
-        price: Order.totalPrice, // Assuming the product model has a 'price' field
-      };
-    });
+  // Prepare product data based on the order's products
+const products = Order.products.map(productInfo => {
+  const product = productInfo.product;
+  const quantity = productInfo.quantity;
+  return {
+    quantity: quantity,
+    description: product.name,
+    "tax-rate": 0,
+    price: product.price,
+  };
+});
 
-    const logoUrl = 'https://th.bing.com/th/id/R.92dc42fac85a64207ba0b4673ef1de10?rik=aZtbHeXpctUoJg&riu=http%3a%2f%2fwww.morcoblinds.co.uk%2fsites%2fall%2fthemes%2fmorco%2fimages%2fclassic_logo.png&ehk=qBU2cByT682xt50LHl2z5E6qsKZxHerPZLxd4Fu2Dco%3d&risl=&pid=ImgRaw&r=0';
+// Calculate the total price as the sum of all product prices
+const totalPrice = products.reduce((total, product) => {
+  return total + product.price * product.quantity;
+}, 0);
 
-    const invoiceData = {
-      currency: 'INR',
-      marginTop: 25,
-      marginRight: 25,
-      marginLeft: 25,
-      marginBottom: 25,
-      logo: logoUrl,
-      sender: {
-        company: 'Classic Soul E-commerce',
-        address: '123 Main St, Trivandrum, Kerala, India',
-        zip: '695411',
-        city: 'Trivandrum',
-        country: 'India',
-      },
-      client: {
-        company: user.username,
-        address: user.addresses[0].address, // Assuming the first address is used for the invoice
-        city: user.addresses[0].city, // Assuming the first address is used for the invoice
-        country: user.addresses[0].country, // Assuming the first address is used for the invoice
-      },
-      information: {
-        date: new Date().toLocaleDateString(), // Add a valid date here
-        number: `INV-${orderId}`,
-      },
-      products: products,
-      "bottom-notice": "Thank you choosing ClassicSoul...Hope See you again",
-    };
+const logoUrl = 'https://th.bing.com/th/id/R.92dc42fac85a64207ba0b4673ef1de10?rik=aZtbHeXpctUoJg&riu=http%3a%2f%2fwww.morcoblinds.co.uk%2fsites%2fall%2fthemes%2fmorco%2fimages%2fclassic_logo.png&ehk=qBU2cByT682xt50LHl2z5E6qsKZxHerPZLxd4Fu2Dco%3d&risl=&pid=ImgRaw&r=0';
+
+const invoiceData = {
+  currency: 'INR',
+  marginTop: 25,
+  marginRight: 25,
+  marginLeft: 25,
+  marginBottom: 25,
+  logo: logoUrl,
+  sender: {
+    company: 'Classic Soul E-commerce',
+    address: '123 Main St, Trivandrum, Kerala, India',
+    zip: '695411',
+    city: 'Trivandrum',
+    country: 'India',
+  },
+  client: {
+    company: user.username,
+    address: user.addresses[0].address,
+    city: user.addresses[0].city, 
+    country: user.addresses[0].country,
+  },
+  information: {
+    date: new Date().toLocaleDateString(), 
+    number: `INV-${orderId}`,
+  },
+  products: products,
+  "bottom-notice": "Thank you for choosing ClassicSoul...Hope to see you again",
+};
 
     // Create invoice
     easyinvoice.createInvoice(invoiceData, function (result) {

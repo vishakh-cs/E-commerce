@@ -32,43 +32,87 @@
     <!-- Category Listing -->
     <div class="container mx-auto py-8">
         <h1 class="text-3xl font-semibold mb-4">Categories</h1>
-        <ul class="flex flex-wrap"> <!-- Added flex and flex-wrap classes -->
+        <ul class="flex flex-wrap gap-5"> 
             {{#each category}}
-            <li class="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6 mb-4"> <!-- Adjust the width for different screen sizes -->
-                <!-- Add a form to send the category name to UserController -->
+            <li class="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6 mb-4"> 
+                
                 <form method="GET" action='/category' class="text-center block border border-gray-300 p-4 rounded-lg hover:border-indigo-500 transition duration-300 ease-in-out">
                     <input type="hidden" name="categoryName" value="{{this.name}}"> <!-- Hidden input to store the category name -->
                     <h2 class="text-xl font-semibold">{{this.name}}</h2>
-                    <button type="submit">View Products</button> <!-- Submit button to send the form data to UserController -->
+                    <button type="submit">View Products</button>
                 </form>
             </li>
             {{/each}}
         </ul>
     </div>
 
-    <!-- Product Listing -->
-    <div class="container mx-auto py-8">
-        <h1 class="text-3xl font-semibold mb-4">Products in {{categoryName}}</h1>
-        <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-8">
-            {{#each products}}
-                <li class="product-item" data-subcategory="{{subcategory}}">
-                    <a href="/products/{{_id}}">
-                        <div class="border border-gray-200 mx-3 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out h-4/5"> 
-                            {{#each this.images}}
-                                <img src="/uploads/{{this}}" alt="{{../name}}" class="w-full h-3/4 mb-2">
-                            {{/each}}       
-                            <h2 class="text-lg font-semibold">{{this.name}}</h2>
-                            <p class="text-gray-600">{{this.description}}</p>
-                            <p class="text-gray-800 font-semibold mt-2">$ {{price}}</p>
-                        </div>
+<!-- Product Listing -->
+<div class="container mx-auto py-8">
+    <h6 class="text-base font-semibold ">shows the products in your selected category below</h6>
+
+     <h1 class="text-3xl font-semibold mb-4">Products in {{categoryName}}<span id="categoryName"></span></h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-8">
+        {{#each products}}
+        <div class="relative m-2 md:m-4 lg:m-10 flex flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
+            <a href="/products/{{_id}}">
+                <div class="relative h-36 sm:h-48 md:h-52 lg:h-60 overflow-hidden rounded-xl">
+                    {{#if quantity}}
+                    {{#each this.images}}
+                    <img class="object-contain object-center w-full h-full" src="/uploads/{{this}}" alt="{{../name}}" />
+                    {{/each}}
+                    {{else}}
+                    <img src="/images/out-of-stock.png" alt="Out of Stock" class="w-full h-full">
+                    <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-100">
+                        <p class="text-white font-semibold text-lg">Out of Stock</p>
+                    </div>
+                    {{/if}}
+                    <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition duration-300 ease-in-out">
+                        <a href="/products/{{_id}}" class="text-white font-semibold px-4 py-2 bg-indigo-500 hover:bg-indigo-700 transition duration-300 ease-in-out focus:outline-none focus:ring focus:ring-indigo-200 focus:ring-opacity-50">View Product Details</a>
+                    </div>
+                </div>
+            </a>
+            <div class="mt-2 md:mt-4 px-2 md:px-5 pb-2 md:pb-5">
+                <a href="#">
+                    <h5 class="sm:text-lg md:text-xl lg:text-2xl tracking-tight text-slate-900">{{name}}</h5>
+                </a>
+                <div class="mt-1 md:mt-2 mb-3 md:mb-5 flex items-center justify-between">
+                    <p class="text-2xl text-orange-500 font-bold mb-4">
+                        {{#if offerPrice}}
+                        <span class="text-gray-500 line-through">Rs.{{price}}</span>
+                        <span class="sm:text-lg md:text-xl lg:text-2xl font-bold text-slate-900">Rs.{{offerPrice}}</span>
+                        {{else}}
+                        <span class="sm:text-lg md:text-xl lg:text-2xl font-bold text-slate-900">Rs.{{price}}</span>
+                        {{/if}}
+                    </p>
+                    <div class="flex items-center space-x-1 md:space-x-2">
+                        <span class="mr-2 ml-3 rounded bg-yellow-200 px-1 sm:px-2 md:px-3 lg:px-4 text-xs sm:text-sm md:lg:text-lg font-semibold">{{rating}}</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-3">
+                    {{#if quantity}}
+                    <a href="/wishlistadd/{{_id}}" class="flex items-center justify-center w-full bg-gray-900 px-2 py-1 text-sm text-white transition hover:bg-gray-700 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                        </svg>
+                        Add to Wishlist
                     </a>
-                </li>
-            {{/each}}
-        </ul>
+                    {{/if}}
+                    <a href="/products/{{_id}}" class="flex items-center justify-center w-full bg-gray-900 px-2 py-1 text-sm text-white transition hover:bg-gray-700 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                        </svg>
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {{/each}}
     </div>
+</div>
+
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-8">
+    <footer class="bg-gray-900 text-white py-8 fixed bottom-0 w-full">
         <div class="container mx-auto text-center">
             <p>&copy; 2023 Classic Soul eCommerce Store</p>
             <!-- Social media links, contact information, etc. can be added here -->
