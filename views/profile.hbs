@@ -11,6 +11,23 @@
 
 
     <style>
+
+
+@media (max-width: 767px) {
+    .wallet-button-container {
+        position: absolute;
+        top: 10%;
+        right: 0;
+        margin: 0.5rem;
+    }
+}
+
+@media (max-width: 767px) {
+    #walletModal {
+        width: 80%; 
+        
+    }
+}
     @media (max-width: 767px) {
         .navicon {
           width: 1.125em;
@@ -125,17 +142,19 @@
             <p class="text-gray-600">{{ user.email }}</p>
         </div>
 
-        <!-- Wallet Link (Right-aligned) -->
-<!-- Wallet Button -->
+<!-- Wallet Button Container -->
+<div class="wallet-button-container">
 <button class="text-yellow-50 w-36 bg-orange-400 rounded-2xl h-16 px-3 hover:underline ml-auto mt-4 inline-flex items-center" id="walletButton">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-current mr-2" viewBox="0 0 20 20">
         <path d="M2 3a2 2 0 012-2h14a2 2 0 012 2v16a2 2 0 01-2 2H4a2 2 0 01-2-2V3zm5 12a3 3 0 100-6 3 3 0 000 6z"/>
     </svg>
     <strong> Wallet</strong>
 </button>
+</div>
+
 
 <!-- Wallet Modal -->
-<div class="w-full sm:w-2/5 bg-amber-950 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white rounded-lg shadow-lg p-4 sm:p-8 z-50 hidden" id="walletModal">
+<div class="w-full sm:w-2/5 bg-amber-950 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white rounded-lg shadow-lg p-4  z-50 hidden" id="walletModal">
     <div class="mb-4 text-center"></div>
     <h2 class="text-2xl sm:text-3xl font-semibold text-center mb-4">My Wallet</h2>
     <div class="mb-4">

@@ -79,11 +79,18 @@ const applyDiscount = async (req, res) => {
             productPrice = product.offerPrice;
         }
 
+        const value = req.session.checkouttotalPrice
+        
+        const productquantity = req.session.productQuantities
+        
+
+        const totalPrice = productPrice * productquantity;
+
         // Check the product price and the minPurchase
-        if (productPrice < coupon.minPurchase) {
+        if (totalPrice < coupon.minPurchase) {
             return res.redirect('/checkout?CouponMinPurchaseNotMet=true');
         } else {
-            const discountAmount = productPrice - coupon.discountAmount;
+            const discountAmount = value - coupon.discountAmount;
             const Amount = coupon.discountAmount;
             req.session.finalAmount = Amount;
             req.session.PriceAfterCoupon = discountAmount;

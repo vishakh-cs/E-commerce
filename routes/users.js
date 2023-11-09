@@ -64,7 +64,7 @@ router.post('/signup',usercontroller.signupPost)
 router.post('/resendOTP', usercontroller.resendOTP);
 
 // <-------cart---------->
-router.get('/cart/:userid',isLoggedAuth,usercontroller.cart);
+router.get('/cart',isLoggedAuth,usercontroller.cart);
 
 router.post('/cart/add/:productId',isLoggedAuth, usercontroller.addToCart);
 

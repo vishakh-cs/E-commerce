@@ -431,7 +431,7 @@ const cart = async (req, res) => {
   try {
     // Check if req.session.logedUser exists
     if (!req.session.logedUser || !req.session.logedUser.cart) {
-      return res.status(404).send('Cart not found');
+       res.redirect('/login');
     }
     const userCart = req.session.logedUser.cart;
 
@@ -687,7 +687,7 @@ const profile = async (req, res) => {
     // Fetch the user's recent orders and populate products
     const recentOrders = await order
       .find({ userId: userId })
-      .sort({ createdAt: -1 })
+      .sort({ orderDate: -1 })
       .populate('products'); 
 
     // Iterate through recent orders and populate product images
@@ -1079,8 +1079,14 @@ const checkout = async (req, res) => {
     // Filter out null products
     const validCartProducts = cartProducts.filter((item) => item !== null);
 
+        // Store product quantity in session for further processing
+        const productQuantities = validCartProducts.map((item) => item.quantity);
+        req.session.productQuantities = productQuantities;
+
     // Calculate the total price
     let totalPrice = validCartProducts.reduce((total, item) => total + item.price * item.quantity, 0);
+
+    req.session.checkouttotalPrice = totalPrice;
 
     // Check if a coupon has been applied
     const appliedCoupon = req.session.PriceAfterCoupon;
@@ -1522,17 +1528,17 @@ const createOrder = async (req, res) => {
      req.session.paymentMethod = paymenttype
 
      //coupon amount
-     const couponAmount = req.session.finalAmount || 0;
+     const couponAmount = req.session.PriceAfterCoupon || 0;
      const productcheck = await Products.findOne({ name: productName });
 
       // Calculate the product price based on offer or regular price
       const price = productcheck.offerPrice ? productcheck.offerPrice : productcheck.price;
 
     // Ensure productPrice is in paise (multiply by 100)
-    let amount = price * 100;
+    let amount = productPrice * 100;
 
     if (couponAmount > 0) {
-      amount -= couponAmount * 100; 
+      amount = couponAmount * 100; 
     }
 
       if (paymenttype === 'credit-card') {
