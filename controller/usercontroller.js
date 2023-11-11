@@ -1087,6 +1087,7 @@ const checkout = async (req, res) => {
     let totalPrice = validCartProducts.reduce((total, item) => total + item.price * item.quantity, 0);
 
     req.session.checkouttotalPrice = totalPrice;
+    req.session.cartItems = validCartProducts;
 
     // Check if a coupon has been applied
     const appliedCoupon = req.session.PriceAfterCoupon;
@@ -1102,6 +1103,8 @@ const checkout = async (req, res) => {
       cartProducts: validCartProducts,
       totalPrice,
     });
+
+    req.session.couponAfterPrice =  req.session.PriceAfterCoupon
     req.session.PriceAfterCoupon = [];
     
   } catch (error) {
@@ -1528,17 +1531,25 @@ const createOrder = async (req, res) => {
      req.session.paymentMethod = paymenttype
 
      //coupon amount
-     const couponAmount = req.session.PriceAfterCoupon || 0;
+     const couponAmount = req.session.couponAfterPrice || 0;
+     console.log("couponAmount",couponAmount);
      const productcheck = await Products.findOne({ name: productName });
+     const producttotal = productcheck.price
+     const cartItems = req.session.cartItems
+     const checkoutTotal = req.session.checkouttotalPrice
+     console.log("cartItems",cartItems);
+     console.log("checkoutTotal",checkoutTotal);
 
       // Calculate the product price based on offer or regular price
       const price = productcheck.offerPrice ? productcheck.offerPrice : productcheck.price;
 
     // Ensure productPrice is in paise (multiply by 100)
-    let amount = productPrice * 100;
+    let amount = checkoutTotal * 100;
+    req.session.couponhas = amount;
 
     if (couponAmount > 0) {
       amount = couponAmount * 100; 
+      req.session.couponhas = amount;
     }
 
       if (paymenttype === 'credit-card') {
@@ -1549,7 +1560,7 @@ const createOrder = async (req, res) => {
         }
       }
       const options = {
-          amount: amount,
+          amount: req.session.couponhas,
           currency: 'INR',
           receipt: 'razoruser@gmail.com',
       };
@@ -1641,11 +1652,8 @@ const buynowcreateOrder = async (req, res) => {
 
 // generate invoice
 const generateInvoice = async (req, res) => {
-  console.log("hii");
   const userId = req.params.userId;
   const orderId = req.params.orderId;
-  console.log("orderd", orderId);
-  console.log("userid", userId);
 
   try {
     const user = await usermodel.findById(userId);
@@ -1655,7 +1663,6 @@ const generateInvoice = async (req, res) => {
       return res.status(404).json({ message: 'Order not found.' });
     }
 
-    // Prepare product data based on the order's products
   // Prepare product data based on the order's products
 const products = Order.products.map(productInfo => {
   const product = productInfo.product;

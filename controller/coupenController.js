@@ -91,6 +91,7 @@ const applyDiscount = async (req, res) => {
             return res.redirect('/checkout?CouponMinPurchaseNotMet=true');
         } else {
             const discountAmount = value - coupon.discountAmount;
+            console.log("discountAmount",discountAmount);
             const Amount = coupon.discountAmount;
             req.session.finalAmount = Amount;
             req.session.PriceAfterCoupon = discountAmount;

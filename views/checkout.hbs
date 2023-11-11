@@ -44,18 +44,6 @@
                     <input type="radio" id="credit-card" name="payment-method" value="credit-card" class="mr-2" checked>
                     <label for="credit-card" class="text-blue-500 font-semibold">Credit Card</label>
                 </div>
-                <div class="payment-method mb-2">
-                    <img src="https://th.bing.com/th/id/OIP.Naqd2InLp3W58CUf3FrbSAAAAA?pid=ImgDet&rs=1"
-                        alt="Bank Transfer" class="payment-icon">
-                    <input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer" class="mr-2">
-                    <label for="bank-transfer" class="text-blue-500 font-semibold">Bank Transfer</label>
-                </div>
-                <div class="payment-method mb-2">
-                    <img src="https://www.bdsdtechnology.com/webroot/images/UPI.png" alt="UPI Transfer"
-                        class="payment-icon">
-                    <input type="radio" id="upi-transfer" name="payment-method" value="upi-transfer" class="mr-2">
-                    <label for="upi-transfer" class="text-blue-500 font-semibold">UPI Transfer</label>
-                </div>
                  <div class="payment-method mb-2">
                     <img src="https://th.bing.com/th/id/OIP.WKdXg3kgDga65sdmAAuCZQHaGE?pid=ImgDet&rs=1" alt="wallet Transfer"
                         class="payment-icon">
@@ -171,10 +159,11 @@
             onclick="redirectToNewAddressCheckout()">Add New Address</button>
         {{else}}
         <p class="text-red-500 mt-4">No address found. Please add an address.</p>
-        {{/if}}
+       
  <button id="add-address-button"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full mt-4"
                     onclick="redirectToNewAddressCheckout()">Add New Address</button>
+                     {{/if}}
             </div>
         </div>
         <div class="text-center mt-8">
