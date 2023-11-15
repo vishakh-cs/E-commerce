@@ -1168,7 +1168,7 @@ if (Array.isArray(discountprice)) {
     if (paymenttype === 'wallet-transfer') {
       // Check if the user has enough balance in their wallet
       if (user.wallet.amount < totalPrice) {
-        return res.status(400).send('Insufficient wallet balance');
+        return res.redirect('/checkout?InsufficientBalance=true');
       }
       user.wallet.amount -= totalPrice;
 

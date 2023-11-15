@@ -177,6 +177,20 @@
 
     </div>
     </div>
+    <script>
+// Check for URL parameters and show a popup message if InsufficientBalance is true
+document.addEventListener('DOMContentLoaded', function () {
+  const urlParamswallet = new URLSearchParams(window.location.search);
+  const isInsufficientBalance = urlParamswallet.get('InsufficientBalance');
+
+  if (isInsufficientBalance === 'true') {
+    // Show your popup message here
+    alert('Insufficient balance in wallet. Please try Another Payment Method.');
+     history.replaceState({}, document.title, window.location.pathname);
+  }
+});
+
+</script>
   <script>
 function updateCouponMessage() {
     const invalidCouponMessage = document.getElementById('invalid-coupon-message');
@@ -315,7 +329,7 @@ function updateCompletePurchaseButtonState() {
                     data: { productName, productPrice, paymentMethod: paymentMethod },
                     success: function (res) {
                         if (res.success) {
-                            alert('Payment from wallet successful');
+                            alert('Proceeding');
                             window.location.href = '/ordersuccess';
                         } else {
                             alert('Error creating wallet order: ' + res.msg);
