@@ -1431,7 +1431,7 @@ const buySuccess = async (req, res) => {
     const product = await Products.findById(productId);
 
     if (!user || !product) {
-      return res.status(404).json({ error: "User or product not found" });
+      return res.redirect('/');
     }
 
         // Decrease the product quantity by 1

@@ -19,12 +19,14 @@
             height: 100vh;
         }
 
-        .container {
+  .container {
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
             text-align: center;
+            max-width: 600px; /* Adjust the maximum width as needed */
+            margin: auto; /* Center the container horizontally */
         }
 
         .container h1 {
@@ -95,6 +97,35 @@
     </style>
 </head>
 <body>
+    <div class="bg-white w-full h-100 vh ">
+<nav class="nav flex flex-wrap items-center justify-between px-8 py-3 bg-red-600 text-white">
+    <div class="flex flex-no-shrink items-center mr-6 py-3 text-grey-darkest">
+
+        <span class="font-semibold text-xl tracking-tight"><a href="/"><img class="h-9 w-44" src="/images/Picsart_23-11-05_13-08-46-441.png" alt="ClassicSoul"></span></a>
+    </div>
+
+    <input class="menu-btn hidden" type="checkbox" id="menu-btn">
+    <label class="menu-icon block cursor-pointer md:hidden px-2 py-4 relative select-none" for="menu-btn">
+        <span class="navicon bg-grey-darkest flex items-center relative"></span>
+    </label>
+
+    <ul class="menu border-b md:border-none flex justify-end list-reset m-0 w-full md:w-auto">
+               <li class="border-t md:border-none mt-4 mr-11 font-bold">
+            <a class="hover:text-gray-200" href="/category">Category</a>
+        </li>
+       
+
+        <li class="border-t md:border-none mt-4"> <!-- Increased margin-top for the Profile item -->
+            <a class="flex items-center hover:text-gray-200" href="/profile">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="ml-2">Profile</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+    
     
     <div class="container">
         <h1>Order Successful</h1>
@@ -134,6 +165,7 @@
     </ul>
 </section>
         </section>
+    </div>
     </div>
 </body>
 </html>
