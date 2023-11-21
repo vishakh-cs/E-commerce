@@ -87,6 +87,8 @@ router.post('/AdminAddbanner', upload.array('Bannerimages'), bannerController.ad
 
 router.delete('/removeBanner',bannerController.removeBannerImage)
 
+router.get('/adminlogout',admincontroller.adminLogout)
+
 
 
 module.exports = router;

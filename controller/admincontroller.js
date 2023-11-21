@@ -700,6 +700,11 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+const adminLogout =async (req, res) => {
+  req.session.destroy();
+  res.redirect('/adminlogin')
+}
+
 
 module.exports ={
     adminlogin,
@@ -729,5 +734,6 @@ module.exports ={
     salesdatapiechart,
     salesreportpdf,
     generateExcelReport,
+    adminLogout,
 
 }
