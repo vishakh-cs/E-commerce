@@ -21,6 +21,12 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
 
     <style>
+
+     .swiper-container {
+    width: 100%;
+    overflow: hidden;
+}
+
     @media (max-width: 767px) {
         .navicon {
           width: 1.125em;
@@ -136,25 +142,27 @@
     </div>
 
 
-    <!-- Banner Carousel -->
-<!-- Banner Carousel -->
+  <!-- Banner Carousel -->
 <section class="bg-gray-200 py-8 xl:py-12">
     <div class="container mx-auto">
         <!-- Carousel code goes here -->
-        <div class="swiper-container">
-            <div class="swiper-wrapper">
-                {{#each showBanner}}
-                <div class="swiper-slide">
-                    <img src="{{this.imageUrl}}" alt="{{this.name}}" class="w-full">
+        <div class="swiper-container-wrapper">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    {{#each showBanner}}
+                    <div class="swiper-slide">
+                        <img src="{{this.imageUrl}}" alt="{{this.name}}" class="w-full">
+                    </div>
+                    {{/each}}
                 </div>
-                {{/each}}
+                <!-- Add navigation buttons for Swiper -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
             </div>
-            <!-- Add navigation buttons for Swiper -->
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
         </div>
     </div>
 </section>
+
 
 
     <!-- Product List -->
@@ -235,12 +243,36 @@
 
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-8">
-        <div class="container mx-auto text-center">
-            <p>&copy; 2023 Classic Soul eCommerce Store</p>
-            <!-- Social media links, contact information, etc. can be added here -->
+<footer class="bg-gray-950 text-white py-8">
+    <div class="container mx-auto flex flex-wrap items-center justify-between">
+        <div class="content_1">
+            <img src="/images/Picsart_23-11-05_13-08-46-441.png" alt="logo" class="w-40 h-10"><br>
+            <p class="text-left">The customer is at the heart of our<br>unique business model, which includes<br>design.</p><br>
+            <img src="https://i.postimg.cc/Nj9dgJ98/cards.png" alt="cards">
         </div>
-    </footer>
+
+        <!-- Newsletter Section -->
+        <div class="newsletter mt-8">
+            <h4 class="text-xl font-semibold mb-4">Newsletter</h4>
+            <form action="#" method="post" class="flex items-center">
+                <input type="email" name="email" placeholder="Your email" class="rounded-l-md px-4 py-2 border-t border-b border-l text-gray-800 border-gray-300 bg-white focus:outline-none">
+                <button type="submit" class="px-4 py-2 border border-t border-b border-r rounded-r-md bg-red-600 text-white">Subscribe</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bottom Fixed Section -->
+    <hr class="border-t border-gray-600 my-8">
+
+    <div class="f-design  bg-gray-950 text-white">
+        <div class="f-design-txt container mx-auto flex items-center justify-center">
+            <p>&copy; 2023 Classic Soul E-Commerce Store</p>
+        </div>
+    </div>
+</footer>
+
+
+
             <script>
   // Check if the URL has a query parameter 'notEnoughQuantity' with the value 'true'
   const urlParams = new URLSearchParams(window.location.search);
