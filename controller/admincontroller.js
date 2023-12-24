@@ -19,8 +19,8 @@ const adminlogin = (req,res)=>{
 const adminloginpost = (req, res) => {
   const adminname = req.body.username
   const adminpassword = req.body.password
-  const predefinedAdminName = 'admin';
-  const predefinedAdminPassword = 'adminappu';
+  const predefinedAdminName = process.env.adminName;
+  const predefinedAdminPassword = process.env.adminpassword;
   if (adminname == predefinedAdminName && adminpassword == predefinedAdminPassword) {
     req.session.admin = adminname;
     res.redirect('/admindashboard');
