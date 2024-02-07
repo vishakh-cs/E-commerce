@@ -19,7 +19,10 @@ var app = express();
 app.use(nocache());
 
 
-mongoose.connect("mongodb+srv://vishakhcs51:vishakhkumarapuram@cluster0.qh7zjgt.mongodb.net/ClassicSoul?retryWrites=true&w=majority",{
+const MONGODBPASS = process.env.MONGODBPASS;
+const DB_NAME = 'ClassicSoul';
+
+mongoose.connect(`mongodb+srv://vishakhcs51:${MONGODBPASS}@cluster0.qh7zjgt.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`,{
     useNewUrlParser: true,
   useUnifiedTopology: true,
 })
